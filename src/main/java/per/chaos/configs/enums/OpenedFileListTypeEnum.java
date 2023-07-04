@@ -1,4 +1,4 @@
-package per.chaos.configs.models;
+package per.chaos.configs.enums;
 
 public enum OpenedFileListTypeEnum {
     LATEST,

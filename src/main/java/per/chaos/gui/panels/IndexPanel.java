@@ -7,8 +7,8 @@ package per.chaos.gui.panels;
 import net.miginfocom.swing.MigLayout;
 import per.chaos.configs.AppContext;
 import per.chaos.configs.AppPrefs;
-import per.chaos.configs.models.OpenedFileListTypeEnum;
-import per.chaos.models.LatestRandomFileModel;
+import per.chaos.configs.enums.OpenedFileListTypeEnum;
+import per.chaos.models.LatestFileModel;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -33,19 +33,27 @@ public class IndexPanel extends JPanel {
         fastUsedFilesList.setModel(initializeFastUsedFiles());
     }
 
-    public DefaultListModel<LatestRandomFileModel> initializeLatestOpenedFiles() {
-        DefaultListModel<LatestRandomFileModel> listModels = new DefaultListModel<>();
-        List<LatestRandomFileModel> models = AppContext.context().latestRandomFileModels();
-        for (LatestRandomFileModel model : models) {
+    public Component getPopup1() {
+        return popupMenuLatestFile;
+    }
+
+    public Component getPopup2() {
+        return popupMenuFastUsedFile;
+    }
+
+    public DefaultListModel<LatestFileModel> initializeLatestOpenedFiles() {
+        DefaultListModel<LatestFileModel> listModels = new DefaultListModel<>();
+        List<LatestFileModel> models = AppContext.context().latestRandomFileModels();
+        for (LatestFileModel model : models) {
             listModels.addElement(model);
         }
         return listModels;
     }
 
-    public DefaultListModel<LatestRandomFileModel> initializeFastUsedFiles() {
-        DefaultListModel<LatestRandomFileModel> listModels = new DefaultListModel<>();
-        List<LatestRandomFileModel> models = AppContext.context().fastUsedRandomFileModels();
-        for (LatestRandomFileModel model : models) {
+    public DefaultListModel<LatestFileModel> initializeFastUsedFiles() {
+        DefaultListModel<LatestFileModel> listModels = new DefaultListModel<>();
+        List<LatestFileModel> models = AppContext.context().fastUsedRandomFileModels();
+        for (LatestFileModel model : models) {
             listModels.addElement(model);
         }
         return listModels;
@@ -58,32 +66,32 @@ public class IndexPanel extends JPanel {
     }
 
     private void latestListPopupMenuItemOpen(ActionEvent e) {
-        LatestRandomFileModel latestRandomFileModel = (LatestRandomFileModel) latestOpenedFilesList.getModel().getElementAt(
+        LatestFileModel latestFileModel = (LatestFileModel) latestOpenedFilesList.getModel().getElementAt(
                 latestOpenedFilesList.getSelectedIndex()
         );
 
         AppContext.context().getMainFrame().jumpToRandomCardPanel(
-                latestRandomFileModel.getAbsolutePath(), OpenedFileListTypeEnum.LATEST
+                latestFileModel.getAbsolutePath(), OpenedFileListTypeEnum.LATEST
         );
     }
 
     private void latestListPopupMenuItemRemove(ActionEvent e) {
-        LatestRandomFileModel latestRandomFileModel = (LatestRandomFileModel) latestOpenedFilesList.getModel().getElementAt(
+        LatestFileModel latestFileModel = (LatestFileModel) latestOpenedFilesList.getModel().getElementAt(
                 latestOpenedFilesList.getSelectedIndex()
         );
-        AppContext.context().deleteLatestRandomFileWithContext(latestRandomFileModel.getAbsolutePath());
+        AppContext.context().deleteLatestRandomFileWithContext(latestFileModel.getAbsolutePath());
         AppPrefs.updateLatestFilesConfig();
 
         repaintWithOpenedFiles();
     }
 
     private void latestPopupMenuItemMove2FastUsed(ActionEvent e) {
-        LatestRandomFileModel latestRandomFileModel = (LatestRandomFileModel) latestOpenedFilesList.getModel().getElementAt(
+        LatestFileModel latestFileModel = (LatestFileModel) latestOpenedFilesList.getModel().getElementAt(
                 latestOpenedFilesList.getSelectedIndex()
         );
 
         AppContext.context().transfer(
-                latestRandomFileModel.getAbsolutePath(),
+                latestFileModel.getAbsolutePath(),
                 OpenedFileListTypeEnum.LATEST,
                 OpenedFileListTypeEnum.FAST_USED
         );
@@ -103,20 +111,20 @@ public class IndexPanel extends JPanel {
     }
 
     private void fastUsedListPopupMenuItemOpen(ActionEvent e) {
-        LatestRandomFileModel latestRandomFileModel = (LatestRandomFileModel) fastUsedFilesList.getModel().getElementAt(
+        LatestFileModel latestFileModel = (LatestFileModel) fastUsedFilesList.getModel().getElementAt(
                 fastUsedFilesList.getSelectedIndex()
         );
 
         AppContext.context().getMainFrame().jumpToRandomCardPanel(
-                latestRandomFileModel.getAbsolutePath(), OpenedFileListTypeEnum.FAST_USED
+                latestFileModel.getAbsolutePath(), OpenedFileListTypeEnum.FAST_USED
         );
     }
 
     private void fastUsedListPopupMenuItemRemove(ActionEvent e) {
-        LatestRandomFileModel latestRandomFileModel = (LatestRandomFileModel) fastUsedFilesList.getModel().getElementAt(
+        LatestFileModel latestFileModel = (LatestFileModel) fastUsedFilesList.getModel().getElementAt(
                 fastUsedFilesList.getSelectedIndex()
         );
-        AppContext.context().deleteFastUsedRandomFileWithContext(latestRandomFileModel.getAbsolutePath());
+        AppContext.context().deleteFastUsedRandomFileWithContext(latestFileModel.getAbsolutePath());
         AppPrefs.updateFastUsedFilesConfig();
 
         repaintWithOpenedFiles();
@@ -132,12 +140,12 @@ public class IndexPanel extends JPanel {
     }
 
     private void fastUsedPopupMenuItemMove2Latest(ActionEvent e) {
-        LatestRandomFileModel latestRandomFileModel = (LatestRandomFileModel) fastUsedFilesList.getModel().getElementAt(
+        LatestFileModel latestFileModel = (LatestFileModel) fastUsedFilesList.getModel().getElementAt(
                 fastUsedFilesList.getSelectedIndex()
         );
 
         AppContext.context().transfer(
-                latestRandomFileModel.getAbsolutePath(),
+                latestFileModel.getAbsolutePath(),
                 OpenedFileListTypeEnum.FAST_USED,
                 OpenedFileListTypeEnum.LATEST
         );
@@ -177,6 +185,7 @@ public class IndexPanel extends JPanel {
         {
             scrollPane1.setMinimumSize(new Dimension(27, 41));
             scrollPane1.setBorder(new TitledBorder(new LineBorder(Color.lightGray, 1, true), "\u6700\u8fd1\u6253\u5f00\u7684\u6587\u4ef6...", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, null, Color.lightGray));
+            scrollPane1.setBackground(Color.white);
 
             //---- latestOpenedFilesList ----
             latestOpenedFilesList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -195,6 +204,7 @@ public class IndexPanel extends JPanel {
         //======== scrollPane2 ========
         {
             scrollPane2.setBorder(new TitledBorder(new LineBorder(Color.lightGray, 1, true), "\u5feb\u901f\u67e5\u627e\u533a\u6587\u4ef6...", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, null, Color.lightGray));
+            scrollPane2.setBackground(Color.white);
 
             //---- fastUsedFilesList ----
             fastUsedFilesList.setVisibleRowCount(20);

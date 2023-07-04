@@ -13,6 +13,7 @@ new FormModel {
 			"defaultCloseOperation": 3
 			"minimumSize": new java.awt.Dimension( 900, 520 )
 			"title": "Random Studio"
+			"background": sfield java.awt.Color white
 			menuBar: new FormContainer( "javax.swing.JMenuBar", new FormLayoutManager( class javax.swing.JMenuBar ) ) {
 				name: "menuBar0"
 				"maximumSize": new java.awt.Dimension( 90, 26 )
@@ -31,7 +32,8 @@ new FormModel {
 					"text": "关于"
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "menuItemPref"
-						"text": "设置"
+						"text": "首选项"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "showUserPrefDialog", true ) )
 					} )
 					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
 						name: "separator2"
@@ -46,7 +48,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "menuItemInfo"
 						"text": "软件信息"
-						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "showSoftwareDialog", true ) )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "showApplicationInfoDialog", true ) )
 					} )
 				} )
 			}

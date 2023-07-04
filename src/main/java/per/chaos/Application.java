@@ -4,9 +4,9 @@ import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import per.chaos.configs.AppContext;
 import per.chaos.configs.AppPrefs;
-import per.chaos.configs.models.ThemeEnum;
+import per.chaos.configs.enums.ThemeEnum;
 import per.chaos.gui.MainFrame;
-import per.chaos.utils.OnWindowResizeListener;
+import per.chaos.gui.interfaces.OnWindowResizeListener;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -16,14 +16,22 @@ public class Application {
 
         ThemeEnum themePref = AppPrefs.getTheme();
         if (ThemeEnum.LIGHT == themePref) {
-            FlatLightLaf.setup();
+            try {
+                UIManager.setLookAndFeel( new FlatLightLaf() );
+            } catch( Exception ex ) {
+                System.err.println( "Failed to initialize LaF" );
+            }
         } else if (ThemeEnum.DARCULA == themePref) {
-            FlatDarculaLaf.setup();
+            try {
+                UIManager.setLookAndFeel( new FlatDarculaLaf() );
+            } catch( Exception ex ) {
+                System.err.println( "Failed to initialize LaF" );
+            }
         }
 
         JFrame.setDefaultLookAndFeelDecorated(true);
-        UIManager.put("Component.arc", 20);
-        UIManager.put("JComponent.roundRect", true);
+//        UIManager.put("Component.arc", 20);
+//        UIManager.put("JComponent.roundRect", true);
         UIManager.put("ScrollBar.thumbArc", 999);
 
         SwingUtilities.invokeLater(() -> {

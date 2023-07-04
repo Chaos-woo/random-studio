@@ -12,7 +12,7 @@ import per.chaos.configs.AppPrefs;
 import per.chaos.gui.MainFrame;
 import per.chaos.models.RandomCardFileContext;
 import per.chaos.threads.PausableThreadManager;
-import per.chaos.utils.OnWindowResizeListener;
+import per.chaos.gui.interfaces.OnWindowResizeListener;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -31,7 +31,8 @@ public class RandomCardPanel extends JPanel implements OnWindowResizeListener {
     private final PausableThreadManager ptm;
 
     private int randomIndex;
-    private final long refreshInterval = AppPrefs.getRandomRefreshIntervalMs();
+
+    private int currentFontSize;
 
     public RandomCardPanel(RandomCardFileContext context) {
         this.rcfContext = context;
@@ -43,9 +44,10 @@ public class RandomCardPanel extends JPanel implements OnWindowResizeListener {
 
         ptm = new PausableThreadManager(() -> {
             try {
-                Thread.sleep(refreshInterval);
+                Thread.sleep(AppContext.getUserPrefCache().getRandomRefreshIntervalMs());
                 randomIndex = (int) (Math.random() * rcfContext.getRemainCards().size());
                 mainText.setText(rcfContext.getRemainCards().get(randomIndex).getText());
+                mainText.setFont(new Font("Microsoft YaHei UI", Font.BOLD, AppContext.getUserPrefCache().getFontSize()));
             } catch (Exception e) {
                 throw new RuntimeException("Running random cards exception");
             }
@@ -106,7 +108,7 @@ public class RandomCardPanel extends JPanel implements OnWindowResizeListener {
     private void switchMainTextLargeOrSmallStyle(boolean largeMode, String nextDisplayTitle) {
         mainText.setText("");
         if (largeMode) {
-            mainText.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 100));
+            mainText.setFont(new Font("Microsoft YaHei UI", Font.BOLD, AppContext.getUserPrefCache().getFontSize()));
         } else {
             mainText.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 24));
             mainText.setText(StringUtils.isBlank(nextDisplayTitle) ? "" : nextDisplayTitle);

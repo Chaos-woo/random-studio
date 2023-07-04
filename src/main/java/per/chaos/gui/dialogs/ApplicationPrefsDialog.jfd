@@ -5,15 +5,18 @@ new FormModel {
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 			name: "this"
+			"title": "首选项"
+			"maximumSize": new java.awt.Dimension( 550, 250 )
+			"minimumSize": new java.awt.Dimension( 550, 250 )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 				name: "dialogPane"
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
-					"$layoutConstraints": "fill,insets dialog,hidemode 3,align left top,gap 30 30"
+					"$layoutConstraints": "fill,insets dialog,hidemode 3,align left top,gap 10 5"
 					"$columnConstraints": "[fill][fill][fill]"
-					"$rowConstraints": "[][][][]"
+					"$rowConstraints": "[][][][][][]"
 				} ) {
 					name: "contentPanel"
-					"border": new javax.swing.border.TitledBorder( new javax.swing.border.LineBorder( sfield java.awt.Color lightGray, 1, false ), "简单设置", 4, 0, null, sfield java.awt.Color lightGray )
+					"border": new javax.swing.border.TitledBorder( new javax.swing.border.LineBorder( sfield java.awt.Color lightGray, 1, false ), "用户配置", 4, 0, null, sfield java.awt.Color lightGray )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "labelNormalRandomModeInterval"
 						"text": "普通随机模式刷新间隔："
@@ -31,6 +34,84 @@ new FormModel {
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 2 0"
 					} )
+					add( new FormComponent( "javax.swing.JRadioButton" ) {
+						name: "radioButtonFaster"
+						"text": "超快速"
+						"$buttonGroup": new FormReference( "buttonGroup1" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "fasterRadioButton", true ) )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 1"
+					} )
+					add( new FormComponent( "javax.swing.JRadioButton" ) {
+						name: "radioButtonFast"
+						"text": "快速"
+						"$buttonGroup": new FormReference( "buttonGroup1" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "fastRadioButton", true ) )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 1"
+					} )
+					add( new FormComponent( "javax.swing.JRadioButton" ) {
+						name: "radioButtonNormal"
+						"text": "普通"
+						"$buttonGroup": new FormReference( "buttonGroup1" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "normalRadioButton", true ) )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 1"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "labelDisplayFontSize"
+						"text": "随机文字字号："
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 2"
+					} )
+					add( new FormComponent( "javax.swing.JFormattedTextField" ) {
+						name: "textFieldFonteSize"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 2"
+					} )
+					add( new FormComponent( "javax.swing.JRadioButton" ) {
+						name: "radioButtonNormalFontSize"
+						"text": "普通"
+						"$buttonGroup": new FormReference( "buttonGroup2" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "normalFontSize", true ) )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 3"
+					} )
+					add( new FormComponent( "javax.swing.JRadioButton" ) {
+						name: "radioButtonMoreFontSize"
+						"text": "较大"
+						"$buttonGroup": new FormReference( "buttonGroup2" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "moreFontSize", true ) )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 3"
+					} )
+					add( new FormComponent( "javax.swing.JRadioButton" ) {
+						name: "radioButtonBigFontSize"
+						"text": "大"
+						"$buttonGroup": new FormReference( "buttonGroup2" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "bigFontSize", true ) )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 3"
+					} )
+					add( new FormComponent( "javax.swing.JRadioButton" ) {
+						name: "radioButtonBiggerFontSize"
+						"text": "巨大"
+						"$buttonGroup": new FormReference( "buttonGroup2" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "biggerFontSize", true ) )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 3"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label3"
+						"text": "主题："
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 4"
+					} )
+					add( new FormComponent( "javax.swing.JComboBox" ) {
+						name: "comboBoxTheme"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 4"
+					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "Center"
 				} )
@@ -42,13 +123,15 @@ new FormModel {
 					name: "buttonBar"
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "okButton"
-						"text": "OK"
+						"text": "保存"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "ok", true ) )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 0 0"
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "cancelButton"
-						"text": "Cancel"
+						"text": "取消"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "cancel", true ) )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 1 0"
 					} )
@@ -61,6 +144,16 @@ new FormModel {
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
 			"size": new java.awt.Dimension( 400, 300 )
+		} )
+		add( new FormNonVisual( "javax.swing.ButtonGroup" ) {
+			name: "buttonGroup1"
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 316 )
+		} )
+		add( new FormNonVisual( "javax.swing.ButtonGroup" ) {
+			name: "buttonGroup2"
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 376 )
 		} )
 	}
 }
