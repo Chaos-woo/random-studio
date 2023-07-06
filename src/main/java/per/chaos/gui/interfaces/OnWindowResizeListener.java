@@ -1,4 +1,4 @@
-package per.chaos.utils;
+package per.chaos.gui.interfaces;
 
 @FunctionalInterface
 public interface OnWindowResizeListener {

@@ -5,13 +5,15 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.setting.dialect.Props;
 import lombok.Getter;
 import lombok.Setter;
+import per.chaos.configs.models.AoolicationInfo;
 import per.chaos.configs.models.LatestFile;
-import per.chaos.configs.models.OpenedFileListTypeEnum;
+import per.chaos.configs.enums.OpenedFileListTypeEnum;
+import per.chaos.configs.models.UserPrefCache;
 import per.chaos.gui.MainFrame;
-import per.chaos.models.LatestRandomFileModel;
+import per.chaos.models.LatestFileModel;
 import per.chaos.models.RandomCardFileContext;
 import per.chaos.models.RandomCardModel;
-import per.chaos.utils.OnWindowResizeListener;
+import per.chaos.gui.interfaces.OnWindowResizeListener;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -27,23 +29,28 @@ public class AppContext {
     private MainFrame mainFrame;
     @Getter
     private final List<OnWindowResizeListener> windowResizeListeners = new ArrayList<>();
+    @Getter
+    private static final AoolicationInfo applicationInfo;
+    @Getter
+    private static final UserPrefCache userPrefCache;
 
-    // [fileAbsolutePath]-LatestRandomFileModel
-    private static final Map<String, LatestRandomFileModel> latestRandomFileModelMapping = new ConcurrentHashMap<>();
-    // [fileAbsolutePath]-LatestRandomFileModel
-    private static final Map<String, LatestRandomFileModel> fastUsedFileModelMapping = new ConcurrentHashMap<>();
+    // [fileAbsolutePath]-LatestFileModel
+    private static final Map<String, LatestFileModel> latestRandomFileModelMapping = new ConcurrentHashMap<>();
+    // [fileAbsolutePath]-LatestFileModel
+    private static final Map<String, LatestFileModel> fastUsedFileModelMapping = new ConcurrentHashMap<>();
     // [fileAbsolutePath]-RandomCardFileContext
     private static final Map<String, RandomCardFileContext> randomCardFileContextMapping = new ConcurrentHashMap<>();
 
     static {
         context = new AppContext();
-        initializeApplicationPrefs();
+        userPrefCache = initializeApplicationPrefs();
+        applicationInfo = initializeApplicationInfo();
+
         initializeLatestRandomFiles();
         initializeFastUsedRandomFiles();
-        initializeApplicationInfo();
     }
 
-    private Map<String, LatestRandomFileModel> getByOpenedFileListTypeEnum(OpenedFileListTypeEnum typeEnum) {
+    private Map<String, LatestFileModel> getByOpenedFileListTypeEnum(OpenedFileListTypeEnum typeEnum) {
         switch (typeEnum) {
             case LATEST:
                 return latestRandomFileModelMapping;
@@ -121,25 +128,25 @@ public class AppContext {
         return rcfContext;
     }
 
-    public List<LatestRandomFileModel> latestRandomFileModels() {
+    public List<LatestFileModel> latestRandomFileModels() {
         return latestRandomFileModelMapping.values().stream()
                 .peek(model -> {
                     if (Objects.isNull(model.getImportDatetime())) {
                         model.setImportDatetime(new Date());
                     }
                 })
-                .sorted(Comparator.comparing(LatestRandomFileModel::getImportDatetime))
+                .sorted(Comparator.comparing(LatestFileModel::getImportDatetime))
                 .collect(Collectors.toList());
     }
 
-    public List<LatestRandomFileModel> fastUsedRandomFileModels() {
+    public List<LatestFileModel> fastUsedRandomFileModels() {
         return fastUsedFileModelMapping.values().stream()
                 .peek(model -> {
                     if (Objects.isNull(model.getImportDatetime())) {
                         model.setImportDatetime(new Date());
                     }
                 })
-                .sorted(Comparator.comparing(LatestRandomFileModel::getImportDatetime))
+                .sorted(Comparator.comparing(LatestFileModel::getImportDatetime))
                 .collect(Collectors.toList());
     }
 
@@ -157,8 +164,8 @@ public class AppContext {
 
     public void transfer(String absolutePath, OpenedFileListTypeEnum fromListTypeEnum, OpenedFileListTypeEnum toListTypeEnum) {
         String base64Code = Base64.encode(absolutePath);
-        Map<String, LatestRandomFileModel> fromMapping = getByOpenedFileListTypeEnum(fromListTypeEnum);
-        Map<String, LatestRandomFileModel> toMapping = getByOpenedFileListTypeEnum(toListTypeEnum);
+        Map<String, LatestFileModel> fromMapping = getByOpenedFileListTypeEnum(fromListTypeEnum);
+        Map<String, LatestFileModel> toMapping = getByOpenedFileListTypeEnum(toListTypeEnum);
         if (!fromMapping.containsKey(base64Code)) {
             return;
         }
@@ -170,7 +177,7 @@ public class AppContext {
     public RandomCardFileContext initializeImportFile(String absolutePath) {
         String base64Code = Base64.encode(absolutePath);
         if (!latestRandomFileModelMapping.containsKey(base64Code)) {
-            LatestRandomFileModel model = new LatestRandomFileModel();
+            LatestFileModel model = new LatestFileModel();
             model.setAbsolutePath(absolutePath);
             model.setExist(true);
             model.setFileHandler(null);
@@ -193,7 +200,7 @@ public class AppContext {
         List<LatestFile> latestFiles = AppPrefs.listLatestFiles();
         for (LatestFile latestFile : latestFiles) {
             String base64Code = Base64.encode(latestFile.getAbsolutePath());
-            LatestRandomFileModel model = new LatestRandomFileModel();
+            LatestFileModel model = new LatestFileModel();
             model.setAbsolutePath(latestFile.getAbsolutePath());
             model.setExist(FileUtil.exist(latestFile.getAbsolutePath()));
             model.setFileHandler(null);
@@ -206,7 +213,7 @@ public class AppContext {
         List<LatestFile> latestFiles = AppPrefs.listFastUsedFiles();
         for (LatestFile latestFile : latestFiles) {
             String base64Code = Base64.encode(latestFile.getAbsolutePath());
-            LatestRandomFileModel model = new LatestRandomFileModel();
+            LatestFileModel model = new LatestFileModel();
             model.setAbsolutePath(latestFile.getAbsolutePath());
             model.setExist(FileUtil.exist(latestFile.getAbsolutePath()));
             model.setFileHandler(null);
@@ -215,14 +222,20 @@ public class AppContext {
         }
     }
 
-    private static void initializeApplicationInfo() {
+    private static AoolicationInfo initializeApplicationInfo() {
         Props props = new Props("main.properties");
-        System.out.println(props.getStr("application.version"));
-        System.out.println(props.getStr("application.artifactId"));
-        System.out.println(props.getStr("application.description"));
+        AoolicationInfo info = new AoolicationInfo();
+        info.setVersion(props.getStr("application.version"));
+        info.setName(props.getStr("application.artifactId"));
+        info.setDescription(props.getStr("application.description"));
+        return info;
     }
 
-    private static void initializeApplicationPrefs() {
-
+    private static UserPrefCache initializeApplicationPrefs() {
+        UserPrefCache cache = new UserPrefCache();
+        cache.setRandomRefreshIntervalMs(AppPrefs.getRandomRefreshIntervalMs());
+        cache.setFontSize(AppPrefs.getRandomFontSize());
+        cache.setThemeEnum(AppPrefs.getTheme());
+        return cache;
     }
 }

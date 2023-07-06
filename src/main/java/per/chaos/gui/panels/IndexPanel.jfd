@@ -14,6 +14,7 @@ new FormModel {
 				name: "scrollPane1"
 				"minimumSize": new java.awt.Dimension( 27, 41 )
 				"border": new javax.swing.border.TitledBorder( new javax.swing.border.LineBorder( sfield java.awt.Color lightGray, 1, true ), "最近打开的文件...", 4, 0, null, sfield java.awt.Color lightGray )
+				"background": sfield java.awt.Color white
 				add( new FormComponent( "javax.swing.JList" ) {
 					name: "latestOpenedFilesList"
 					"selectionMode": 0
@@ -27,6 +28,7 @@ new FormModel {
 			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 				name: "scrollPane2"
 				"border": new javax.swing.border.TitledBorder( new javax.swing.border.LineBorder( sfield java.awt.Color lightGray, 1, true ), "快速查找区文件...", 4, 0, null, sfield java.awt.Color lightGray )
+				"background": sfield java.awt.Color white
 				add( new FormComponent( "javax.swing.JList" ) {
 					name: "fastUsedFilesList"
 					"visibleRowCount": 20

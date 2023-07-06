@@ -9,7 +9,9 @@ import lombok.Getter;
 import net.miginfocom.swing.MigLayout;
 import per.chaos.configs.AppContext;
 import per.chaos.configs.AppPrefs;
-import per.chaos.configs.models.OpenedFileListTypeEnum;
+import per.chaos.configs.enums.OpenedFileListTypeEnum;
+import per.chaos.gui.dialogs.ApplicationInformationDialog;
+import per.chaos.gui.dialogs.ApplicationPrefsDialog;
 import per.chaos.gui.panels.IndexPanel;
 import per.chaos.gui.panels.RandomCardPanel;
 import per.chaos.models.RandomCardFileContext;
@@ -31,8 +33,6 @@ public class MainFrame extends JFrame {
 
     public MainFrame() {
         initComponents();
-
-        
 
         indexPanel = new IndexPanel();
         getContentPane().add(indexPanel);
@@ -77,8 +77,14 @@ public class MainFrame extends JFrame {
         }
     }
 
-    private void showSoftwareDialog(ActionEvent e) {
-        jumpToInitializePanel();
+    private void showApplicationInfoDialog(ActionEvent e) {
+        ApplicationInformationDialog dialog = new ApplicationInformationDialog(this);
+        dialog.setVisible(true);
+    }
+
+    private void showUserPrefDialog(ActionEvent e) {
+        ApplicationPrefsDialog dialog = new ApplicationPrefsDialog(this);
+        dialog.setVisible(true);
     }
 
     private void initComponents() {
@@ -95,6 +101,7 @@ public class MainFrame extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(900, 520));
         setTitle("Random Studio");
+        setBackground(Color.white);
         var contentPane = getContentPane();
         contentPane.setLayout(new MigLayout(
             "fill,insets 0,hidemode 3,align center center",
@@ -124,7 +131,8 @@ public class MainFrame extends JFrame {
                 menuAbout.setText("\u5173\u4e8e");
 
                 //---- menuItemPref ----
-                menuItemPref.setText("\u8bbe\u7f6e");
+                menuItemPref.setText("\u9996\u9009\u9879");
+                menuItemPref.addActionListener(e -> showUserPrefDialog(e));
                 menuAbout.add(menuItemPref);
                 menuAbout.addSeparator();
 
@@ -135,7 +143,7 @@ public class MainFrame extends JFrame {
 
                 //---- menuItemInfo ----
                 menuItemInfo.setText("\u8f6f\u4ef6\u4fe1\u606f");
-                menuItemInfo.addActionListener(e -> showSoftwareDialog(e));
+                menuItemInfo.addActionListener(e -> showApplicationInfoDialog(e));
                 menuAbout.add(menuItemInfo);
             }
             menuBar0.add(menuAbout);

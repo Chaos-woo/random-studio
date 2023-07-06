@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class LatestRandomFileModel {
+public class LatestFileModel {
     private String absolutePath;
     private File fileHandler;
     private String fileDisplayTitle;
