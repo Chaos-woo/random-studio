@@ -41,7 +41,7 @@ public class RootFrame extends JFrame {
         final FileReferService fileReferService = BeanManager.instance().getReference(FileReferService.class);
         fileReferService.refreshMemoryFileReferCtx();
 
-        indexPanel = new IndexPanel();
+        indexPanel = new IndexPanel(this);
         getContentPane().add(indexPanel);
     }
 

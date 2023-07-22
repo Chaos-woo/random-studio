@@ -4,12 +4,17 @@
 
 package per.chaos.biz.gui.index.panels;
 
+import java.awt.event.*;
+import com.google.common.eventbus.Subscribe;
 import net.miginfocom.swing.MigLayout;
 import per.chaos.app.context.AppContext;
 import per.chaos.app.context.BeanManager;
+import per.chaos.biz.RootFrame;
 import per.chaos.biz.services.FileReferService;
+import per.chaos.infrastructure.runtime.models.events.RootWindowResizeEvent;
 import per.chaos.infrastructure.runtime.models.files.entry.RawFileRefer;
 import per.chaos.infrastructure.runtime.models.files.enums.FileListTypeEnum;
+import per.chaos.infrastructure.utils.EventBus;
 import per.chaos.infrastructure.utils.gui.GuiUtils;
 
 import javax.swing.*;
@@ -27,10 +32,42 @@ import java.util.List;
 @SuppressWarnings("all")
 public class IndexPanel extends JPanel {
 
-    public IndexPanel() {
+    public IndexPanel(RootFrame rootFrame) {
         initComponents();
+        // 首次调整UI宽高大小
+        updateScrolPaneDimension(rootFrame.getWidth(), rootFrame.getHeight());
+
         latestFiles.setModel(listFilesModels(FileListTypeEnum.LATEST));
         fastQueryFiles.setModel(listFilesModels(FileListTypeEnum.FAST_QUERY));
+
+        // 监听窗口宽高调整变化事件
+        EventBus.register(this);
+    }
+
+    /**
+     * 事件监听函数
+     * @param event 事件类型
+     */
+    @Subscribe
+    public void onResized(RootWindowResizeEvent event) {
+        updateScrolPaneDimension(event.getWidth(), event.getHeight());
+    }
+
+    /**
+     * 更新滚动面板大小
+     * @param windowWidth 窗口宽度
+     * @param windowHeight 窗口高度
+     */
+    private void updateScrolPaneDimension(int windowWidth, int windowHeight) {
+        final double widthScale = 0.48;
+        final double heightScale = 0.9;
+        final int scrollPaneWidth = (int) (windowWidth * widthScale);
+        final int scrollPaneHeight = (int) (windowHeight * heightScale);
+
+        scrollPaneLatestFiles.setMinimumSize(new Dimension(scrollPaneWidth, scrollPaneHeight));
+        scrollPaneLatestFiles.setMaximumSize(new Dimension(scrollPaneWidth, scrollPaneHeight));
+        scrollPaneFastQueryFiles.setMinimumSize(new Dimension(scrollPaneWidth, scrollPaneHeight));
+        scrollPaneFastQueryFiles.setMaximumSize(new Dimension(scrollPaneWidth, scrollPaneHeight));
     }
 
     /**
@@ -157,11 +194,15 @@ public class IndexPanel extends JPanel {
         moveFileBetweenAnyList(selectedItem, FileListTypeEnum.FAST_QUERY, FileListTypeEnum.LATEST);
     }
 
+    private void componentDispose(ContainerEvent e) {
+        EventBus.unregister(this);
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
-        scrollPane1 = new JScrollPane();
+        scrollPaneLatestFiles = new JScrollPane();
         latestFiles = new JList();
-        scrollPane2 = new JScrollPane();
+        scrollPaneFastQueryFiles = new JScrollPane();
         fastQueryFiles = new JList();
         popupMenuLatestFile = new JPopupMenu();
         latestPopupMenuItemOpen = new JMenuItem();
@@ -174,6 +215,12 @@ public class IndexPanel extends JPanel {
 
         //======== this ========
         setMinimumSize(new Dimension(900, 494));
+        addContainerListener(new ContainerAdapter() {
+            @Override
+            public void componentRemoved(ContainerEvent e) {
+                componentDispose(e);
+            }
+        });
         setLayout(new MigLayout(
             "fill,insets panel,hidemode 3",
             // columns
@@ -183,11 +230,11 @@ public class IndexPanel extends JPanel {
             "[]" +
             "[]"));
 
-        //======== scrollPane1 ========
+        //======== scrollPaneLatestFiles ========
         {
-            scrollPane1.setMinimumSize(new Dimension(27, 41));
-            scrollPane1.setBorder(new TitledBorder(new LineBorder(Color.lightGray, 1, true), "\u6700\u8fd1\u6253\u5f00\u7684\u6587\u4ef6...", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, null, Color.lightGray));
-            scrollPane1.setBackground(Color.white);
+            scrollPaneLatestFiles.setMinimumSize(new Dimension(27, 41));
+            scrollPaneLatestFiles.setBorder(new TitledBorder(new LineBorder(Color.lightGray, 1, true), "\u6700\u8fd1\u6253\u5f00\u7684\u6587\u4ef6...", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, null, Color.lightGray));
+            scrollPaneLatestFiles.setBackground(Color.white);
 
             //---- latestFiles ----
             latestFiles.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -199,14 +246,14 @@ public class IndexPanel extends JPanel {
                     latestFilesMouseReleased(e);
                 }
             });
-            scrollPane1.setViewportView(latestFiles);
+            scrollPaneLatestFiles.setViewportView(latestFiles);
         }
-        add(scrollPane1, "cell 0 0 2 1");
+        add(scrollPaneLatestFiles, "cell 0 0 2 1");
 
-        //======== scrollPane2 ========
+        //======== scrollPaneFastQueryFiles ========
         {
-            scrollPane2.setBorder(new TitledBorder(new LineBorder(Color.lightGray, 1, true), "\u5feb\u901f\u67e5\u627e\u533a\u6587\u4ef6...", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, null, Color.lightGray));
-            scrollPane2.setBackground(Color.white);
+            scrollPaneFastQueryFiles.setBorder(new TitledBorder(new LineBorder(Color.lightGray, 1, true), "\u5feb\u901f\u67e5\u627e\u533a\u6587\u4ef6...", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, null, Color.lightGray));
+            scrollPaneFastQueryFiles.setBackground(Color.white);
 
             //---- fastQueryFiles ----
             fastQueryFiles.setVisibleRowCount(20);
@@ -217,9 +264,9 @@ public class IndexPanel extends JPanel {
                     fastQueryFilesMouseReleased(e);
                 }
             });
-            scrollPane2.setViewportView(fastQueryFiles);
+            scrollPaneFastQueryFiles.setViewportView(fastQueryFiles);
         }
-        add(scrollPane2, "cell 0 0 2 1");
+        add(scrollPaneFastQueryFiles, "cell 0 0 2 1");
 
         //======== popupMenuLatestFile ========
         {
@@ -266,9 +313,9 @@ public class IndexPanel extends JPanel {
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
-    private JScrollPane scrollPane1;
+    private JScrollPane scrollPaneLatestFiles;
     private JList latestFiles;
-    private JScrollPane scrollPane2;
+    private JScrollPane scrollPaneFastQueryFiles;
     private JList fastQueryFiles;
     private JPopupMenu popupMenuLatestFile;
     private JMenuItem latestPopupMenuItemOpen;
