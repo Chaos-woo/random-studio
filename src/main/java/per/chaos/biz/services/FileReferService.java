@@ -1,5 +1,6 @@
 package per.chaos.biz.services;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
@@ -137,7 +138,13 @@ public class FileReferService {
                     entity.setCreateTime(now);
                     entity.setUpdateTime(now);
                     return entity;
-                }).collect(Collectors.toList());
+                })
+                .filter(entity -> !mFileReferCtx.existFileRefer(new FilePathHash(entity.getAbsolutePath())))
+                .collect(Collectors.toList());
+
+        if (CollectionUtil.isEmpty(entities)) {
+            return;
+        }
 
         BeanManager.instance().executeMapper(FileReferMapper.class, (mapper) -> mapper.insertBatchSomeColumn(entities));
 

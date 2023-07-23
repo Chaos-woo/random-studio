@@ -66,6 +66,18 @@ public class MemoryFileReferCtx {
     }
 
     /**
+     * 判断文件是否已经被导入
+     *
+     * @param pathHash 文件路径hash值
+     */
+    public boolean existFileRefer(final FilePathHash pathHash) {
+        return fileReferMapping.values().stream()
+                .map(Map::keySet)
+                .flatMap(Set::stream)
+                .anyMatch(pathHashCtx -> Objects.equals(pathHashCtx, pathHash));
+    }
+
+    /**
      * 获取随机卡片上下文
      *
      * @param absolutePath 源文件路径
