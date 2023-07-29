@@ -51,8 +51,15 @@ new FormModel {
 						name: "separator1"
 					} )
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "menuItemUpdateLog"
+						"text": "更新日志"
+					} )
+					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
+						name: "separator3"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "menuItemInfo"
-						"text": "软件信息"
+						"text": "简介"
 						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "showAppProjectDialog", true ) )
 					} )
 				} )

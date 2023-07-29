@@ -198,6 +198,7 @@ public class RootFrame extends JFrame implements DropTargetListener {
         menuAbout = new JMenu();
         menuItemPref = new JMenuItem();
         menuItemHelp = new JMenuItem();
+        menuItemUpdateLog = new JMenuItem();
         menuItemInfo = new JMenuItem();
 
         //======== this ========
@@ -249,8 +250,13 @@ public class RootFrame extends JFrame implements DropTargetListener {
                 menuAbout.add(menuItemHelp);
                 menuAbout.addSeparator();
 
+                //---- menuItemUpdateLog ----
+                menuItemUpdateLog.setText("\u66f4\u65b0\u65e5\u5fd7");
+                menuAbout.add(menuItemUpdateLog);
+                menuAbout.addSeparator();
+
                 //---- menuItemInfo ----
-                menuItemInfo.setText("\u8f6f\u4ef6\u4fe1\u606f");
+                menuItemInfo.setText("\u7b80\u4ecb");
                 menuItemInfo.addActionListener(e -> showAppProjectDialog(e));
                 menuAbout.add(menuItemInfo);
             }
@@ -270,6 +276,7 @@ public class RootFrame extends JFrame implements DropTargetListener {
     private JMenu menuAbout;
     private JMenuItem menuItemPref;
     private JMenuItem menuItemHelp;
+    private JMenuItem menuItemUpdateLog;
     private JMenuItem menuItemInfo;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }
