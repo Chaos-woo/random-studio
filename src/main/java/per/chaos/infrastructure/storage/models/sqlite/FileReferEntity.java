@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
 import lombok.Setter;
 import per.chaos.infrastructure.runtime.models.files.enums.FileListTypeEnum;
-import per.chaos.infrastructure.runtime.models.files.enums.SysFileTypeEnum;
+import per.chaos.infrastructure.runtime.models.files.enums.SystemFileTypeEnum;
 
 /**
  * 文件引用实体
@@ -42,5 +42,5 @@ public class FileReferEntity extends BaseEntity {
      * 文件所属类型
      */
     @TableField(value = "sys_file_type")
-    private SysFileTypeEnum sysFileTypeEnum;
+    private SystemFileTypeEnum systemFileTypeEnum;
 }

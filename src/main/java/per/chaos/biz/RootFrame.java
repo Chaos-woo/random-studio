@@ -4,34 +4,49 @@
 
 package per.chaos.biz;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import net.miginfocom.swing.MigLayout;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import per.chaos.app.context.BeanManager;
 import per.chaos.biz.gui.index.panels.IndexPanel;
 import per.chaos.biz.gui.root.dialogs.AppProjectDialog;
 import per.chaos.biz.gui.root.dialogs.UserPreferenceDialog;
 import per.chaos.biz.gui.scroll_random.panels.RandomCardPanel;
 import per.chaos.biz.services.FileReferService;
+import per.chaos.infrastructure.runtime.models.events.DnDSystemFilesEvent;
 import per.chaos.infrastructure.runtime.models.files.ctxs.FileCardCtx;
 import per.chaos.infrastructure.runtime.models.files.enums.FileListTypeEnum;
+import per.chaos.infrastructure.runtime.models.files.enums.SystemFileTypeEnum;
+import per.chaos.infrastructure.utils.EventBus;
 import per.chaos.infrastructure.utils.formmater.AppFormatter;
+import per.chaos.infrastructure.utils.gui.GuiUtils;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author 78580
  */
-public class RootFrame extends JFrame {
+@Slf4j
+public class RootFrame extends JFrame implements DropTargetListener {
     // 初始面板
     @Getter
     private final IndexPanel indexPanel;
+
+    private DropTarget dropTarget;
 
     public RootFrame() {
         initComponents();
@@ -43,6 +58,9 @@ public class RootFrame extends JFrame {
 
         indexPanel = new IndexPanel(this);
         getContentPane().add(indexPanel);
+
+        dropTarget = new DropTarget(this, this);
+//        setTransferHandler();
     }
 
     /**
@@ -78,17 +96,37 @@ public class RootFrame extends JFrame {
     /**
      * 单选文件导入
      */
-    private void chooseFile(ActionEvent e) {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setFileFilter(new FileNameExtensionFilter("文本文件 (*.txt)", "txt"));
-        fileChooser.setMultiSelectionEnabled(false);
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        fileChooser.showDialog(new JLabel(), "选择");
+    private void chooseSingleFile(ActionEvent e) {
+        List<File> selectFiles = GuiUtils.chooseFile(
+                this, false, JFileChooser.FILES_ONLY,
+                new FileNameExtensionFilter("文本文件 (*.txt)", "txt")
+        );
 
-        File file = fileChooser.getSelectedFile();
-        if (Objects.nonNull(file) && file.isFile() && "txt".equalsIgnoreCase(FileUtil.getSuffix(file))) {
+        if (CollectionUtil.isNotEmpty(selectFiles)) {
+            List<String> fileAbsolutePaths = selectFiles.stream()
+                    .map(File::getAbsolutePath)
+                    .collect(Collectors.toList());
             final FileReferService fileReferService = BeanManager.instance().getReference(FileReferService.class);
-            fileReferService.batchImportFileRefer(Collections.singletonList(file.getAbsolutePath()));
+            fileReferService.batchImportFileRefer(fileAbsolutePaths);
+            indexPanel.repaintNewFileModels();
+        }
+    }
+
+    /**
+     * 批量选择文件导入
+     */
+    private void chooseBatchFiles(ActionEvent e) {
+        List<File> selectFiles = GuiUtils.chooseFile(
+                this, true, JFileChooser.FILES_ONLY,
+                new FileNameExtensionFilter("文本文件 (*.txt)", "txt")
+        );
+
+        if (CollectionUtil.isNotEmpty(selectFiles)) {
+            List<String> fileAbsolutePaths = selectFiles.stream()
+                    .map(File::getAbsolutePath)
+                    .collect(Collectors.toList());
+            final FileReferService fileReferService = BeanManager.instance().getReference(FileReferService.class);
+            fileReferService.batchImportFileRefer(fileAbsolutePaths);
             indexPanel.repaintNewFileModels();
         }
     }
@@ -109,20 +147,65 @@ public class RootFrame extends JFrame {
         dialog.setVisible(true);
     }
 
+    @Override
+    public void dragEnter(DropTargetDragEvent dtde) {
+    }
+
+    @Override
+    public void dragOver(DropTargetDragEvent dtde) {
+    }
+
+    @Override
+    public void dropActionChanged(DropTargetDragEvent dtde) {
+    }
+
+    @Override
+    public void dragExit(DropTargetEvent dte) {
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void drop(DropTargetDropEvent dtde) {
+        try {
+            Transferable transferable = dtde.getTransferable();
+            if (transferable.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+                dtde.acceptDrop(DnDConstants.ACTION_MOVE);
+                List<File> files = (List<File>) transferable.getTransferData(DataFlavor.javaFileListFlavor);
+                final Set<String> supportFileSuffix = SystemFileTypeEnum.getSupportFileSuffix();
+                files = files.stream()
+                        .filter(file -> supportFileSuffix.contains(FileUtil.getSuffix(file)))
+                        .collect(Collectors.toList());
+                if (CollectionUtil.isNotEmpty(files)) {
+                    EventBus.publish(new DnDSystemFilesEvent(files));
+                }
+            } else {
+                dtde.rejectDrop();
+            }
+        } catch (Exception e) {
+            log.info("{}", ExceptionUtils.getStackTrace(e));
+            dtde.rejectDrop();
+        } finally {
+            dtde.dropComplete(true);
+        }
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         menuBar0 = new JMenuBar();
         menuFile = new JMenu();
-        menuItemChooseFile = new JMenuItem();
+        menuItemImportFile = new JMenuItem();
+        menuItemBatchImportFiles = new JMenuItem();
         menuAbout = new JMenu();
         menuItemPref = new JMenuItem();
         menuItemHelp = new JMenuItem();
+        menuItemUpdateLog = new JMenuItem();
         menuItemInfo = new JMenuItem();
 
         //======== this ========
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(900, 520));
         setBackground(Color.white);
+        setPreferredSize(new Dimension(900, 520));
         var contentPane = getContentPane();
         contentPane.setLayout(new MigLayout(
             "fill,insets 0,hidemode 3,align center center",
@@ -140,10 +223,15 @@ public class RootFrame extends JFrame {
             {
                 menuFile.setText("\u6587\u4ef6");
 
-                //---- menuItemChooseFile ----
-                menuItemChooseFile.setText("\u5bfc\u5165\u6587\u4ef6...");
-                menuItemChooseFile.addActionListener(e -> chooseFile(e));
-                menuFile.add(menuItemChooseFile);
+                //---- menuItemImportFile ----
+                menuItemImportFile.setText("\u5bfc\u5165\u6587\u4ef6...");
+                menuItemImportFile.addActionListener(e -> chooseSingleFile(e));
+                menuFile.add(menuItemImportFile);
+
+                //---- menuItemBatchImportFiles ----
+                menuItemBatchImportFiles.setText("\u6279\u91cf\u5bfc\u5165\u6587\u4ef6...");
+                menuItemBatchImportFiles.addActionListener(e -> chooseBatchFiles(e));
+                menuFile.add(menuItemBatchImportFiles);
             }
             menuBar0.add(menuFile);
 
@@ -162,8 +250,13 @@ public class RootFrame extends JFrame {
                 menuAbout.add(menuItemHelp);
                 menuAbout.addSeparator();
 
+                //---- menuItemUpdateLog ----
+                menuItemUpdateLog.setText("\u66f4\u65b0\u65e5\u5fd7");
+                menuAbout.add(menuItemUpdateLog);
+                menuAbout.addSeparator();
+
                 //---- menuItemInfo ----
-                menuItemInfo.setText("\u8f6f\u4ef6\u4fe1\u606f");
+                menuItemInfo.setText("\u7b80\u4ecb");
                 menuItemInfo.addActionListener(e -> showAppProjectDialog(e));
                 menuAbout.add(menuItemInfo);
             }
@@ -178,10 +271,12 @@ public class RootFrame extends JFrame {
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
     private JMenuBar menuBar0;
     private JMenu menuFile;
-    private JMenuItem menuItemChooseFile;
+    private JMenuItem menuItemImportFile;
+    private JMenuItem menuItemBatchImportFiles;
     private JMenu menuAbout;
     private JMenuItem menuItemPref;
     private JMenuItem menuItemHelp;
+    private JMenuItem menuItemUpdateLog;
     private JMenuItem menuItemInfo;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }

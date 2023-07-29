@@ -7,24 +7,45 @@ import per.chaos.app.upgrade.executor.version_upgrade.RVer102;
 
 @Slf4j
 public class AppUpgrade {
+    /**
+     * 应用升级
+     */
     public static void upgrade() {
         final AppDbBaseVerPreference appDbBaseVerPreference =
                 AppContext.instance().getUserPreferenceCtx().getAppDbBaseVerPreference();
-        String currentAppVer = AppContext.instance().getProjectContext().getProject().getVersion();
-        String baseUpgradeVer = appDbBaseVerPreference.get();
+        String currentAppVersion = AppContext.instance().getProjectContext().getProject().getVersion();
+        String baseUpgradeVersion = appDbBaseVerPreference.get();
 
-        if (currentAppVer.equals(baseUpgradeVer)) {
+        if (currentAppVersion.equals(baseUpgradeVersion)) {
             return;
         }
 
-        switch (baseUpgradeVer) {
-            case "1.0.0":
-                RVer102.perform();
+        switch (baseUpgradeVersion) {
+            case RVer102.fromVersion:
+                doUpgrade(RVer102::perform, RVer102.toVersion);
             default:
-                log.info("No upgrades for upgrading.");
+                log.info("End for upgrading.");
         }
 
-        appDbBaseVerPreference.update(currentAppVer);
+
+    }
+
+    /**
+     * 执行升级
+     *
+     * @param doUpgrading           升级操作回调函数
+     * @param newBaseUpgradeVersion 升级后的版本
+     */
+    private static void doUpgrade(DoUpgrade doUpgrading, String newBaseUpgradeVersion) {
+        final AppDbBaseVerPreference appDbBaseVerPreference =
+                AppContext.instance().getUserPreferenceCtx().getAppDbBaseVerPreference();
+        doUpgrading.upgrade();
+        appDbBaseVerPreference.update(newBaseUpgradeVersion);
+    }
+
+    @FunctionalInterface
+    private interface DoUpgrade {
+        void upgrade();
     }
 
 }

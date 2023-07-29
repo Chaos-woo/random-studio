@@ -4,13 +4,17 @@
 
 package per.chaos.biz.gui.index.panels;
 
-import java.awt.event.*;
+import com.alibaba.fastjson2.JSON;
 import com.google.common.eventbus.Subscribe;
+import lombok.extern.slf4j.Slf4j;
 import net.miginfocom.swing.MigLayout;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import per.chaos.app.context.AppContext;
 import per.chaos.app.context.BeanManager;
 import per.chaos.biz.RootFrame;
 import per.chaos.biz.services.FileReferService;
+import per.chaos.infrastructure.runtime.models.GenericJListTransferHandler;
+import per.chaos.infrastructure.runtime.models.events.DnDSystemFilesEvent;
 import per.chaos.infrastructure.runtime.models.events.RootWindowResizeEvent;
 import per.chaos.infrastructure.runtime.models.files.entry.RawFileRefer;
 import per.chaos.infrastructure.runtime.models.files.enums.FileListTypeEnum;
@@ -21,32 +25,73 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
+import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author 78580
  */
 @SuppressWarnings("all")
+@Slf4j
 public class IndexPanel extends JPanel {
+    /**
+     * JList列表数据传输处理器
+     */
+    private GenericJListTransferHandler<RawFileRefer, RawFileRefer> genericJListTransferHandler;
+
+    /**
+     * 列表类型映射
+     */
+    private Map<JList, FileListTypeEnum> jListFileTypeMapping = new HashMap<>(2);
 
     public IndexPanel(RootFrame rootFrame) {
         initComponents();
+
+        jListFileTypeMapping.put(latestFiles, FileListTypeEnum.LATEST);
+        jListFileTypeMapping.put(fastQueryFiles, FileListTypeEnum.FAST_QUERY);
+
+        genericJListTransferHandler = new GenericJListTransferHandler<>(
+                serializable -> JSON.toJSONString(serializable),
+                serializable -> JSON.parseObject(serializable, RawFileRefer.class),
+                (sourceJList, targetJList, transferableData) -> {
+                    // 处理传输的数据
+                    final List<RawFileRefer> rawFileRefers = transferableData;
+                    final FileReferService fileReferService = BeanManager.instance().getReference(FileReferService.class);
+                    try {
+                        final List<String> fileAbsolutePaths = rawFileRefers.stream()
+                                .map(fileRefer -> fileRefer.getFileRefer().getAbsolutePath())
+                                .collect(Collectors.toList());
+                        FileListTypeEnum sourceListTypeEnum = jListFileTypeMapping.get(sourceJList);
+                        FileListTypeEnum targetListTypeEnum = jListFileTypeMapping.get(targetJList);
+                        fileReferService.batchTransferRawFileRefer(fileAbsolutePaths, sourceListTypeEnum, targetListTypeEnum);
+                    } catch (Exception e) {
+                        log.info("{}", ExceptionUtils.getStackTrace(e));
+                    }
+                },
+                (sourceJList, targetJList, action) -> {
+                    // 数据传输完成
+                    repaintNewFileModels();
+                });
+
         // 首次调整UI宽高大小
         updateScrolPaneDimension(rootFrame.getWidth(), rootFrame.getHeight());
 
         latestFiles.setModel(listFilesModels(FileListTypeEnum.LATEST));
         fastQueryFiles.setModel(listFilesModels(FileListTypeEnum.FAST_QUERY));
 
+        latestFiles.setTransferHandler(genericJListTransferHandler);
+        fastQueryFiles.setTransferHandler(genericJListTransferHandler);
+
         // 监听窗口宽高调整变化事件
         EventBus.register(this);
     }
 
     /**
-     * 事件监听函数
-     * @param event 事件类型
+     * 监听窗口大小变化事件
      */
     @Subscribe
     public void onResized(RootWindowResizeEvent event) {
@@ -54,15 +99,41 @@ public class IndexPanel extends JPanel {
     }
 
     /**
+     * 监听系统文件导入事件
+     */
+    @Subscribe
+    public void onDnDSystemFiles(DnDSystemFilesEvent event) {
+        final List<String> absolutePaths = event.getFiles().stream()
+                .map(File::getAbsolutePath)
+                .collect(Collectors.toList());
+
+        final FileReferService fileReferService = BeanManager.instance().getReference(FileReferService.class);
+        fileReferService.batchImportFileRefer(absolutePaths);
+        repaintNewFileModels();
+    }
+
+    public JPopupMenu getPopupMenuLatestFile() {
+        return popupMenuLatestFile;
+    }
+
+    public JPopupMenu getPopupMenuFastQueryFile() {
+        return popupMenuFastQueryFile;
+    }
+
+    /**
      * 更新滚动面板大小
-     * @param windowWidth 窗口宽度
+     *
+     * @param windowWidth  窗口宽度
      * @param windowHeight 窗口高度
      */
     private void updateScrolPaneDimension(int windowWidth, int windowHeight) {
         final double widthScale = 0.48;
-        final double heightScale = 0.9;
+        final double heightScale = 0.88;
         final int scrollPaneWidth = (int) (windowWidth * widthScale);
         final int scrollPaneHeight = (int) (windowHeight * heightScale);
+
+        scrollPaneLatestFiles.setSize(new Dimension(scrollPaneWidth, scrollPaneHeight));
+        scrollPaneFastQueryFiles.setSize(new Dimension(scrollPaneWidth, scrollPaneHeight));
 
         scrollPaneLatestFiles.setMinimumSize(new Dimension(scrollPaneWidth, scrollPaneHeight));
         scrollPaneLatestFiles.setMaximumSize(new Dimension(scrollPaneWidth, scrollPaneHeight));
@@ -129,6 +200,10 @@ public class IndexPanel extends JPanel {
     private void showFileListPopupMenu(JList invoker, MouseEvent e, FileListTypeEnum listTypeEnum) {
         if (e.isPopupTrigger()) {
             int clickedListIndex = invoker.locationToIndex(e.getPoint());
+            if (-1 == clickedListIndex) {
+                return;
+            }
+
             invoker.setSelectedIndex(clickedListIndex);
 
             if (FileListTypeEnum.LATEST == listTypeEnum) {
@@ -228,6 +303,8 @@ public class IndexPanel extends JPanel {
             "[fill]",
             // rows
             "[]" +
+            "[]" +
+            "[]" +
             "[]"));
 
         //======== scrollPaneLatestFiles ========
@@ -237,9 +314,10 @@ public class IndexPanel extends JPanel {
             scrollPaneLatestFiles.setBackground(Color.white);
 
             //---- latestFiles ----
-            latestFiles.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             latestFiles.setVisibleRowCount(20);
             latestFiles.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 16));
+            latestFiles.setDragEnabled(true);
+            latestFiles.setDropMode(DropMode.ON);
             latestFiles.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseReleased(MouseEvent e) {
@@ -248,7 +326,7 @@ public class IndexPanel extends JPanel {
             });
             scrollPaneLatestFiles.setViewportView(latestFiles);
         }
-        add(scrollPaneLatestFiles, "cell 0 0 2 1");
+        add(scrollPaneLatestFiles, "cell 0 0 2 4");
 
         //======== scrollPaneFastQueryFiles ========
         {
@@ -258,6 +336,8 @@ public class IndexPanel extends JPanel {
             //---- fastQueryFiles ----
             fastQueryFiles.setVisibleRowCount(20);
             fastQueryFiles.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 16));
+            fastQueryFiles.setDragEnabled(true);
+            fastQueryFiles.setDropMode(DropMode.ON);
             fastQueryFiles.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseReleased(MouseEvent e) {
@@ -266,13 +346,13 @@ public class IndexPanel extends JPanel {
             });
             scrollPaneFastQueryFiles.setViewportView(fastQueryFiles);
         }
-        add(scrollPaneFastQueryFiles, "cell 0 0 2 1");
+        add(scrollPaneFastQueryFiles, "cell 0 0 2 4");
 
         //======== popupMenuLatestFile ========
         {
 
             //---- latestPopupMenuItemOpen ----
-            latestPopupMenuItemOpen.setText("\u4ee5\u666e\u901a\u968f\u673a\u6a21\u5f0f\u6253\u5f00");
+            latestPopupMenuItemOpen.setText("\u4ee5\u6eda\u52a8\u968f\u673a\u6a21\u5f0f\u6253\u5f00");
             latestPopupMenuItemOpen.addActionListener(e -> latestFilesPopupMenuItemOpen(e));
             popupMenuLatestFile.add(latestPopupMenuItemOpen);
             popupMenuLatestFile.addSeparator();
@@ -293,7 +373,7 @@ public class IndexPanel extends JPanel {
         {
 
             //---- fastUsedPopupMenuItemOpen ----
-            fastUsedPopupMenuItemOpen.setText("\u4ee5\u666e\u901a\u968f\u673a\u6a21\u5f0f\u6253\u5f00");
+            fastUsedPopupMenuItemOpen.setText("\u4ee5\u6eda\u52a8\u968f\u673a\u6a21\u5f0f\u6253\u5f00");
             fastUsedPopupMenuItemOpen.addActionListener(e -> fastQueryFilesPopupMenuItemOpen(e));
             popupMenuFastQueryFile.add(fastUsedPopupMenuItemOpen);
             popupMenuFastQueryFile.addSeparator();

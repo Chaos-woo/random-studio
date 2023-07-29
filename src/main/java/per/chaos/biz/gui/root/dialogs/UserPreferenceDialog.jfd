@@ -18,13 +18,13 @@ new FormModel {
 					name: "contentPanel"
 					"border": new javax.swing.border.TitledBorder( new javax.swing.border.LineBorder( sfield java.awt.Color lightGray, 1, false ), "用户配置", 4, 0, null, sfield java.awt.Color lightGray )
 					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "labelNormalRandomModeInterval"
-						"text": "普通随机模式刷新间隔："
+						name: "labeltfScrollModeTransInterval"
+						"text": "滚动随机模式刷新间隔："
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 0 0"
 					} )
 					add( new FormComponent( "javax.swing.JFormattedTextField" ) {
-						name: "textFieldNormalRandomModeInterval"
+						name: "textFieldScrollModeTransIntervalMs"
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 1 0"
 					} )
@@ -65,7 +65,7 @@ new FormModel {
 						"value": "cell 0 2"
 					} )
 					add( new FormComponent( "javax.swing.JFormattedTextField" ) {
-						name: "textFieldFonteSize"
+						name: "textFieldScrollModeFontSize"
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 1 2"
 					} )
