@@ -5,35 +5,48 @@
 package per.chaos.biz;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.io.FileUtil;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import net.miginfocom.swing.MigLayout;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import per.chaos.app.context.BeanManager;
 import per.chaos.biz.gui.index.panels.IndexPanel;
 import per.chaos.biz.gui.root.dialogs.AppProjectDialog;
 import per.chaos.biz.gui.root.dialogs.UserPreferenceDialog;
 import per.chaos.biz.gui.scroll_random.panels.RandomCardPanel;
 import per.chaos.biz.services.FileReferService;
+import per.chaos.infrastructure.runtime.models.events.DnDSystemFilesEvent;
 import per.chaos.infrastructure.runtime.models.files.ctxs.FileCardCtx;
 import per.chaos.infrastructure.runtime.models.files.enums.FileListTypeEnum;
+import per.chaos.infrastructure.runtime.models.files.enums.SystemFileTypeEnum;
+import per.chaos.infrastructure.utils.EventBus;
 import per.chaos.infrastructure.utils.formmater.AppFormatter;
 import per.chaos.infrastructure.utils.gui.GuiUtils;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
  * @author 78580
  */
-public class RootFrame extends JFrame {
+@Slf4j
+public class RootFrame extends JFrame implements DropTargetListener {
     // 初始面板
     @Getter
     private final IndexPanel indexPanel;
+
+    private DropTarget dropTarget;
 
     public RootFrame() {
         initComponents();
@@ -45,6 +58,9 @@ public class RootFrame extends JFrame {
 
         indexPanel = new IndexPanel(this);
         getContentPane().add(indexPanel);
+
+        dropTarget = new DropTarget(this, this);
+//        setTransferHandler();
     }
 
     /**
@@ -129,6 +145,48 @@ public class RootFrame extends JFrame {
     private void showUserPreferenceDialog(ActionEvent e) {
         UserPreferenceDialog dialog = new UserPreferenceDialog(this);
         dialog.setVisible(true);
+    }
+
+    @Override
+    public void dragEnter(DropTargetDragEvent dtde) {
+    }
+
+    @Override
+    public void dragOver(DropTargetDragEvent dtde) {
+    }
+
+    @Override
+    public void dropActionChanged(DropTargetDragEvent dtde) {
+    }
+
+    @Override
+    public void dragExit(DropTargetEvent dte) {
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void drop(DropTargetDropEvent dtde) {
+        try {
+            Transferable transferable = dtde.getTransferable();
+            if (transferable.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+                dtde.acceptDrop(DnDConstants.ACTION_MOVE);
+                List<File> files = (List<File>) transferable.getTransferData(DataFlavor.javaFileListFlavor);
+                final Set<String> supportFileSuffix = SystemFileTypeEnum.getSupportFileSuffix();
+                files = files.stream()
+                        .filter(file -> supportFileSuffix.contains(FileUtil.getSuffix(file)))
+                        .collect(Collectors.toList());
+                if (CollectionUtil.isNotEmpty(files)) {
+                    EventBus.publish(new DnDSystemFilesEvent(files));
+                }
+            } else {
+                dtde.rejectDrop();
+            }
+        } catch (Exception e) {
+            log.info("{}", ExceptionUtils.getStackTrace(e));
+            dtde.rejectDrop();
+        } finally {
+            dtde.dropComplete(true);
+        }
     }
 
     private void initComponents() {

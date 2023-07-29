@@ -12,7 +12,7 @@ import per.chaos.infrastructure.runtime.models.files.ctxs.MemoryFileReferCtx;
 import per.chaos.infrastructure.runtime.models.files.entry.FilePathHash;
 import per.chaos.infrastructure.runtime.models.files.entry.RawFileRefer;
 import per.chaos.infrastructure.runtime.models.files.enums.FileListTypeEnum;
-import per.chaos.infrastructure.runtime.models.files.enums.SysFileTypeEnum;
+import per.chaos.infrastructure.runtime.models.files.enums.SystemFileTypeEnum;
 import per.chaos.infrastructure.storage.models.sqlite.FileReferEntity;
 
 import java.util.*;
@@ -66,7 +66,9 @@ public class FileReferService {
      * @param typeEnum 文件列表类型
      */
     public List<RawFileRefer> listRawFileReferByType(FileListTypeEnum typeEnum) {
-        return mFileReferCtx.listRawFileReferByType(typeEnum);
+        return mFileReferCtx.listRawFileReferByType(typeEnum).stream()
+                .sorted(Comparator.comparing(rawFileRefer -> rawFileRefer.getFileRefer().getId()))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -146,7 +148,7 @@ public class FileReferService {
                     entity.setPathHash(filePathHash.getPathHash());
                     entity.setFileName(FileUtil.getName(path));
                     entity.setFileListTypeEnum(FileListTypeEnum.LATEST);
-                    entity.setSysFileTypeEnum(SysFileTypeEnum.TXT);
+                    entity.setSystemFileTypeEnum(SystemFileTypeEnum.TXT);
                     entity.setCreateTime(now);
                     entity.setUpdateTime(now);
                     return entity;

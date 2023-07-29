@@ -14,6 +14,7 @@ import per.chaos.app.context.BeanManager;
 import per.chaos.biz.RootFrame;
 import per.chaos.biz.services.FileReferService;
 import per.chaos.infrastructure.runtime.models.GenericJListTransferHandler;
+import per.chaos.infrastructure.runtime.models.events.DnDSystemFilesEvent;
 import per.chaos.infrastructure.runtime.models.events.RootWindowResizeEvent;
 import per.chaos.infrastructure.runtime.models.files.entry.RawFileRefer;
 import per.chaos.infrastructure.runtime.models.files.enums.FileListTypeEnum;
@@ -25,6 +26,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,13 +91,25 @@ public class IndexPanel extends JPanel {
     }
 
     /**
-     * 事件监听函数
-     *
-     * @param event 事件类型
+     * 监听窗口大小变化事件
      */
     @Subscribe
     public void onResized(RootWindowResizeEvent event) {
         updateScrolPaneDimension(event.getWidth(), event.getHeight());
+    }
+
+    /**
+     * 监听系统文件导入事件
+     */
+    @Subscribe
+    public void onDnDSystemFiles(DnDSystemFilesEvent event) {
+        final List<String> absolutePaths = event.getFiles().stream()
+                .map(File::getAbsolutePath)
+                .collect(Collectors.toList());
+
+        final FileReferService fileReferService = BeanManager.instance().getReference(FileReferService.class);
+        fileReferService.batchImportFileRefer(absolutePaths);
+        repaintNewFileModels();
     }
 
     public JPopupMenu getPopupMenuLatestFile() {
@@ -186,6 +200,10 @@ public class IndexPanel extends JPanel {
     private void showFileListPopupMenu(JList invoker, MouseEvent e, FileListTypeEnum listTypeEnum) {
         if (e.isPopupTrigger()) {
             int clickedListIndex = invoker.locationToIndex(e.getPoint());
+            if (-1 == clickedListIndex) {
+                return;
+            }
+
             invoker.setSelectedIndex(clickedListIndex);
 
             if (FileListTypeEnum.LATEST == listTypeEnum) {
@@ -308,7 +326,7 @@ public class IndexPanel extends JPanel {
             });
             scrollPaneLatestFiles.setViewportView(latestFiles);
         }
-        add(scrollPaneLatestFiles, "cell 0 2 2 1");
+        add(scrollPaneLatestFiles, "cell 0 0 2 4");
 
         //======== scrollPaneFastQueryFiles ========
         {
@@ -328,7 +346,7 @@ public class IndexPanel extends JPanel {
             });
             scrollPaneFastQueryFiles.setViewportView(fastQueryFiles);
         }
-        add(scrollPaneFastQueryFiles, "cell 0 2 2 1");
+        add(scrollPaneFastQueryFiles, "cell 0 0 2 4");
 
         //======== popupMenuLatestFile ========
         {
