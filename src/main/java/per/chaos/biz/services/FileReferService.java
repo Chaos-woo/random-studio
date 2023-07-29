@@ -15,10 +15,7 @@ import per.chaos.infrastructure.runtime.models.files.enums.FileListTypeEnum;
 import per.chaos.infrastructure.runtime.models.files.enums.SysFileTypeEnum;
 import per.chaos.infrastructure.storage.models.sqlite.FileReferEntity;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -107,11 +104,26 @@ public class FileReferService {
     public void transferRawFileRefer(String absolutePath,
                                      FileListTypeEnum sourceTypeEnum, FileListTypeEnum targetTypeEnum) {
 
-        RawFileRefer rawFileRefer = mFileReferCtx.transferRawFileRefer(absolutePath, sourceTypeEnum, targetTypeEnum);
+        this.batchTransferRawFileRefer(Collections.singletonList(absolutePath), sourceTypeEnum, targetTypeEnum);
+    }
 
+    /**
+     * 批量转移文件引用
+     *
+     * @param absolutePaths  源文件路径列表
+     * @param sourceTypeEnum 源文件列表类型
+     * @param targetTypeEnum 目标文件列表类型
+     */
+    public void batchTransferRawFileRefer(List<String> absolutePaths,
+                                          FileListTypeEnum sourceTypeEnum, FileListTypeEnum targetTypeEnum) {
+
+        final List<RawFileRefer> rawFileRefers = mFileReferCtx.transferRawFileRefer(absolutePaths, sourceTypeEnum, targetTypeEnum);
+        final List<String> fileReferHashPaths = rawFileRefers.stream()
+                .map(rawFileRefer -> rawFileRefer.getFileRefer().getPathHash())
+                .collect(Collectors.toList());
         LambdaUpdateWrapper<FileReferEntity> lambdaWrapper = new UpdateWrapper<FileReferEntity>().lambda();
         lambdaWrapper.set(FileReferEntity::getFileListTypeEnum, targetTypeEnum.getType())
-                .eq(FileReferEntity::getPathHash, rawFileRefer.getFileRefer().getPathHash());
+                .in(FileReferEntity::getPathHash, fileReferHashPaths);
         BeanManager.instance().executeMapper(FileReferMapper.class,
                 (mapper) -> mapper.update(null, lambdaWrapper)
         );

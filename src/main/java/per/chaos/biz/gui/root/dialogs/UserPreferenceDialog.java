@@ -4,6 +4,8 @@
 
 package per.chaos.biz.gui.root.dialogs;
 
+import com.alibaba.fastjson2.JSON;
+import lombok.extern.slf4j.Slf4j;
 import net.miginfocom.swing.MigLayout;
 import per.chaos.app.context.AppContext;
 import per.chaos.app.context.BeanManager;
@@ -26,7 +28,17 @@ import java.util.Objects;
 /**
  * @author 78580
  */
+@Slf4j
 public class UserPreferenceDialog extends JDialog {
+    public static final long SCROLL_MODE_INTERVAL_MS_NORMAL = 300L;
+    public static final long SCROLL_MODE_INTERVAL_MS_FAST = 100L;
+    public static final long SCROLL_MODE_INTERVAL_MS_FASTER = 50L;
+
+    public static final long SCROLL_MODE_FONT_SIZE_NORMAL = 100L;
+    public static final long SCROLL_MODE_FONT_SIZE_MORE = 140L;
+    public static final long SCROLL_MODE_FONT_SIZE_BIG = 200L;
+    public static final long SCROLL_MODE_FONT_SIZE_BIGGER = 300L;
+
     public UserPreferenceDialog(Window owner) {
         super(owner);
         initComponents();
@@ -34,18 +46,45 @@ public class UserPreferenceDialog extends JDialog {
         initTextFiledFormatter();
         // 初始化输入框内容
         initTextFiledContext();
+        // 初始化按钮选项组的默认选择状态
+        initButtonGroup();
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    }
+
+    /**
+     * 初始化按钮选项组的默认选择状态
+     */
+    private void initButtonGroup() {
+        Long intervalMs = (Long) textFieldScrollModeTransIntervalMs.getValue();
+        if (SCROLL_MODE_INTERVAL_MS_NORMAL == intervalMs) {
+            radioButtonNormal.setSelected(true);
+        } else if (SCROLL_MODE_INTERVAL_MS_FAST == intervalMs) {
+            radioButtonFast.setSelected(true);
+        } else if (SCROLL_MODE_INTERVAL_MS_FASTER == intervalMs) {
+            radioButtonFaster.setSelected(true);
+        }
+
+        int fontSize = Integer.parseInt(String.valueOf(textFieldScrollModeFontSize.getValue()));
+        if (SCROLL_MODE_FONT_SIZE_NORMAL == fontSize) {
+            radioButtonNormalFontSize.setSelected(true);
+        } else if (SCROLL_MODE_FONT_SIZE_MORE == fontSize) {
+            radioButtonMoreFontSize.setSelected(true);
+        } else if (SCROLL_MODE_FONT_SIZE_BIG == fontSize) {
+            radioButtonBigFontSize.setSelected(true);
+        } else if (SCROLL_MODE_FONT_SIZE_BIGGER == fontSize) {
+            radioButtonBiggerFontSize.setSelected(true);
+        }
     }
 
     /**
      * 初始化输入框格式化器
      */
     private void initTextFiledFormatter() {
-        tfScrollModeTransIntervalMs.setFormatterFactory(
+        textFieldScrollModeTransIntervalMs.setFormatterFactory(
                 new DefaultFormatterFactory(new NumberFormatter(NumberFormat.getIntegerInstance()))
         );
-        tfScrollModeFontSize.setFormatterFactory(
+        textFieldScrollModeFontSize.setFormatterFactory(
                 new DefaultFormatterFactory(new NumberFormatter(NumberFormat.getIntegerInstance()))
         );
     }
@@ -55,29 +94,28 @@ public class UserPreferenceDialog extends JDialog {
      */
     @SuppressWarnings("all")
     private void initTextFiledContext() {
-        final UserPreferenceCtx userPrefCtx = AppContext.instance().getUserPreferenceCtx();
+        final UserPreferenceCtx userPreferenceCtx = AppContext.instance().getUserPreferenceCtx();
 
-        tfScrollModeTransIntervalMs.setValue(userPrefCtx.getPreferenceCache().getScrollModeTransIntervalMs());
-        tfScrollModeFontSize.setValue(userPrefCtx.getPreferenceCache().getScrollModeFontSize());
+        textFieldScrollModeTransIntervalMs.setValue(userPreferenceCtx.getPreferenceCache().getScrollModeTransIntervalMs());
+        textFieldScrollModeFontSize.setValue(userPreferenceCtx.getPreferenceCache().getScrollModeFontSize());
 
         comboBoxTheme.addItem(ThemeEnum.LIGHT.getTheme());
         comboBoxTheme.addItem(ThemeEnum.DARCULA.getTheme());
-        comboBoxTheme.setSelectedItem(userPrefCtx.getPreferenceCache().getTheme());
+        comboBoxTheme.setSelectedItem(userPreferenceCtx.getPreferenceCache().getTheme().getTheme());
     }
 
     private void ok(ActionEvent e) {
-        final ScrollModeTransIntervalPreference scrollModeTransIntervalPref =
-                BeanManager.instance().getReference(ScrollModeTransIntervalPreference.class);
-        final ScrollModeFontSizePreference scrollModeFontSizePref =
-                BeanManager.instance().getReference(ScrollModeFontSizePreference.class);
-        final AppThemePreference appThemePref =
-                BeanManager.instance().getReference(AppThemePreference.class);
+        final ScrollModeTransIntervalPreference scrollModeTransIntervalPreference = BeanManager.instance().getReference(ScrollModeTransIntervalPreference.class);
+        final ScrollModeFontSizePreference scrollModeFontSizePreference = BeanManager.instance().getReference(ScrollModeFontSizePreference.class);
+        final AppThemePreference appThemePreference = BeanManager.instance().getReference(AppThemePreference.class);
 
-        scrollModeTransIntervalPref.update(Objects.isNull(tfScrollModeTransIntervalMs.getValue())
-                ? null : (Long) tfScrollModeTransIntervalMs.getValue());
-        scrollModeFontSizePref.update(Objects.isNull(tfScrollModeFontSize.getValue())
-                ? null : Integer.parseInt(String.valueOf(tfScrollModeFontSize.getValue())));
-        appThemePref.update(ThemeEnum.getBy((String) comboBoxTheme.getSelectedItem()));
+        scrollModeTransIntervalPreference.update(Objects.isNull(textFieldScrollModeTransIntervalMs.getValue())
+                ? null : (Long) textFieldScrollModeTransIntervalMs.getValue());
+        scrollModeFontSizePreference.update(Objects.isNull(textFieldScrollModeFontSize.getValue())
+                ? null : Integer.parseInt(String.valueOf(textFieldScrollModeFontSize.getValue())));
+        appThemePreference.update(ThemeEnum.getBy((String) comboBoxTheme.getSelectedItem()));
+
+        AppContext.instance().getUserPreferenceCtx().updateCache();
 
         this.dispose();
     }
@@ -87,45 +125,45 @@ public class UserPreferenceDialog extends JDialog {
     }
 
     private void fasterRadioButton(ActionEvent e) {
-        tfScrollModeTransIntervalMs.setValue(50L);
+        textFieldScrollModeTransIntervalMs.setValue(SCROLL_MODE_INTERVAL_MS_FASTER);
     }
 
     private void fastRadioButton(ActionEvent e) {
-        tfScrollModeTransIntervalMs.setValue(100L);
+        textFieldScrollModeTransIntervalMs.setValue(SCROLL_MODE_INTERVAL_MS_FAST);
     }
 
     private void normalRadioButton(ActionEvent e) {
-        tfScrollModeTransIntervalMs.setValue(300L);
+        textFieldScrollModeTransIntervalMs.setValue(SCROLL_MODE_INTERVAL_MS_NORMAL);
     }
 
     private void normalFontSize(ActionEvent e) {
-        tfScrollModeFontSize.setValue(100);
+        textFieldScrollModeFontSize.setValue(SCROLL_MODE_FONT_SIZE_NORMAL);
     }
 
     private void moreFontSize(ActionEvent e) {
-        tfScrollModeFontSize.setValue(140);
+        textFieldScrollModeFontSize.setValue(SCROLL_MODE_FONT_SIZE_MORE);
     }
 
     private void bigFontSize(ActionEvent e) {
-        tfScrollModeFontSize.setValue(200);
+        textFieldScrollModeFontSize.setValue(SCROLL_MODE_FONT_SIZE_BIG);
     }
 
     private void biggerFontSize(ActionEvent e) {
-        tfScrollModeFontSize.setValue(300);
+        textFieldScrollModeFontSize.setValue(SCROLL_MODE_FONT_SIZE_BIGGER);
     }
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         dialogPane = new JPanel();
         contentPanel = new JPanel();
-        labelNormalRandomModeInterval = new JLabel();
-        tfScrollModeTransIntervalMs = new JFormattedTextField();
+        labeltfScrollModeTransInterval = new JLabel();
+        textFieldScrollModeTransIntervalMs = new JFormattedTextField();
         label1 = new JLabel();
         radioButtonFaster = new JRadioButton();
         radioButtonFast = new JRadioButton();
         radioButtonNormal = new JRadioButton();
         labelDisplayFontSize = new JLabel();
-        tfScrollModeFontSize = new JFormattedTextField();
+        textFieldScrollModeFontSize = new JFormattedTextField();
         radioButtonNormalFontSize = new JRadioButton();
         radioButtonMoreFontSize = new JRadioButton();
         radioButtonBigFontSize = new JRadioButton();
@@ -164,10 +202,10 @@ public class UserPreferenceDialog extends JDialog {
                     "[]" +
                     "[]"));
 
-                //---- labelNormalRandomModeInterval ----
-                labelNormalRandomModeInterval.setText("\u666e\u901a\u968f\u673a\u6a21\u5f0f\u5237\u65b0\u95f4\u9694\uff1a");
-                contentPanel.add(labelNormalRandomModeInterval, "cell 0 0");
-                contentPanel.add(tfScrollModeTransIntervalMs, "cell 1 0");
+                //---- labeltfScrollModeTransInterval ----
+                labeltfScrollModeTransInterval.setText("\u6eda\u52a8\u968f\u673a\u6a21\u5f0f\u5237\u65b0\u95f4\u9694\uff1a");
+                contentPanel.add(labeltfScrollModeTransInterval, "cell 0 0");
+                contentPanel.add(textFieldScrollModeTransIntervalMs, "cell 1 0");
 
                 //---- label1 ----
                 label1.setText("\u6beb\u79d2");
@@ -191,7 +229,7 @@ public class UserPreferenceDialog extends JDialog {
                 //---- labelDisplayFontSize ----
                 labelDisplayFontSize.setText("\u968f\u673a\u6587\u5b57\u5b57\u53f7\uff1a");
                 contentPanel.add(labelDisplayFontSize, "cell 0 2");
-                contentPanel.add(tfScrollModeFontSize, "cell 1 2");
+                contentPanel.add(textFieldScrollModeFontSize, "cell 1 2");
 
                 //---- radioButtonNormalFontSize ----
                 radioButtonNormalFontSize.setText("\u666e\u901a");
@@ -264,14 +302,14 @@ public class UserPreferenceDialog extends JDialog {
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
     private JPanel dialogPane;
     private JPanel contentPanel;
-    private JLabel labelNormalRandomModeInterval;
-    private JFormattedTextField tfScrollModeTransIntervalMs;
+    private JLabel labeltfScrollModeTransInterval;
+    private JFormattedTextField textFieldScrollModeTransIntervalMs;
     private JLabel label1;
     private JRadioButton radioButtonFaster;
     private JRadioButton radioButtonFast;
     private JRadioButton radioButtonNormal;
     private JLabel labelDisplayFontSize;
-    private JFormattedTextField tfScrollModeFontSize;
+    private JFormattedTextField textFieldScrollModeFontSize;
     private JRadioButton radioButtonNormalFontSize;
     private JRadioButton radioButtonMoreFontSize;
     private JRadioButton radioButtonBigFontSize;

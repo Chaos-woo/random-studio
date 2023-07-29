@@ -146,6 +146,7 @@ public class RootFrame extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(900, 520));
         setBackground(Color.white);
+        setPreferredSize(new Dimension(900, 520));
         var contentPane = getContentPane();
         contentPane.setLayout(new MigLayout(
             "fill,insets 0,hidemode 3,align center center",

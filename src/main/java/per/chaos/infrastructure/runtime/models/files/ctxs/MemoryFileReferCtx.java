@@ -179,21 +179,25 @@ public class MemoryFileReferCtx {
     /**
      * 将文件引用转移至其他文件列表
      *
-     * @param absolutePath   源文件路径
+     * @param absolutePaths   源文件路径列表
      * @param sourceTypeEnum 源文件列表类型
      * @param targetTypeEnum 目标文件列表类型
      */
-    public RawFileRefer transferRawFileRefer(String absolutePath,
+    public List<RawFileRefer> transferRawFileRefer(List<String> absolutePaths,
                                              FileListTypeEnum sourceTypeEnum, FileListTypeEnum targetTypeEnum) {
 
-        FilePathHash filePathHash = new FilePathHash(absolutePath);
-        final Map<FilePathHash, RawFileRefer> sourceReferMapping = fileReferMapping.get(sourceTypeEnum);
-        final Map<FilePathHash, RawFileRefer> targetReferMapping = fileReferMapping.get(targetTypeEnum);
+        List<RawFileRefer> transferableRawFileRefers = new ArrayList<>();
+        for (String absolutePath : absolutePaths) {
+            FilePathHash filePathHash = new FilePathHash(absolutePath);
+            final Map<FilePathHash, RawFileRefer> sourceReferMapping = fileReferMapping.get(sourceTypeEnum);
+            final Map<FilePathHash, RawFileRefer> targetReferMapping = fileReferMapping.get(targetTypeEnum);
 
-        RawFileRefer fileRefer = sourceReferMapping.get(filePathHash);
-        targetReferMapping.put(filePathHash, fileRefer);
-        sourceReferMapping.remove(filePathHash);
+            RawFileRefer fileRefer = sourceReferMapping.get(filePathHash);
+            targetReferMapping.put(filePathHash, fileRefer);
+            sourceReferMapping.remove(filePathHash);
+            transferableRawFileRefers.add(fileRefer);
+        }
 
-        return fileRefer;
+        return transferableRawFileRefers;
     }
 }
