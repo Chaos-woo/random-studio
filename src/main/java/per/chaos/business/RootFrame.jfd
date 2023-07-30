@@ -46,21 +46,16 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "menuItemHelp"
 						"text": "帮助"
-					} )
-					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
-						name: "separator1"
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "menuItemUpdateLog"
-						"text": "更新日志"
-					} )
-					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
-						name: "separator3"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "help", true ) )
 					} )
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "menuItemInfo"
 						"text": "简介"
 						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "showAppProjectDialog", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "menuItemUpdateLog"
+						"text": "更新日志"
 					} )
 				} )
 			}

@@ -16,6 +16,7 @@ new FormModel {
 				"minimumSize": new java.awt.Dimension( 27, 41 )
 				"border": new javax.swing.border.TitledBorder( new javax.swing.border.LineBorder( sfield java.awt.Color lightGray, 1, true ), "最近打开的文件...", 4, 0, null, sfield java.awt.Color lightGray )
 				"background": sfield java.awt.Color white
+				"horizontalScrollBarPolicy": 31
 				add( new FormComponent( "javax.swing.JList" ) {
 					name: "latestFiles"
 					"visibleRowCount": 20
@@ -25,7 +26,7 @@ new FormModel {
 					addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseReleased", "latestFilesMouseReleased", true ) )
 				} )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 0 2 4"
+				"value": "span 2 5"
 			} )
 			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 				name: "scrollPaneFastQueryFiles"

@@ -1,0 +1,57 @@
+JFDML JFormDesigner: "8.1.0.0.283" Java: "17.0.7" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) {
+			"hgap": 10
+			"vgap": 5
+		} ) {
+			name: "this"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.swingx.HorizontalLayout ) ) {
+				name: "panel1"
+				"minimumSize": new java.awt.Dimension( 36, 25 )
+				"font": new java.awt.Font( "Source Code Pro", 0, 18 )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "labelFileName"
+					"font": new java.awt.Font( "黑体", 0, 16 )
+					"text": "name"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "North"
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.swingx.HorizontalLayout ) {
+				"gap": 5
+			} ) {
+				name: "panel2"
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "labelFileSuffix"
+					"font": new java.awt.Font( "黑体", 0, 13 )
+					"foreground": sfield java.awt.Color white
+					"text": "suffix"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "labelFileExistTip"
+					"font": new java.awt.Font( "楷体", 0, 13 )
+					"foreground": sfield java.awt.Color white
+					"text": "tip"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "West"
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.swingx.HorizontalLayout ) ) {
+				name: "panel3"
+				"maximumSize": new java.awt.Dimension( 32767, 20 )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "labelFilePath"
+					"text": "path"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Center"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 355, 115 )
+		} )
+	}
+}

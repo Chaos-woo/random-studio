@@ -4,6 +4,7 @@
 
 package per.chaos.business.gui.index.panels;
 
+import cn.hutool.core.io.FileUtil;
 import com.alibaba.fastjson2.JSON;
 import com.google.common.eventbus.Subscribe;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import per.chaos.app.context.AppContext;
 import per.chaos.app.context.BeanManager;
 import per.chaos.business.RootFrame;
+import per.chaos.business.gui.index.renderer.RawFileReferCellPanel;
 import per.chaos.business.services.FileReferService;
 import per.chaos.infrastructure.runtime.models.GenericJListTransferHandler;
 import per.chaos.infrastructure.runtime.models.events.DnDSystemFilesEvent;
@@ -30,6 +32,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -85,6 +88,11 @@ public class IndexPanel extends JPanel {
 
         latestFiles.setTransferHandler(genericJListTransferHandler);
         fastQueryFiles.setTransferHandler(genericJListTransferHandler);
+
+        latestFiles.setCellRenderer(new RawFileReferCellPanel());
+        latestFiles.setFixedCellHeight(50);
+        fastQueryFiles.setCellRenderer(new RawFileReferCellPanel());
+        fastQueryFiles.setFixedCellHeight(50);
 
         // 监听窗口宽高调整变化事件
         EventBus.register(this);
@@ -205,6 +213,11 @@ public class IndexPanel extends JPanel {
             }
 
             invoker.setSelectedIndex(clickedListIndex);
+            final RawFileRefer rawFileRefer = (RawFileRefer) invoker.getSelectedValue();
+            if (Objects.isNull(rawFileRefer.getFileHandler())
+                || !FileUtil.exist(rawFileRefer.getFileRefer().getAbsolutePath())) {
+                return;
+            }
 
             if (FileListTypeEnum.LATEST == listTypeEnum) {
                 popupMenuLatestFile.show(invoker, e.getX(), e.getY());
@@ -312,6 +325,7 @@ public class IndexPanel extends JPanel {
             scrollPaneLatestFiles.setMinimumSize(new Dimension(27, 41));
             scrollPaneLatestFiles.setBorder(new TitledBorder(new LineBorder(Color.lightGray, 1, true), "\u6700\u8fd1\u6253\u5f00\u7684\u6587\u4ef6...", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, null, Color.lightGray));
             scrollPaneLatestFiles.setBackground(Color.white);
+            scrollPaneLatestFiles.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
             //---- latestFiles ----
             latestFiles.setVisibleRowCount(20);
@@ -326,7 +340,7 @@ public class IndexPanel extends JPanel {
             });
             scrollPaneLatestFiles.setViewportView(latestFiles);
         }
-        add(scrollPaneLatestFiles, "cell 0 0 2 4");
+        add(scrollPaneLatestFiles, "span 2 5");
 
         //======== scrollPaneFastQueryFiles ========
         {

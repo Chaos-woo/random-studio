@@ -189,6 +189,10 @@ public class RootFrame extends JFrame implements DropTargetListener {
         }
     }
 
+    private void help(ActionEvent e) {
+
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         menuBar0 = new JMenuBar();
@@ -198,8 +202,8 @@ public class RootFrame extends JFrame implements DropTargetListener {
         menuAbout = new JMenu();
         menuItemPref = new JMenuItem();
         menuItemHelp = new JMenuItem();
-        menuItemUpdateLog = new JMenuItem();
         menuItemInfo = new JMenuItem();
+        menuItemUpdateLog = new JMenuItem();
 
         //======== this ========
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -247,18 +251,17 @@ public class RootFrame extends JFrame implements DropTargetListener {
 
                 //---- menuItemHelp ----
                 menuItemHelp.setText("\u5e2e\u52a9");
+                menuItemHelp.addActionListener(e -> help(e));
                 menuAbout.add(menuItemHelp);
-                menuAbout.addSeparator();
-
-                //---- menuItemUpdateLog ----
-                menuItemUpdateLog.setText("\u66f4\u65b0\u65e5\u5fd7");
-                menuAbout.add(menuItemUpdateLog);
-                menuAbout.addSeparator();
 
                 //---- menuItemInfo ----
                 menuItemInfo.setText("\u7b80\u4ecb");
                 menuItemInfo.addActionListener(e -> showAppProjectDialog(e));
                 menuAbout.add(menuItemInfo);
+
+                //---- menuItemUpdateLog ----
+                menuItemUpdateLog.setText("\u66f4\u65b0\u65e5\u5fd7");
+                menuAbout.add(menuItemUpdateLog);
             }
             menuBar0.add(menuAbout);
         }
@@ -276,7 +279,7 @@ public class RootFrame extends JFrame implements DropTargetListener {
     private JMenu menuAbout;
     private JMenuItem menuItemPref;
     private JMenuItem menuItemHelp;
-    private JMenuItem menuItemUpdateLog;
     private JMenuItem menuItemInfo;
+    private JMenuItem menuItemUpdateLog;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }
