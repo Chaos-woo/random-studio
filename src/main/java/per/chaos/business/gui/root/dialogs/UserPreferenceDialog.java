@@ -10,11 +10,13 @@ import per.chaos.app.context.AppContext;
 import per.chaos.app.context.BeanManager;
 import per.chaos.app.context.system.UserPreferenceCtx;
 import per.chaos.app.models.enums.ThemeEnum;
+import per.chaos.app.prefs.biz_random.ScrollModeFontFamilyPreference;
 import per.chaos.app.prefs.biz_random.ScrollModeFontSizePreference;
 import per.chaos.app.prefs.biz_random.ScrollModeTransIntervalPreference;
 import per.chaos.app.prefs.system.AppThemePreference;
 import per.chaos.infrastructure.runtime.models.events.RefreshPreferenceCacheEvent;
 import per.chaos.infrastructure.utils.EventBus;
+import per.chaos.infrastructure.utils.gui.GuiUtils;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -25,6 +27,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.text.NumberFormat;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author 78580
@@ -39,6 +42,11 @@ public class UserPreferenceDialog extends JDialog {
     public static final long SCROLL_MODE_FONT_SIZE_MORE = 140L;
     public static final long SCROLL_MODE_FONT_SIZE_BIG = 200L;
     public static final long SCROLL_MODE_FONT_SIZE_BIGGER = 300L;
+
+    /**
+     * 临时存储滚动模式字体
+     */
+    private final AtomicReference<String> tempScrollModeFontFamily = new AtomicReference<>("");
 
     public UserPreferenceDialog(Window owner) {
         super(owner);
@@ -108,12 +116,14 @@ public class UserPreferenceDialog extends JDialog {
     private void ok(ActionEvent e) {
         final ScrollModeTransIntervalPreference scrollModeTransIntervalPreference = BeanManager.instance().getReference(ScrollModeTransIntervalPreference.class);
         final ScrollModeFontSizePreference scrollModeFontSizePreference = BeanManager.instance().getReference(ScrollModeFontSizePreference.class);
+        final ScrollModeFontFamilyPreference scrollModeFontFamilyPreference = BeanManager.instance().getReference(ScrollModeFontFamilyPreference.class);
         final AppThemePreference appThemePreference = BeanManager.instance().getReference(AppThemePreference.class);
 
         scrollModeTransIntervalPreference.update(Objects.isNull(textFieldScrollModeTransIntervalMs.getValue())
                 ? null : (Long) textFieldScrollModeTransIntervalMs.getValue());
         scrollModeFontSizePreference.update(Objects.isNull(textFieldScrollModeFontSize.getValue())
                 ? null : Integer.parseInt(String.valueOf(textFieldScrollModeFontSize.getValue())));
+        scrollModeFontFamilyPreference.update(tempScrollModeFontFamily.get());
         appThemePreference.update(ThemeEnum.getBy((String) comboBoxTheme.getSelectedItem()));
 
         EventBus.publish(new RefreshPreferenceCacheEvent());
@@ -153,6 +163,13 @@ public class UserPreferenceDialog extends JDialog {
         textFieldScrollModeFontSize.setValue(SCROLL_MODE_FONT_SIZE_BIGGER);
     }
 
+    private void scrollModeFontFamily(ActionEvent e) {
+        GuiUtils.chooseFont(AppContext.instance().getGuiContext().getRootFrame(),
+                "选择滚动随机模式字体",
+                (font) -> tempScrollModeFontFamily.set(font.getFamily())
+        );
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         dialogPane = new JPanel();
@@ -171,6 +188,9 @@ public class UserPreferenceDialog extends JDialog {
         radioButtonBiggerFontSize = new JRadioButton();
         label3 = new JLabel();
         comboBoxTheme = new JComboBox();
+        label2 = new JLabel();
+        buttonScrollModeFontFamily = new JButton();
+        buttonOtherFontFamily = new JButton();
         buttonBar = new JPanel();
         okButton = new JButton();
         cancelButton = new JButton();
@@ -256,6 +276,19 @@ public class UserPreferenceDialog extends JDialog {
                 label3.setText("\u4e3b\u9898\uff1a");
                 contentPanel.add(label3, "cell 0 4");
                 contentPanel.add(comboBoxTheme, "cell 1 4");
+
+                //---- label2 ----
+                label2.setText("\u5b57\u4f53\u8bbe\u7f6e\uff1a");
+                contentPanel.add(label2, "cell 0 5");
+
+                //---- buttonScrollModeFontFamily ----
+                buttonScrollModeFontFamily.setText("\u6eda\u52a8\u968f\u673a\u6a21\u5f0f");
+                buttonScrollModeFontFamily.addActionListener(e -> scrollModeFontFamily(e));
+                contentPanel.add(buttonScrollModeFontFamily, "cell 1 5");
+
+                //---- buttonOtherFontFamily ----
+                buttonOtherFontFamily.setText("\u5176\u4ed6");
+                contentPanel.add(buttonOtherFontFamily, "cell 1 5");
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
 
@@ -317,6 +350,9 @@ public class UserPreferenceDialog extends JDialog {
     private JRadioButton radioButtonBiggerFontSize;
     private JLabel label3;
     private JComboBox comboBoxTheme;
+    private JLabel label2;
+    private JButton buttonScrollModeFontFamily;
+    private JButton buttonOtherFontFamily;
     private JPanel buttonBar;
     private JButton okButton;
     private JButton cancelButton;

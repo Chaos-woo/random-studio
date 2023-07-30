@@ -112,6 +112,25 @@ new FormModel {
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 1 4"
 					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label2"
+						"text": "字体设置："
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 5"
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "buttonScrollModeFontFamily"
+						"text": "滚动随机模式"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "scrollModeFontFamily", true ) )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 5"
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "buttonOtherFontFamily"
+						"text": "其他"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 5"
+					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "Center"
 				} )

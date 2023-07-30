@@ -48,7 +48,7 @@ public class RandomCardPanel extends JPanel {
                 Thread.sleep(preferenceCache.getScrollModeTransIntervalMs());
                 randomIndex = (int) (Math.random() * rcfCtx.getRemainCards().size());
                 mainText.setText(rcfCtx.getRemainCards().get(randomIndex).getText());
-                mainText.setFont(new Font("Microsoft YaHei UI", Font.BOLD, preferenceCache.getScrollModeFontSize()));
+                mainText.setFont(new Font(preferenceCache.getScrollModeFontFamily(), Font.BOLD, preferenceCache.getScrollModeFontSize()));
             } catch (Exception e) {
                 throw new RuntimeException("Running random cards exception");
             }
