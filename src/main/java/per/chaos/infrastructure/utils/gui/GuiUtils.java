@@ -1,7 +1,7 @@
 package per.chaos.infrastructure.utils.gui;
 
 import per.chaos.app.context.AppContext;
-import per.chaos.biz.RootFrame;
+import per.chaos.business.RootFrame;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;

@@ -2,9 +2,8 @@
  * Created by JFormDesigner on Sun Jul 02 12:39:39 CST 2023
  */
 
-package per.chaos.biz.gui.root.dialogs;
+package per.chaos.business.gui.root.dialogs;
 
-import com.alibaba.fastjson2.JSON;
 import lombok.extern.slf4j.Slf4j;
 import net.miginfocom.swing.MigLayout;
 import per.chaos.app.context.AppContext;

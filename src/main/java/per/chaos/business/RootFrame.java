@@ -2,7 +2,7 @@
  * Created by JFormDesigner on Fri Jun 30 22:46:32 CST 2023
  */
 
-package per.chaos.biz;
+package per.chaos.business;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
@@ -11,11 +11,11 @@ import lombok.extern.slf4j.Slf4j;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import per.chaos.app.context.BeanManager;
-import per.chaos.biz.gui.index.panels.IndexPanel;
-import per.chaos.biz.gui.root.dialogs.AppProjectDialog;
-import per.chaos.biz.gui.root.dialogs.UserPreferenceDialog;
-import per.chaos.biz.gui.scroll_random.panels.RandomCardPanel;
-import per.chaos.biz.services.FileReferService;
+import per.chaos.business.gui.index.panels.IndexPanel;
+import per.chaos.business.gui.root.dialogs.AppProjectDialog;
+import per.chaos.business.gui.root.dialogs.UserPreferenceDialog;
+import per.chaos.business.gui.scroll_random.panels.RandomCardPanel;
+import per.chaos.business.services.FileReferService;
 import per.chaos.infrastructure.runtime.models.events.DnDSystemFilesEvent;
 import per.chaos.infrastructure.runtime.models.files.ctxs.FileCardCtx;
 import per.chaos.infrastructure.runtime.models.files.enums.FileListTypeEnum;

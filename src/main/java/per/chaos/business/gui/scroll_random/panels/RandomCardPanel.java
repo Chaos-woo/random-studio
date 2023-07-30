@@ -2,14 +2,14 @@
  * Created by JFormDesigner on Sat Jul 01 14:48:57 CST 2023
  */
 
-package per.chaos.biz.gui.scroll_random.panels;
+package per.chaos.business.gui.scroll_random.panels;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.google.common.eventbus.Subscribe;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.StringUtils;
 import per.chaos.app.context.AppContext;
-import per.chaos.biz.RootFrame;
+import per.chaos.business.RootFrame;
 import per.chaos.configs.models.PreferenceCache;
 import per.chaos.infrastructure.runtime.models.events.RootWindowResizeEvent;
 import per.chaos.infrastructure.runtime.models.files.ctxs.FileCardCtx;

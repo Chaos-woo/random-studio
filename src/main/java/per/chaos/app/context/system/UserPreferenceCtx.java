@@ -1,7 +1,5 @@
 package per.chaos.app.context.system;
 
-import com.formdev.flatlaf.FlatDarculaLaf;
-import com.formdev.flatlaf.FlatLightLaf;
 import com.google.common.eventbus.Subscribe;
 import lombok.Getter;
 import per.chaos.app.context.AppContext;
@@ -11,12 +9,9 @@ import per.chaos.app.prefs.biz_random.ScrollModeFontSizePreference;
 import per.chaos.app.prefs.biz_random.ScrollModeTransIntervalPreference;
 import per.chaos.app.prefs.system.AppDbBaseVerPreference;
 import per.chaos.app.prefs.system.AppThemePreference;
-import per.chaos.biz.RootFrame;
 import per.chaos.configs.models.PreferenceCache;
 import per.chaos.infrastructure.runtime.models.events.RefreshPreferenceCacheEvent;
 import per.chaos.infrastructure.utils.EventBus;
-
-import javax.swing.*;
 
 /**
  * 用户首选项设置上下文

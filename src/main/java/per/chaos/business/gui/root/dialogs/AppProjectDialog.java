@@ -2,7 +2,7 @@
  * Created by JFormDesigner on Mon Jul 03 22:14:44 CST 2023
  */
 
-package per.chaos.biz.gui.root.dialogs;
+package per.chaos.business.gui.root.dialogs;
 
 import net.miginfocom.swing.MigLayout;
 import per.chaos.app.context.AppContext;

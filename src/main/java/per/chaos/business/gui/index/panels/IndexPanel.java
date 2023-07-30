@@ -2,7 +2,7 @@
  * Created by JFormDesigner on Sat Jul 01 14:09:12 CST 2023
  */
 
-package per.chaos.biz.gui.index.panels;
+package per.chaos.business.gui.index.panels;
 
 import com.alibaba.fastjson2.JSON;
 import com.google.common.eventbus.Subscribe;
@@ -11,8 +11,8 @@ import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import per.chaos.app.context.AppContext;
 import per.chaos.app.context.BeanManager;
-import per.chaos.biz.RootFrame;
-import per.chaos.biz.services.FileReferService;
+import per.chaos.business.RootFrame;
+import per.chaos.business.services.FileReferService;
 import per.chaos.infrastructure.runtime.models.GenericJListTransferHandler;
 import per.chaos.infrastructure.runtime.models.events.DnDSystemFilesEvent;
 import per.chaos.infrastructure.runtime.models.events.RootWindowResizeEvent;

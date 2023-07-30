@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import per.chaos.app.context.AppContext;
 import per.chaos.app.models.enums.ThemeEnum;
-import per.chaos.biz.RootFrame;
+import per.chaos.business.RootFrame;
 
 import javax.swing.*;
 
