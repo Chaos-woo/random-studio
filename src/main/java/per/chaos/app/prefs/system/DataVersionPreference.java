@@ -5,7 +5,7 @@ import per.chaos.app.ioc.BeanReference;
 import per.chaos.app.prefs.IPreference;
 
 @BeanReference
-public class AppDbBaseVerPreference implements IPreference<String> {
+public class DataVersionPreference implements IPreference<String> {
     private final String key = "kAppDbBaseVer";
 
     @Override

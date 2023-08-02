@@ -26,7 +26,7 @@ new FormModel {
 				name: "panel2"
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "labelFileSuffix"
-					"font": new java.awt.Font( "黑体", 0, 13 )
+					"font": new java.awt.Font( "楷体", 0, 13 )
 					"foreground": sfield java.awt.Color white
 					"text": "suffix"
 				} )

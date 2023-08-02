@@ -21,8 +21,9 @@ public class RVer102 {
     public static void perform() {
         try {
             performCreateTableCtFileRefer();
+            log.info("{}至{}数据升级完成", fromVersion, toVersion);
         } catch (Exception e) {
-            log.warn(String.format("执行 %s to %s 升级失败", fromVersion, toVersion));
+            log.warn("执行{}至{}升级失败", fromVersion, toVersion);
             throw new RuntimeException(e);
         }
     }

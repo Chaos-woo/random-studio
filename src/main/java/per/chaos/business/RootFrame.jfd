@@ -46,7 +46,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "menuItemHelp"
 						"text": "帮助"
-						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "help", true ) )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "showHelpDialog", true ) )
 					} )
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "menuItemInfo"
@@ -56,6 +56,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "menuItemUpdateLog"
 						"text": "更新日志"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "showUpdateLogDialog", true ) )
 					} )
 				} )
 			}

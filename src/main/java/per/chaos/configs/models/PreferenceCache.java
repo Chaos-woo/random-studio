@@ -7,21 +7,21 @@ import per.chaos.app.models.enums.ThemeEnum;
 // 用户首选项设置缓存
 public class PreferenceCache {
     /**
-     * 滚动随机模式刷新间隔（毫秒）
+     * 随机滚动模式刷新间隔（毫秒）
      */
     @Getter
     @Setter
     private long scrollModeTransIntervalMs;
 
     /**
-     * 滚动随机模式中卡片文字的字号
+     * 随机滚动模式中卡片文字的字号
      */
     @Getter
     @Setter
     private int scrollModeFontSize;
 
     /**
-     * 滚动随机模式中卡片文字的字体
+     * 随机滚动模式中卡片文字的字体
      */
     @Getter
     @Setter

@@ -81,7 +81,7 @@ public class RandomCardPanel extends JPanel {
     }
 
     /**
-     * 滚动随机模式开始
+     * 随机滚动模式开始
      */
     private void start(ActionEvent e) {
         pThread.start();
@@ -90,14 +90,14 @@ public class RandomCardPanel extends JPanel {
     }
 
     /**
-     * 滚动随机模式暂停
+     * 随机滚动模式暂停
      */
     private void pause(ActionEvent e) {
         pThread.pause();
     }
 
     /**
-     * 滚动随机模式丢弃当前文字卡片,并继续滚动
+     * 随机滚动模式丢弃当前文字卡片,并继续滚动
      */
     private void dropResume(ActionEvent e) {
         rcfCtx.dropCard(randomIndex);
@@ -110,7 +110,7 @@ public class RandomCardPanel extends JPanel {
     }
 
     /**
-     * 滚动随机模式放回当前文字卡片,并继续滚动
+     * 随机滚动模式放回当前文字卡片,并继续滚动
      */
     private void putBackResume(ActionEvent e) {
         pThread.resume();
@@ -144,7 +144,7 @@ public class RandomCardPanel extends JPanel {
         mainText.setText("");
         if (largeMode) {
             PreferenceCache preferenceCache = AppContext.instance().getUserPreferenceCtx().getPreferenceCache();
-            mainText.setFont(new Font("Microsoft YaHei UI", Font.BOLD, preferenceCache.getScrollModeFontSize()));
+            mainText.setFont(new Font(preferenceCache.getScrollModeFontFamily(), Font.BOLD, preferenceCache.getScrollModeFontSize()));
         } else {
             mainText.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 24));
             mainText.setText(StringUtils.isBlank(nextDisplayLabel) ? "" : nextDisplayLabel);

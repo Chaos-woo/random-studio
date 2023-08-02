@@ -19,7 +19,7 @@ new FormModel {
 					"border": new javax.swing.border.TitledBorder( new javax.swing.border.LineBorder( sfield java.awt.Color lightGray, 1, false ), "用户配置", 4, 0, null, sfield java.awt.Color lightGray )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "labeltfScrollModeTransInterval"
-						"text": "滚动随机模式刷新间隔："
+						"text": "随机滚动模式刷新间隔："
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 0 0"
 					} )
@@ -120,7 +120,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "buttonScrollModeFontFamily"
-						"text": "滚动随机模式"
+						"text": "随机滚动模式"
 						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "scrollModeFontFamily", true ) )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 1 5"

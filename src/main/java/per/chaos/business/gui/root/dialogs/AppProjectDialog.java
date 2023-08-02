@@ -48,7 +48,7 @@ public class AppProjectDialog extends JDialog {
 
         //======== this ========
         setMinimumSize(new Dimension(450, 250));
-        setMaximumSize(new Dimension(250, 250));
+        setMaximumSize(new Dimension(450, 250));
         setResizable(false);
         setTitle("\u8f6f\u4ef6\u4fe1\u606f");
         var contentPane = getContentPane();
@@ -97,7 +97,7 @@ public class AppProjectDialog extends JDialog {
                     null));
 
                 //---- okButton ----
-                okButton.setText("OK");
+                okButton.setText("\u5173\u95ed");
                 okButton.addActionListener(e -> ok(e));
                 buttonBar.add(okButton, "cell 0 0");
             }

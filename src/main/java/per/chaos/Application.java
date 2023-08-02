@@ -3,6 +3,7 @@ package per.chaos;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
+import lombok.extern.slf4j.Slf4j;
 import per.chaos.app.context.AppContext;
 import per.chaos.app.context.BeanManager;
 import per.chaos.app.models.enums.ThemeEnum;
@@ -15,6 +16,7 @@ import javax.swing.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
+@Slf4j
 public class Application {
     public static void main(String[] args) {
         // 单例Bean初始化
@@ -42,8 +44,8 @@ public class Application {
         }
         try {
             UIManager.setLookAndFeel(flatLafTheme);
-        } catch (Exception ex) {
-            System.err.println("Failed to initialize LaF");
+        } catch (Exception e) {
+            log.warn("初始化设置UI主题失败，设置主题：{}", flatLafTheme);
         }
 
         JFrame.setDefaultLookAndFeelDecorated(true);

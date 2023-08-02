@@ -165,7 +165,7 @@ public class UserPreferenceDialog extends JDialog {
 
     private void scrollModeFontFamily(ActionEvent e) {
         GuiUtils.chooseFont(AppContext.instance().getGuiContext().getRootFrame(),
-                "选择滚动随机模式字体",
+                "选择随机滚动模式字体",
                 (font) -> tempScrollModeFontFamily.set(font.getFamily())
         );
     }

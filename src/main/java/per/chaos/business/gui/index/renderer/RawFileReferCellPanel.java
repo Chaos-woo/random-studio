@@ -91,7 +91,7 @@ public class RawFileReferCellPanel extends JPanel implements ListCellRenderer<Ra
             panel2.setLayout(new HorizontalLayout(5));
 
             //---- labelFileSuffix ----
-            labelFileSuffix.setFont(new Font("\u9ed1\u4f53", Font.PLAIN, 13));
+            labelFileSuffix.setFont(new Font("\u6977\u4f53", Font.PLAIN, 13));
             labelFileSuffix.setForeground(Color.white);
             labelFileSuffix.setText("suffix");
             panel2.add(labelFileSuffix);

@@ -8,7 +8,7 @@ import per.chaos.app.models.enums.ThemeEnum;
 import per.chaos.app.prefs.biz_random.ScrollModeFontFamilyPreference;
 import per.chaos.app.prefs.biz_random.ScrollModeFontSizePreference;
 import per.chaos.app.prefs.biz_random.ScrollModeTransIntervalPreference;
-import per.chaos.app.prefs.system.AppDbBaseVerPreference;
+import per.chaos.app.prefs.system.DataVersionPreference;
 import per.chaos.app.prefs.system.AppThemePreference;
 import per.chaos.configs.models.PreferenceCache;
 import per.chaos.infrastructure.runtime.models.events.RefreshPreferenceCacheEvent;
@@ -37,7 +37,7 @@ public class UserPreferenceCtx {
      * 数据库基础版本
      */
     @Getter
-    private AppDbBaseVerPreference appDbBaseVerPreference;
+    private DataVersionPreference dataVersionPreference;
 
     /**
      * 首选项配置缓存初始化
@@ -54,13 +54,16 @@ public class UserPreferenceCtx {
         preferenceCache.setScrollModeFontFamily(scrollModeFontFamilyPreference.get());
         preferenceCache.setTheme(appThemePreference.get());
 
-        appDbBaseVerPreference = BeanManager.instance().getReference(AppDbBaseVerPreference.class);
+        dataVersionPreference = BeanManager.instance().getReference(DataVersionPreference.class);
 
         EventBus.register(this);
 
         return this;
     }
 
+    /**
+     * 监听刷新缓存首选项事件
+     */
     @Subscribe
     public void onUpdateCache(RefreshPreferenceCacheEvent event) {
         ThemeEnum oldThemeEnum = preferenceCache.getTheme();

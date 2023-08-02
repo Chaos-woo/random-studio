@@ -1,14 +1,22 @@
 package per.chaos.app.ioc;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+
 import java.io.File;
 import java.io.IOException;
+import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
+@Slf4j
 public class ClassScanner {
     private final String basePackage;
     private final boolean recursive;
@@ -24,9 +32,7 @@ public class ClassScanner {
     }
 
     public Set<Class<?>> doScanAllClasses() throws IOException, ClassNotFoundException {
-
         Set<Class<?>> classes = new LinkedHashSet<>();
-
         String packageName = basePackage;
 
         // 如果最后一个字符是“.”，则去掉
@@ -35,16 +41,20 @@ public class ClassScanner {
         }
 
         // 将包名中的“.”换成系统文件夹的“/”
-        String basePackageFilePath = packageName.replace('.', File.separatorChar);
+        String basePackageFilePath = packageName.replace('.', '/');
 
         Enumeration<URL> resources = Thread.currentThread().getContextClassLoader().getResources(basePackageFilePath);
         while (resources.hasMoreElements()) {
-            URL resource = resources.nextElement();
-            String protocol = resource.getProtocol();
+            URL url = resources.nextElement();
+            String protocol = url.getProtocol();
+            String filePath = URLDecoder.decode(url.getFile(), StandardCharsets.UTF_8);
             if ("file".equals(protocol)) {
-                String filePath = URLDecoder.decode(resource.getFile(), "UTF-8");
+                // IDE中以文件形式运行
                 // 扫描文件夹中的包和类
                 doScanPackageClassesByFile(classes, packageName, filePath, recursive);
+            } else if ("jar".equals(protocol)) {
+                // jar包中运行
+                doScanPackageClassesByJar(classes, basePackageFilePath, url);
             }
         }
 
@@ -52,10 +62,34 @@ public class ClassScanner {
     }
 
     /**
+     * 在jar包中扫描包和类
+     */
+    private void doScanPackageClassesByJar(final Set<Class<?>> classes, String packageName, final URL url) {
+        try {
+            JarURLConnection urlConnection = (JarURLConnection) url.openConnection();
+            JarFile jarFile = urlConnection.getJarFile();
+            Enumeration<JarEntry> jarEntries = jarFile.entries();
+            while (jarEntries.hasMoreElements()) {
+                JarEntry jarEntry = jarEntries.nextElement();
+                String jarEntryName = jarEntry.getName();
+                if (jarEntryName.startsWith(packageName) && jarEntryName.endsWith(".class")) {
+                    log.debug("获取匹配类：{}", jarEntryName);
+                    String className = jarEntryName.substring(0, jarEntryName.length() - 6).replace('/', '.');
+                    Class<?> loadClass = Thread.currentThread().getContextClassLoader().loadClass(className);
+                    if (classPredicate == null || classPredicate.test(loadClass)) {
+                        classes.add(loadClass);
+                    }
+                }
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            log.warn("{}", ExceptionUtils.getStackTrace(e));
+        }
+    }
+
+    /**
      * 在文件夹中扫描包和类
      */
-    private void doScanPackageClassesByFile(Set<Class<?>> classes, String packageName, String packagePath,
-                                            boolean recursive) throws ClassNotFoundException {
+    private void doScanPackageClassesByFile(final Set<Class<?>> classes, String packageName, String packagePath, boolean recursive) throws ClassNotFoundException {
         // 转为文件
         File dir = new File(packagePath);
         if (!dir.exists() || !dir.isDirectory()) {

@@ -13,6 +13,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import per.chaos.app.context.BeanManager;
 import per.chaos.business.gui.index.panels.IndexPanel;
 import per.chaos.business.gui.root.dialogs.AppProjectDialog;
+import per.chaos.business.gui.root.dialogs.AppUpgradeLogDialog;
 import per.chaos.business.gui.root.dialogs.UserPreferenceDialog;
 import per.chaos.business.gui.scroll_random.panels.RandomCardPanel;
 import per.chaos.business.services.FileReferService;
@@ -147,6 +148,15 @@ public class RootFrame extends JFrame implements DropTargetListener {
         dialog.setVisible(true);
     }
 
+    private void showHelpDialog(ActionEvent e) {
+
+    }
+
+    private void showUpdateLogDialog(ActionEvent e) {
+        AppUpgradeLogDialog dialog = new AppUpgradeLogDialog(this);
+        dialog.setVisible(true);
+    }
+
     @Override
     public void dragEnter(DropTargetDragEvent dtde) {
     }
@@ -187,10 +197,6 @@ public class RootFrame extends JFrame implements DropTargetListener {
         } finally {
             dtde.dropComplete(true);
         }
-    }
-
-    private void help(ActionEvent e) {
-
     }
 
     private void initComponents() {
@@ -251,7 +257,7 @@ public class RootFrame extends JFrame implements DropTargetListener {
 
                 //---- menuItemHelp ----
                 menuItemHelp.setText("\u5e2e\u52a9");
-                menuItemHelp.addActionListener(e -> help(e));
+                menuItemHelp.addActionListener(e -> showHelpDialog(e));
                 menuAbout.add(menuItemHelp);
 
                 //---- menuItemInfo ----
@@ -261,6 +267,7 @@ public class RootFrame extends JFrame implements DropTargetListener {
 
                 //---- menuItemUpdateLog ----
                 menuItemUpdateLog.setText("\u66f4\u65b0\u65e5\u5fd7");
+                menuItemUpdateLog.addActionListener(e -> showUpdateLogDialog(e));
                 menuAbout.add(menuItemUpdateLog);
             }
             menuBar0.add(menuAbout);
