@@ -35,7 +35,7 @@ public class AppUpgradeLogCellPanel extends JPanel implements ListCellRenderer<U
 
             if (upgradeDetail.getImportant()) {
                 JPanel importantLogPanel = new JPanel();
-                importantLogPanel.setLayout(new HorizontalLayout(5));
+                importantLogPanel.setLayout(new HorizontalLayout(7));
                 importantLogPanel.add(logDetail);
                 JLabel labelTag = new JLabel();
                 labelTag.setFont(new Font("\u6977\u4f53", Font.PLAIN, 10));

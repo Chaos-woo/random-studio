@@ -6,18 +6,18 @@ package per.chaos.infrastructure.utils.pausable_task;
  * 简化PausableThread的使用，保证多种状态切换不引起其他异常，
  * 支持停止任务后再次启动新任务
  */
-public class PausableThreadManager {
+public class ResumableThreadManager {
     // 是否开始
     private boolean isStart;
     // 是否销毁
     private boolean isDispose;
     // 线程，默认为null，即未初始化状态为已销毁状态
-    private PausableThread pt;
+    private ResumableThread rThread;
     // 任务
     private final Runnable runnable;
 
     private void initNewPausableThread() {
-        pt = new PausableThread(
+        rThread = new ResumableThread(
                 "pausable",
                 () -> {
                     try {
@@ -41,7 +41,7 @@ public class PausableThreadManager {
             }
 
             isStart = true;
-            pt.start();
+            rThread.start();
         }
     }
 
@@ -49,24 +49,24 @@ public class PausableThreadManager {
         if (isStart) {
             isStart = false;
             isDispose = true;
-            pt.interrupt();
-            pt = null;
+            rThread.interrupt();
+            rThread = null;
         }
     }
 
     public void pause() {
         if (isStart) {
-            pt.pauseExecute();
+            rThread.pauseExecute();
         }
     }
 
     public void resume() {
         if (isStart) {
-            pt.resumeExecute();
+            rThread.resumeExecute();
         }
     }
 
-    public PausableThreadManager(Runnable runnable) {
+    public ResumableThreadManager(Runnable runnable) {
         this.runnable = runnable;
         initAllState();
     }

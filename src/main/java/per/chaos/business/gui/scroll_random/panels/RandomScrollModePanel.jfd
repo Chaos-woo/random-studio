@@ -1,0 +1,218 @@
+JFDML JFormDesigner: "8.1.0.0.283" Java: "17.0.7" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) {
+			"vgap": 10
+			"hgap": 10
+		} ) {
+			name: "this"
+			"border": new javax.swing.border.EmptyBorder( 10, 10, 10, 10 )
+			addEvent( new FormEvent( "javax.swing.event.AncestorListener", "ancestorRemoved", "componentDispose", true ) )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) {
+				"hgap": 10
+			} ) {
+				name: "headerPanel"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.swingx.HorizontalLayout ) {
+					"gap": 5
+				} ) {
+					name: "labelFileTipPanel"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "labelOpenedFile"
+						"text": "正在读取中的文件："
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "labelOpenedFileVal"
+						"text": "file0"
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "East"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.swingx.HorizontalLayout ) {
+					"gap": 5
+				} ) {
+					name: "modeLabelPanel"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "labelCurrentMode"
+						"text": "当前模式：随机滚动模式"
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "West"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+					"$layoutConstraints": "fill,hidemode 3,align center center"
+					"$columnConstraints": "[fill][fill]"
+					"$rowConstraints": "[]"
+				} ) {
+					name: "cardPoolPanel"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "labelCardPool"
+						"text": "当前卡池状态："
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 0,align right center,grow 0 0"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "labelCardPoolVal"
+						"text": "0/0"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 0,alignx left,growx 0"
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "Center"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "North"
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+				"$layoutConstraints": "insets 0,hidemode 3"
+				"$columnConstraints": "[grow,fill]"
+				"$rowConstraints": "[grow,fill]"
+			} ) {
+				name: "mainPanel"
+				"minimumSize": new java.awt.Dimension( 108, 340 )
+				"preferredSize": new java.awt.Dimension( 108, 340 )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "labelMainContentVal"
+					"text": "main content"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 0,align center center,grow 0 0"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Center"
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) {
+				"hgap": 5
+			} ) {
+				name: "operatePanel"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) {
+					"vgap": 5
+				} ) {
+					name: "operatePanel1"
+					"border": new javax.swing.border.TitledBorder( "操作按钮组①" )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+						"$layoutConstraints": "fill,insets 0 5 0 5,hidemode 3,align center center"
+						"$columnConstraints": "[fill]"
+						"$rowConstraints": "[grow,center]"
+					} ) {
+						name: "opStartPanel1"
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "buttonStart"
+							"text": "开始"
+							"preferredSize": new java.awt.Dimension( 98, 45 )
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "start", true ) )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 0"
+						} )
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "North"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+						"$layoutConstraints": "fill,insets 0 5 5 5,hidemode 3,align center center"
+						"$columnConstraints": "[fill]"
+						"$rowConstraints": "[grow,center]"
+					} ) {
+						name: "opRestartPanel2"
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "buttonRestart"
+							"text": "重新开始"
+							"preferredSize": new java.awt.Dimension( 104, 45 )
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "restart", true ) )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 0"
+						} )
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "South"
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "West"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) {
+					"vgap": 5
+				} ) {
+					name: "operatePanel2"
+					"border": new javax.swing.border.TitledBorder( "操作按钮组③" )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+						"$layoutConstraints": "fill,insets 0 5 0 5,hidemode 3,align center center"
+						"$columnConstraints": "[fill]"
+						"$rowConstraints": "[grow,center]"
+					} ) {
+						name: "opBackHomePanel1"
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "buttonBackHome"
+							"text": "返回主页"
+							"preferredSize": new java.awt.Dimension( 104, 45 )
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "stop", true ) )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 0"
+						} )
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "North"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.swingx.HorizontalLayout ) ) {
+						name: "tempPanel"
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "South"
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "East"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) {
+					"vgap": 5
+				} ) {
+					name: "operatePanel3"
+					"border": new javax.swing.border.TitledBorder( "操作按钮组②" )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+						"$layoutConstraints": "fill,insets 0 5 0 5,hidemode 3,align center center,gap 5 0"
+						"$columnConstraints": "[fill][fill]"
+						"$rowConstraints": "[grow,center]"
+					} ) {
+						name: "opContinuePanel"
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "buttonDropContinue"
+							"text": "完成并继续（不放回卡池）"
+							"preferredSize": new java.awt.Dimension( 119, 45 )
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "dropResume", true ) )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 0"
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "buttonPutBackContinue"
+							"text": "放回并继续（放回卡池）"
+							"preferredSize": new java.awt.Dimension( 119, 45 )
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "putBackResume", true ) )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 0"
+						} )
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "North"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+						"$layoutConstraints": "fill,insets 0 5 5 5,hidemode 3,align center center"
+						"$columnConstraints": "[fill]"
+						"$rowConstraints": "[grow,center]"
+					} ) {
+						name: "opPausePanel"
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "buttonPause"
+							"text": "暂停（查看结果）"
+							"preferredSize": new java.awt.Dimension( 164, 45 )
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "pause", true ) )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 0"
+						} )
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "South"
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "Center"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "South"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 566, 390 )
+		} )
+	}
+}

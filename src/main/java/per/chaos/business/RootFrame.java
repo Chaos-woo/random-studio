@@ -15,7 +15,7 @@ import per.chaos.business.gui.index.panels.IndexPanel;
 import per.chaos.business.gui.root.dialogs.AppProjectDialog;
 import per.chaos.business.gui.root.dialogs.AppUpgradeLogDialog;
 import per.chaos.business.gui.root.dialogs.UserPreferenceDialog;
-import per.chaos.business.gui.scroll_random.panels.RandomCardPanel;
+import per.chaos.business.gui.scroll_random.panels.RandomScrollModePanel;
 import per.chaos.business.services.FileReferService;
 import per.chaos.infrastructure.runtime.models.events.DnDSystemFilesEvent;
 import per.chaos.infrastructure.runtime.models.files.ctxs.FileCardCtx;
@@ -82,14 +82,14 @@ public class RootFrame extends JFrame implements DropTargetListener {
      */
     public void jumpToScrollModePanel(String absolutionPath, FileListTypeEnum typeEnum) {
         final FileReferService fileReferService = BeanManager.instance().getReference(FileReferService.class);
-        FileCardCtx rcfContext = fileReferService.findRandomCardFileCtx(absolutionPath);
+        FileCardCtx fileCardCtx = fileReferService.findRandomCardFileCtx(absolutionPath);
 
-        if (Objects.isNull(rcfContext)) {
+        if (Objects.isNull(fileCardCtx)) {
             throw new RuntimeException("");
         }
 
         getContentPane().removeAll();
-        getContentPane().add(new RandomCardPanel(rcfContext));
+        getContentPane().add(new RandomScrollModePanel(fileCardCtx));
         getContentPane().revalidate();
         getContentPane().repaint();
     }

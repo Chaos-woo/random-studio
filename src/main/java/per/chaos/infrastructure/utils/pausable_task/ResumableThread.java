@@ -1,6 +1,6 @@
 package per.chaos.infrastructure.utils.pausable_task;
 
-public class PausableThread extends Thread {
+public class ResumableThread extends Thread {
     // 对象锁
     private final Object syncLock;
     // 暂停状态
@@ -8,7 +8,7 @@ public class PausableThread extends Thread {
     // 执行任务
     private final Runnable callback;
 
-    public PausableThread(String name, Runnable callback) {
+    public ResumableThread(String name, Runnable callback) {
         super.setName(name);
         this.syncLock = new Object();
         this.isPaused = false;
@@ -24,7 +24,7 @@ public class PausableThread extends Thread {
                     try {
                         syncLock.wait();
                     } catch (InterruptedException e) {
-                        System.out.println("PausableThread was in wait state, but got interrupted");
+                        System.out.println("ResumableThread was in wait state, but got interrupted");
                         break;
                     }
                 }
@@ -33,7 +33,7 @@ public class PausableThread extends Thread {
             try {
                 callback.run();
             } catch (Exception e) {
-                System.out.println("PausableThread was execute task, but got interrupted");
+                System.out.println("ResumableThread was execute task, but got interrupted");
                 break;
             }
         }

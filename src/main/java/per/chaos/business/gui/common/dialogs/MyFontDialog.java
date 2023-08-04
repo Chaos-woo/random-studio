@@ -1,4 +1,4 @@
-package per.chaos.business.gui.common.panels;//
+package per.chaos.business.gui.common.dialogs;//
 // Source code recreated from a .class file by IntelliJ IDEA
 // (powered by FernFlower decompiler)
 //
@@ -28,7 +28,7 @@ public class MyFontDialog extends JDialog {
     private Consumer<Font> okConsumer;
 
     public static void showDialog(Component component) {
-        MyFontDialog dialog = new MyFontDialog((Frame) null, "Select Font", true);
+        MyFontDialog dialog = new MyFontDialog((Frame) null, "选择字体", true);
         dialog.setDefaultCloseOperation(2);
         dialog.setSelectedFont(component.getFont());
         dialog.setVisible(true);
