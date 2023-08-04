@@ -12,7 +12,7 @@ public class RVer102 {
     /**
      * 固定字段,升级基础版本
      */
-    public static final String fromVersion = "1.0.0";
+    public static final String fromVersion = "1.0.1";
     /**
      * 固定字段,升级最终版本
      */

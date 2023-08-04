@@ -1,26 +1,27 @@
 package per.chaos.app.upgrade.executor;
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import lombok.extern.slf4j.Slf4j;
-import per.chaos.app.context.AppContext;
-import per.chaos.app.prefs.system.DataVersionPreference;
+import per.chaos.app.context.BeanManager;
+import per.chaos.app.upgrade.executor.version_upgrade.RVer101;
 import per.chaos.app.upgrade.executor.version_upgrade.RVer102;
+import per.chaos.infrastructure.mappers.DataVersionMapper;
+import per.chaos.infrastructure.storage.models.sqlite.DataVersionEntity;
 
 @Slf4j
 public class AppUpgrade {
     /**
+     * 基础数据版本
+     */
+    public static String baseDataVersion = "1.0.0";
+
+    /**
      * 应用升级
      */
     public static void upgrade() {
-        final DataVersionPreference dataVersionPreference =
-                AppContext.instance().getUserPreferenceCtx().getDataVersionPreference();
-        String currentAppVersion = AppContext.instance().getProjectContext().getProject().getVersion();
-        String baseUpgradeVersion = dataVersionPreference.get();
-
-        if (currentAppVersion.equals(baseUpgradeVersion)) {
-            return;
-        }
-
-        switch (baseUpgradeVersion) {
+        RVer101.perform();
+        switch (baseDataVersion) {
             case RVer102.fromVersion:
                 doUpgrade(RVer102::perform, RVer102.toVersion);
             default:
@@ -37,10 +38,17 @@ public class AppUpgrade {
      * @param newBaseUpgradeVersion 升级后的版本
      */
     private static void doUpgrade(DoUpgrade updater, String newBaseUpgradeVersion) {
-        final DataVersionPreference dataVersionPreference =
-                AppContext.instance().getUserPreferenceCtx().getDataVersionPreference();
         updater.upgrade();
-        dataVersionPreference.update(newBaseUpgradeVersion);
+
+        LambdaUpdateWrapper<DataVersionEntity> lambdaWrapper = new UpdateWrapper<DataVersionEntity>().lambda();
+        lambdaWrapper.set(DataVersionEntity::getDataVersion, newBaseUpgradeVersion)
+                .eq(DataVersionEntity::getId, 1L);
+        BeanManager.instance().executeMapper(DataVersionMapper.class,
+                (mapper) -> {
+                    mapper.update(null, lambdaWrapper);
+                    AppUpgrade.baseDataVersion = newBaseUpgradeVersion;
+                }
+        );
     }
 
     @FunctionalInterface

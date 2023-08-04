@@ -8,7 +8,6 @@ import per.chaos.app.models.enums.ThemeEnum;
 import per.chaos.app.prefs.biz_random.ScrollModeFontFamilyPreference;
 import per.chaos.app.prefs.biz_random.ScrollModeFontSizePreference;
 import per.chaos.app.prefs.biz_random.ScrollModeTransIntervalPreference;
-import per.chaos.app.prefs.system.DataVersionPreference;
 import per.chaos.app.prefs.system.AppThemePreference;
 import per.chaos.configs.models.PreferenceCache;
 import per.chaos.infrastructure.runtime.models.events.RefreshPreferenceCacheEvent;
@@ -34,12 +33,6 @@ public class UserPreferenceCtx {
     private PreferenceCache preferenceCache;
 
     /**
-     * 数据库基础版本
-     */
-    @Getter
-    private DataVersionPreference dataVersionPreference;
-
-    /**
      * 首选项配置缓存初始化
      */
     public UserPreferenceCtx init() {
@@ -53,8 +46,6 @@ public class UserPreferenceCtx {
         preferenceCache.setScrollModeFontSize(scrollModeFontSizePreference.get());
         preferenceCache.setScrollModeFontFamily(scrollModeFontFamilyPreference.get());
         preferenceCache.setTheme(appThemePreference.get());
-
-        dataVersionPreference = BeanManager.instance().getReference(DataVersionPreference.class);
 
         EventBus.register(this);
 
