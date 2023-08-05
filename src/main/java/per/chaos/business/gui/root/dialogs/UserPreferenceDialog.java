@@ -58,6 +58,9 @@ public class UserPreferenceDialog extends JDialog {
         // 初始化按钮选项组的默认选择状态
         initButtonGroup();
 
+        final ScrollModeFontFamilyPreference scrollModeFontFamilyPreference = BeanManager.instance().getReference(ScrollModeFontFamilyPreference.class);
+        tempScrollModeFontFamily.set(scrollModeFontFamilyPreference.get());
+
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     }
 
