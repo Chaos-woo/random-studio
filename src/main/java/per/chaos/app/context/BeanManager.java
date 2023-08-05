@@ -25,7 +25,7 @@ import java.util.function.Function;
  */
 @Slf4j
 public class BeanManager {
-    private static final BeanManager instance = new BeanManager();
+    private static final BeanManager INSTANCE = new BeanManager();
     /**
      * Bean信息
      */
@@ -40,13 +40,13 @@ public class BeanManager {
     private final BeanConfigurator beanConfigurator;
 
     private BeanManager() {
-        beans = new HashSet<>();
-        singletonCtx = new SingletonContext();
-        beanConfigurator = new BeanConfigurator(this);
+        this.beans = new HashSet<>();
+        this.singletonCtx = new SingletonContext();
+        this.beanConfigurator = new BeanConfigurator(this);
     }
 
     public static BeanManager instance() {
-        return instance;
+        return INSTANCE;
     }
 
     /**
@@ -68,7 +68,7 @@ public class BeanManager {
         try {
             Set<Class<?>> classes = classScanner.doScanAllClasses();
             if (null != classes && !classes.isEmpty()) {
-                beanConfigurator.createBeans(classes);
+                this.beanConfigurator.createBeans(classes);
             }
         } catch (IOException e) {
             log.error("Scan package error, details: {}", ExceptionUtils.getStackTrace(e));
@@ -180,11 +180,11 @@ public class BeanManager {
         private final Map<Bean<?>, Object> beanReferences;
 
         public SingletonContext() {
-            beanReferences = new ConcurrentHashMap<>();
+            this.beanReferences = new ConcurrentHashMap<>();
         }
 
         public <T> void add(final Bean<T> bean, final T reference) {
-            beanReferences.put(bean, reference);
+            this.beanReferences.put(bean, reference);
         }
 
         public <T> T get(final Bean<T> bean) {
@@ -193,7 +193,7 @@ public class BeanManager {
 
         @SuppressWarnings("all")
         private <T> T getReference(final Bean<T> bean) {
-            T ret = (T) beanReferences.get(bean);
+            T ret = (T) this.beanReferences.get(bean);
 
             if (null != ret) {
                 return ret;
@@ -212,7 +212,7 @@ public class BeanManager {
             }
 
             if (null != ret) {
-                beanReferences.put(bean, ret);
+                this.beanReferences.put(bean, ret);
 
                 return ret;
             }

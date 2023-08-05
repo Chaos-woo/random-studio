@@ -4,9 +4,8 @@ import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import lombok.Getter;
 import lombok.Setter;
-import per.chaos.app.context.AppContext;
 import per.chaos.app.models.enums.ThemeEnum;
-import per.chaos.biz.RootFrame;
+import per.chaos.business.RootFrame;
 
 import javax.swing.*;
 
@@ -14,7 +13,7 @@ import javax.swing.*;
  * 与GUI相关的上下文管理
  */
 public class GuiContext {
-    private static final GuiContext instance = new GuiContext();
+    private static final GuiContext INSTANCE = new GuiContext();
 
     /**
      * 根窗口
@@ -27,7 +26,7 @@ public class GuiContext {
     }
 
     public static GuiContext instance() {
-        return instance;
+        return INSTANCE;
     }
 
     public GuiContext init() {
@@ -36,7 +35,6 @@ public class GuiContext {
     }
 
     public void updateTheme(ThemeEnum newThemeEnum) {
-        RootFrame rootFrame = AppContext.instance().getGuiContext().getRootFrame();
         if (ThemeEnum.LIGHT == newThemeEnum) {
             try {
                 UIManager.setLookAndFeel(new FlatLightLaf());
@@ -50,12 +48,12 @@ public class GuiContext {
                 System.err.println("Failed to initialize LaF");
             }
         }
-        SwingUtilities.updateComponentTreeUI(rootFrame);
-        SwingUtilities.updateComponentTreeUI(rootFrame.getIndexPanel().getPopupMenuLatestFile());
-        SwingUtilities.updateComponentTreeUI(rootFrame.getIndexPanel().getPopupMenuFastQueryFile());
+        SwingUtilities.updateComponentTreeUI(this.rootFrame);
+        SwingUtilities.updateComponentTreeUI(this.rootFrame.getIndexPanel().getPopupMenuLatestFile());
+        SwingUtilities.updateComponentTreeUI(this.rootFrame.getIndexPanel().getPopupMenuFastQueryFile());
         // 最合适的方式显示
-        rootFrame.pack();
+        this.rootFrame.pack();
         // 显示窗体
-        rootFrame.setVisible(true);
+        this.rootFrame.setVisible(true);
     }
 }

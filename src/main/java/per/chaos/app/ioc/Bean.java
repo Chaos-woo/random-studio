@@ -28,6 +28,6 @@ public class Bean<T> {
             NoSuchMethodException,
             InvocationTargetException {
 
-        return beanClass.getDeclaredConstructor().newInstance();
+        return this.beanClass.getDeclaredConstructor().newInstance();
     }
 }

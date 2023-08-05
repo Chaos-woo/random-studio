@@ -7,18 +7,14 @@ import per.chaos.app.models.enums.UpgradeVersionLogTypeEnum;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * 版本升级日志
+ */
+@Getter
+@Setter
 public class UpgradeVersionLog {
-    @Getter
-    @Setter
     private String version;
-
-    @Getter
-    @Setter
     private String abstractText;
-
-    @Getter
-    @Setter
     private List<VersionLog> logs;
 
     public static UpgradeVersionLog log(String version, String abstractText) {
@@ -29,29 +25,51 @@ public class UpgradeVersionLog {
         return pvl;
     }
 
+    /**
+     * 问题修复日志
+     */
     public UpgradeVersionLog bugFixLog(String text) {
         VersionLog vl = new VersionLog();
         vl.setText(text);
-        vl.setTypeEnum(UpgradeVersionLogTypeEnum.BUG_FIX);
+        vl.setLogTypeEnum(UpgradeVersionLogTypeEnum.BUG_FIX);
         getLogs().add(vl);
         return this;
     }
 
+    /**
+     * 功能特性日志
+     */
     public UpgradeVersionLog featureLog(String text) {
         VersionLog vl = new VersionLog();
         vl.setText(text);
-        vl.setTypeEnum(UpgradeVersionLogTypeEnum.FEATURE);
+        vl.setLogTypeEnum(UpgradeVersionLogTypeEnum.FEATURE);
         getLogs().add(vl);
         return this;
     }
 
-    public static class VersionLog {
-        @Getter
-        @Setter
-        private String text;
+    /**
+     * 功能特性日志
+     */
+    public UpgradeVersionLog importantFeatureLog(String text) {
+        VersionLog vl = new VersionLog();
+        vl.setText(text);
+        vl.setLogTypeEnum(UpgradeVersionLogTypeEnum.FEATURE);
+        vl.setImportant(Boolean.TRUE);
+        getLogs().add(vl);
+        return this;
+    }
 
-        @Getter
-        @Setter
-        private UpgradeVersionLogTypeEnum typeEnum;
+    /**
+     * 版本日志
+     */
+    @Getter
+    @Setter
+    public static class VersionLog {
+        private String text;
+        private Boolean important = Boolean.FALSE;
+        /**
+         * 日志类型
+         */
+        private UpgradeVersionLogTypeEnum logTypeEnum;
     }
 }

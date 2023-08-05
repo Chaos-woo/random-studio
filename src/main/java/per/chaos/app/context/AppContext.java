@@ -10,13 +10,13 @@ import per.chaos.app.context.system.UserPreferenceCtx;
  * 应用上下文管理器
  */
 public class AppContext {
-    private static final AppContext instance = new AppContext();
+    private static final AppContext INSTANCE = new AppContext();
 
     private AppContext() {
     }
 
     public static AppContext instance() {
-        return instance;
+        return INSTANCE;
     }
 
     /**
@@ -47,9 +47,9 @@ public class AppContext {
      * 应用上下文初始化
      */
     public void init() {
-        projectContext = ProjectContext.instance().init();
-        dbManagerContext = DbManagerContext.instance().init();
-        userPreferenceCtx = UserPreferenceCtx.instance().init();
-        guiContext = GuiContext.instance().init();
+        this.projectContext = ProjectContext.instance().init();
+        this.dbManagerContext = DbManagerContext.instance().init();
+        this.userPreferenceCtx = UserPreferenceCtx.instance().init();
+        this.guiContext = GuiContext.instance().init();
     }
 }

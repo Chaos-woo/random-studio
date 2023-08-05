@@ -11,13 +11,13 @@ import java.sql.SQLException;
  * 数据库连接上下文
  */
 public class DbManagerContext {
-    private static final DbManagerContext instance = new DbManagerContext();
+    private static final DbManagerContext INSTANCE = new DbManagerContext();
 
     private DbManagerContext() {
     }
 
     public static DbManagerContext instance() {
-        return instance;
+        return INSTANCE;
     }
 
     /**

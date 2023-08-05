@@ -4,6 +4,7 @@ import cn.hutool.core.io.FileUtil;
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import lombok.Getter;
 
+import java.awt.*;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
@@ -11,8 +12,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public enum SystemFileTypeEnum {
-    TXT(1, Arrays.asList("txt")),
-    EXCEL(2, Arrays.asList("xls", "xlsx")),
+    TXT(1, Arrays.asList("txt"), new Color(227, 115, 131), "TXT"),
+    EXCEL(2, Arrays.asList("xls", "xlsx"), new Color(80, 200, 120), "EXCEL"),
     ;
 
     @Getter
@@ -22,9 +23,17 @@ public enum SystemFileTypeEnum {
     @Getter
     private final List<String> supportImportSuffix;
 
-    SystemFileTypeEnum(int type, List<String> supportImportSuffix) {
+    @Getter
+    private final Color labelColor;
+
+    @Getter
+    private final String tagName;
+
+    SystemFileTypeEnum(int type, List<String> supportImportSuffix, Color labelColor, String tagName) {
         this.type = type;
         this.supportImportSuffix = supportImportSuffix;
+        this.labelColor = labelColor;
+        this.tagName = tagName;
     }
 
     /**

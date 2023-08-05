@@ -1,7 +1,8 @@
 package per.chaos.infrastructure.utils.gui;
 
 import per.chaos.app.context.AppContext;
-import per.chaos.biz.RootFrame;
+import per.chaos.business.RootFrame;
+import per.chaos.business.gui.common.dialogs.MyFontDialog;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * UI工具类
@@ -94,5 +96,24 @@ public class GuiUtils {
         } else {
             return new ArrayList<>();
         }
+    }
+
+    /**
+     * 选择字体
+     *
+     * @param owner              父窗口
+     * @param chooserTitle       选择器窗口标题
+     * @param fontChooseConsumer 字体选择回调
+     */
+    public static void chooseFont(Window owner, String chooserTitle, Consumer<Font> fontChooseConsumer) {
+        MyFontDialog dialog = new MyFontDialog(owner, chooserTitle);
+        dialog.setOkConsumer(fontChooseConsumer);
+        Point dialogLocation = new Point(
+                owner.getLocation().x + ((owner.getWidth() / 2) - (dialog.getWidth() / 2)),
+                owner.getLocation().y + ((owner.getHeight() / 2) - (dialog.getHeight() / 2))
+        );
+        dialog.setLocation(dialogLocation);
+        dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        dialog.setVisible(true);
     }
 }

@@ -23,22 +23,4 @@ public class RawFileRefer {
      * 源文件是否存在
      */
     private boolean fileExist;
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder()
-                .append(" ● ")
-                .append(fileRefer.getFileName());
-
-        if (!fileExist) {
-            sb.append("『")
-                    .append("文件不存在")
-                    .append("』");
-        }
-
-        return sb.append(" ( ")
-                .append(fileRefer.getAbsolutePath())
-                .append(" )")
-                .toString();
-    }
 }

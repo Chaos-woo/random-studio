@@ -12,11 +12,11 @@ public class ScrollModeFontSizePreference implements IPreference<Integer> {
 
     @Override
     public Integer get() {
-        return AppPreference.root().getInt(key, 80);
+        return AppPreference.root().getInt(this.key, 80);
     }
 
     @Override
     public void update(Integer value) {
-        AppPreference.root().putInt(key, Objects.isNull(value) ? 80 : value);
+        AppPreference.root().putInt(this.key, Objects.isNull(value) ? 80 : value);
     }
 }

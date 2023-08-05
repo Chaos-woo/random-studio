@@ -12,11 +12,11 @@ public class ScrollModeTransIntervalPreference implements IPreference<Long> {
 
     @Override
     public Long get() {
-        return AppPreference.root().getLong(key, 300L);
+        return AppPreference.root().getLong(this.key, 300L);
     }
 
     @Override
     public void update(Long value) {
-        AppPreference.root().putLong(key,  Objects.isNull(value) ? 300L : value);
+        AppPreference.root().putLong(this.key,  Objects.isNull(value) ? 300L : value);
     }
 }

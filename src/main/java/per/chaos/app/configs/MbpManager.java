@@ -87,7 +87,7 @@ public class MbpManager {
             // 注册*Mapper.xml文件
             registryMapperXml(configuration, "mappers");
 
-            sqlSessionFactory = builder.build(configuration);
+            this.sqlSessionFactory = builder.build(configuration);
         } catch (Exception e) {
             log.error(ExceptionUtils.getStackTrace(e));
         }
@@ -125,7 +125,9 @@ public class MbpManager {
         Enumeration<URL> mapper = contextClassLoader.getResources(classPath);
         while (mapper.hasMoreElements()) {
             URL url = mapper.nextElement();
-            if (url.getProtocol().equals("file")) {
+            String protocol = url.getProtocol();
+            if ("file".equals(protocol)) {
+                // IDE中以文件形式运行
                 String path = url.getPath();
                 File file = new File(path);
                 File[] files = file.listFiles();
@@ -135,17 +137,20 @@ public class MbpManager {
                     xmlMapperBuilder.parse();
                     in.close();
                 }
-            } else {
+            } else if ("jar".equals(protocol)){
+                // jar包中运行
                 JarURLConnection urlConnection = (JarURLConnection) url.openConnection();
                 JarFile jarFile = urlConnection.getJarFile();
-                Enumeration<JarEntry> entries = jarFile.entries();
-                while (entries.hasMoreElements()) {
-                    JarEntry jarEntry = entries.nextElement();
+                Enumeration<JarEntry> jarEntries = jarFile.entries();
+                while (jarEntries.hasMoreElements()) {
+                    JarEntry jarEntry = jarEntries.nextElement();
                     if (jarEntry.getName().endsWith(".xml")) {
-                        InputStream in = jarFile.getInputStream(jarEntry);
-                        XMLMapperBuilder xmlMapperBuilder = new XMLMapperBuilder(in, configuration, jarEntry.getName(), configuration.getSqlFragments());
-                        xmlMapperBuilder.parse();
-                        in.close();
+                        try(InputStream in = jarFile.getInputStream(jarEntry)) {
+                            XMLMapperBuilder xmlMapperBuilder = new XMLMapperBuilder(in, configuration, jarEntry.getName(), configuration.getSqlFragments());
+                            xmlMapperBuilder.parse();
+                        } catch (Exception e){
+                            // 无法被MBP读取解析的暂不处理
+                        }
                     }
                 }
             }
@@ -153,10 +158,10 @@ public class MbpManager {
     }
 
     public SqlSession getSqlSessionWithAutoCommit() throws IOException {
-        return sqlSessionFactory.openSession(true);
+        return this.sqlSessionFactory.openSession(true);
     }
 
     public SqlSession getSqlSessionWithoutAutoCommit() throws IOException {
-        return sqlSessionFactory.openSession(false);
+        return this.sqlSessionFactory.openSession(false);
     }
 }
