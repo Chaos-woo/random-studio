@@ -12,6 +12,7 @@ import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import per.chaos.app.context.BeanManager;
 import per.chaos.business.gui.index.panels.IndexPanel;
+import per.chaos.business.gui.root.dialogs.AppHelpDocDialog;
 import per.chaos.business.gui.root.dialogs.AppProjectDialog;
 import per.chaos.business.gui.root.dialogs.AppUpgradeLogDialog;
 import per.chaos.business.gui.root.dialogs.UserPreferenceDialog;
@@ -149,7 +150,8 @@ public class RootFrame extends JFrame implements DropTargetListener {
     }
 
     private void showHelpDialog(ActionEvent e) {
-
+        AppHelpDocDialog dialog = new AppHelpDocDialog(this);
+        dialog.setVisible(true);
     }
 
     private void showUpdateLogDialog(ActionEvent e) {
@@ -207,8 +209,8 @@ public class RootFrame extends JFrame implements DropTargetListener {
         menuItemBatchImportFiles = new JMenuItem();
         menuAbout = new JMenu();
         menuItemPref = new JMenuItem();
-        menuItemHelp = new JMenuItem();
         menuItemInfo = new JMenuItem();
+        menuItemHelp = new JMenuItem();
         menuItemUpdateLog = new JMenuItem();
 
         //======== this ========
@@ -255,15 +257,15 @@ public class RootFrame extends JFrame implements DropTargetListener {
                 menuAbout.add(menuItemPref);
                 menuAbout.addSeparator();
 
-                //---- menuItemHelp ----
-                menuItemHelp.setText("\u5e2e\u52a9");
-                menuItemHelp.addActionListener(e -> showHelpDialog(e));
-                menuAbout.add(menuItemHelp);
-
                 //---- menuItemInfo ----
                 menuItemInfo.setText("\u7b80\u4ecb");
                 menuItemInfo.addActionListener(e -> showAppProjectDialog(e));
                 menuAbout.add(menuItemInfo);
+
+                //---- menuItemHelp ----
+                menuItemHelp.setText("\u5e2e\u52a9\u624b\u518c");
+                menuItemHelp.addActionListener(e -> showHelpDialog(e));
+                menuAbout.add(menuItemHelp);
 
                 //---- menuItemUpdateLog ----
                 menuItemUpdateLog.setText("\u66f4\u65b0\u65e5\u5fd7");
@@ -285,8 +287,8 @@ public class RootFrame extends JFrame implements DropTargetListener {
     private JMenuItem menuItemBatchImportFiles;
     private JMenu menuAbout;
     private JMenuItem menuItemPref;
-    private JMenuItem menuItemHelp;
     private JMenuItem menuItemInfo;
+    private JMenuItem menuItemHelp;
     private JMenuItem menuItemUpdateLog;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }

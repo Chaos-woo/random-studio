@@ -25,6 +25,7 @@ public class AppUpgradeLog {
         return UpgradeVersionLog.log("R.V.1.0.4", "随机滚动模式样式优化")
                 .featureLog("主页文件列表样式优化,可以直观看到系统文件是否存在啦~")
                 .importantFeatureLog("新增应用更新日志，有重要更新可以在『关于』-『更新日志』中查看喔！")
+                .importantFeatureLog("新增应用帮助手册，软件的重要功能可以在『关于』-『帮助手册』中查看喔！")
                 .importantFeatureLog("新增随机滚动模式字体样式用户首选项设置。");
     }
 
@@ -37,8 +38,8 @@ public class AppUpgradeLog {
     }
 
     private static UpgradeVersionLog rVer1p02UpgradeLog() {
-        return UpgradeVersionLog.log("R.V.1.0.2", "应用底层架构重构,修复用户体验问题")
-                .featureLog("应用底层架构重构,支持数据持久化保存。")
+        return UpgradeVersionLog.log("R.V.1.0.2", "应用底层架构重构，修复用户体验问题")
+                .featureLog("应用底层架构重构，支持数据持久化保存。")
                 .featureLog("移除单个文件导入时立即打开随机滚动模式。")
                 .bugFixLog("修复主页历史文件列表和快速文件列表大小变化不一致的问题。");
     }

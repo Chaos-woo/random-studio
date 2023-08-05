@@ -5,8 +5,8 @@ new FormModel {
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 			name: "this"
-			"title": "更新日志"
-			"minimumSize": new java.awt.Dimension( 600, 500 )
+			"title": "帮助手册"
+			"minimumSize": new java.awt.Dimension( 750, 500 )
 			"resizable": false
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 				name: "dialogPane"

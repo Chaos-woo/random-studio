@@ -8,10 +8,10 @@ new FormModel {
 		} ) {
 			name: "this"
 			"minimumSize": new java.awt.Dimension( 250, 30 )
-			"border": new javax.swing.border.EmptyBorder( 3, 3, 3, 3 )
 			add( new FormComponent( "javax.swing.JLabel" ) {
-				name: "labelAppVersion"
+				name: "labelQuestionTitle"
 				"text": "text"
+				"border": new javax.swing.border.EmptyBorder( 3, 3, 3, 3 )
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )

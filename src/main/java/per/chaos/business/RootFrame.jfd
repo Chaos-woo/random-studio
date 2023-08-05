@@ -44,14 +44,14 @@ new FormModel {
 						name: "separator2"
 					} )
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "menuItemHelp"
-						"text": "帮助"
-						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "showHelpDialog", true ) )
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "menuItemInfo"
 						"text": "简介"
 						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "showAppProjectDialog", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "menuItemHelp"
+						"text": "帮助手册"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "showHelpDialog", true ) )
 					} )
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "menuItemUpdateLog"

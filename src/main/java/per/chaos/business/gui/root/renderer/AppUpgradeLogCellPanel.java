@@ -38,11 +38,11 @@ public class AppUpgradeLogCellPanel extends JPanel implements ListCellRenderer<U
                 importantLogPanel.setLayout(new HorizontalLayout(7));
                 importantLogPanel.add(logDetail);
                 JLabel labelTag = new JLabel();
-                labelTag.setFont(new Font("\u6977\u4f53", Font.PLAIN, 10));
+                labelTag.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 9));
                 labelTag.setForeground(Color.white);
                 labelTag.setOpaque(true);
                 labelTag.setBackground(Color.RED);
-                labelTag.setBorder(new EmptyBorder(1, 2, 1, 2));
+                labelTag.setBorder(new EmptyBorder(0, 2, 0, 2));
                 labelTag.setText(upgradeDetail.getLogTypeEnum().getDisplayTag());
                 importantLogPanel.add(labelTag);
                 add(importantLogPanel);
@@ -60,6 +60,7 @@ public class AppUpgradeLogCellPanel extends JPanel implements ListCellRenderer<U
 
         //======== this ========
         setMinimumSize(new Dimension(250, 30));
+        setBorder(new EmptyBorder(3, 3, 3, 3));
         setLayout(new VerticalLayout(10));
 
         //---- labelAppVersion ----

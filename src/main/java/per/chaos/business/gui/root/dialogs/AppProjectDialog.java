@@ -43,8 +43,6 @@ public class AppProjectDialog extends JDialog {
         labelProjectVersion = new JLabel();
         label3 = new JLabel();
         labelProjectProfile = new JLabel();
-        buttonBar = new JPanel();
-        okButton = new JButton();
 
         //======== this ========
         setMinimumSize(new Dimension(450, 250));
@@ -86,22 +84,6 @@ public class AppProjectDialog extends JDialog {
                 contentPanel.add(labelProjectProfile, "cell 1 2");
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
-
-            //======== buttonBar ========
-            {
-                buttonBar.setLayout(new MigLayout(
-                    "insets dialog,alignx right",
-                    // columns
-                    "[button,fill]",
-                    // rows
-                    null));
-
-                //---- okButton ----
-                okButton.setText("\u5173\u95ed");
-                okButton.addActionListener(e -> ok(e));
-                buttonBar.add(okButton, "cell 0 0");
-            }
-            dialogPane.add(buttonBar, BorderLayout.SOUTH);
         }
         contentPane.add(dialogPane, BorderLayout.CENTER);
         pack();
@@ -118,7 +100,5 @@ public class AppProjectDialog extends JDialog {
     private JLabel labelProjectVersion;
     private JLabel label3;
     private JLabel labelProjectProfile;
-    private JPanel buttonBar;
-    private JButton okButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }
