@@ -4,6 +4,10 @@ import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
 import per.chaos.app.context.AppContext;
 import per.chaos.app.context.BeanManager;
 import per.chaos.app.models.enums.ThemeEnum;
@@ -15,10 +19,22 @@ import per.chaos.infrastructure.utils.EventBus;
 import javax.swing.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.net.URL;
+import java.util.Objects;
 
 @Slf4j
 public class Application {
     public static void main(String[] args) {
+        URL resource = Application.class.getResource("");
+        if (Objects.nonNull(resource) && "jar".equals(resource.getProtocol())) {
+            // jar包环境运行设置日志级别为ERROR
+            Level level = Level.ERROR;
+            LoggerContext context = (LoggerContext) LogManager.getContext(false);
+            Configuration configuration = context.getConfiguration();
+            configuration.getLoggerConfig("ROOT").setLevel(level);
+            context.updateLoggers(configuration);
+        }
+
         // 单例Bean初始化
         BeanManager.instance().init("per.chaos");
 
