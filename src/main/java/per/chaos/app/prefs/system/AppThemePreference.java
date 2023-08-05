@@ -11,11 +11,11 @@ public class AppThemePreference implements IPreference<ThemeEnum> {
 
     @Override
     public ThemeEnum get() {
-        return ThemeEnum.getBy(AppPreference.root().get(key, ""));
+        return ThemeEnum.getBy(AppPreference.root().get(this.key, ""));
     }
 
     @Override
     public void update(ThemeEnum value) {
-        AppPreference.root().put(key, value.getTheme());
+        AppPreference.root().put(this.key, value.getTheme());
     }
 }

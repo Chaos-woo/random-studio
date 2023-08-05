@@ -57,10 +57,10 @@ public class RootFrame extends JFrame implements DropTargetListener {
         final FileReferService fileReferService = BeanManager.instance().getReference(FileReferService.class);
         fileReferService.refreshMemoryFileReferCtx();
 
-        indexPanel = new IndexPanel(this);
-        getContentPane().add(indexPanel);
+        this.indexPanel = new IndexPanel(this);
+        getContentPane().add(this.indexPanel);
 
-        dropTarget = new DropTarget(this, this);
+        this.dropTarget = new DropTarget(this, this);
 //        setTransferHandler();
     }
 
@@ -69,7 +69,7 @@ public class RootFrame extends JFrame implements DropTargetListener {
      */
     public void jumpToIndexPanel() {
         getContentPane().removeAll();
-        getContentPane().add(indexPanel);
+        getContentPane().add(this.indexPanel);
         getContentPane().revalidate();
         getContentPane().repaint();
     }
@@ -109,7 +109,7 @@ public class RootFrame extends JFrame implements DropTargetListener {
                     .collect(Collectors.toList());
             final FileReferService fileReferService = BeanManager.instance().getReference(FileReferService.class);
             fileReferService.batchImportFileRefer(fileAbsolutePaths);
-            indexPanel.repaintNewFileModels();
+            this.indexPanel.repaintNewFileModels();
         }
     }
 
@@ -128,7 +128,7 @@ public class RootFrame extends JFrame implements DropTargetListener {
                     .collect(Collectors.toList());
             final FileReferService fileReferService = BeanManager.instance().getReference(FileReferService.class);
             fileReferService.batchImportFileRefer(fileAbsolutePaths);
-            indexPanel.repaintNewFileModels();
+            this.indexPanel.repaintNewFileModels();
         }
     }
 

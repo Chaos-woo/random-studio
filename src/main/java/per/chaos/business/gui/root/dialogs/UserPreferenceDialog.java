@@ -123,7 +123,7 @@ public class UserPreferenceDialog extends JDialog {
                 ? null : (Long) textFieldScrollModeTransIntervalMs.getValue());
         scrollModeFontSizePreference.update(Objects.isNull(textFieldScrollModeFontSize.getValue())
                 ? null : Integer.parseInt(String.valueOf(textFieldScrollModeFontSize.getValue())));
-        scrollModeFontFamilyPreference.update(tempScrollModeFontFamily.get());
+        scrollModeFontFamilyPreference.update(this.tempScrollModeFontFamily.get());
         appThemePreference.update(ThemeEnum.getBy((String) comboBoxTheme.getSelectedItem()));
 
         EventBus.publish(new RefreshPreferenceCacheEvent());
@@ -166,7 +166,7 @@ public class UserPreferenceDialog extends JDialog {
     private void scrollModeFontFamily(ActionEvent e) {
         GuiUtils.chooseFont(AppContext.instance().getGuiContext().getRootFrame(),
                 "选择随机滚动模式字体",
-                (font) -> tempScrollModeFontFamily.set(font.getFamily())
+                (font) -> this.tempScrollModeFontFamily.set(font.getFamily())
         );
     }
 

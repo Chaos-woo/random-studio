@@ -33,7 +33,7 @@ public class FileReferService {
      */
     public void refreshMemoryFileReferCtx() {
         Map<FileListTypeEnum, List<RawFileRefer>> fileReferMapping = listAllFileReferByType();
-        mFileReferCtx.fileReferMapping(fileReferMapping);
+        this.mFileReferCtx.fileReferMapping(fileReferMapping);
     }
 
     /**
@@ -66,7 +66,7 @@ public class FileReferService {
      * @param typeEnum 文件列表类型
      */
     public List<RawFileRefer> listRawFileReferByType(FileListTypeEnum typeEnum) {
-        return mFileReferCtx.listRawFileReferByType(typeEnum).stream()
+        return this.mFileReferCtx.listRawFileReferByType(typeEnum).stream()
                 .sorted(Comparator.comparing(rawFileRefer -> rawFileRefer.getFileRefer().getId()))
                 .collect(Collectors.toList());
     }
@@ -77,7 +77,7 @@ public class FileReferService {
      * @param absolutePath 源文件路径
      */
     public FileCardCtx findRandomCardFileCtx(String absolutePath) {
-        return mFileReferCtx.findRandomCardFileContext(absolutePath);
+        return this.mFileReferCtx.findRandomCardFileContext(absolutePath);
     }
 
     /**
@@ -87,7 +87,7 @@ public class FileReferService {
      * @param typeEnum     文件列表类型
      */
     public void removeRawFileRefer(String absolutePath, FileListTypeEnum typeEnum) {
-        Long fileReferId = mFileReferCtx.removeRawFileRefer(absolutePath, typeEnum);
+        Long fileReferId = this.mFileReferCtx.removeRawFileRefer(absolutePath, typeEnum);
 
         if (Objects.nonNull(fileReferId)) {
             BeanManager.instance().executeMapper(FileReferMapper.class, (mapper) -> mapper.deleteById(fileReferId));
@@ -119,7 +119,7 @@ public class FileReferService {
     public void batchTransferRawFileRefer(List<String> absolutePaths,
                                           FileListTypeEnum sourceTypeEnum, FileListTypeEnum targetTypeEnum) {
 
-        final List<RawFileRefer> rawFileRefers = mFileReferCtx.transferRawFileRefer(absolutePaths, sourceTypeEnum, targetTypeEnum);
+        final List<RawFileRefer> rawFileRefers = this.mFileReferCtx.transferRawFileRefer(absolutePaths, sourceTypeEnum, targetTypeEnum);
         final List<String> fileReferHashPaths = rawFileRefers.stream()
                 .map(rawFileRefer -> rawFileRefer.getFileRefer().getPathHash())
                 .collect(Collectors.toList());
@@ -153,7 +153,7 @@ public class FileReferService {
                     entity.setUpdateTime(now);
                     return entity;
                 })
-                .filter(entity -> !mFileReferCtx.existFileRefer(new FilePathHash(entity.getAbsolutePath())))
+                .filter(entity -> !this.mFileReferCtx.existFileRefer(new FilePathHash(entity.getAbsolutePath())))
                 .collect(Collectors.toList());
 
         if (CollectionUtil.isEmpty(entities)) {

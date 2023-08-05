@@ -33,7 +33,7 @@ public class ClassScanner {
 
     public Set<Class<?>> doScanAllClasses() throws IOException, ClassNotFoundException {
         Set<Class<?>> classes = new LinkedHashSet<>();
-        String packageName = basePackage;
+        String packageName = this.basePackage;
 
         // 如果最后一个字符是“.”，则去掉
         if (packageName.endsWith(".")) {
@@ -51,7 +51,7 @@ public class ClassScanner {
             if ("file".equals(protocol)) {
                 // IDE中以文件形式运行
                 // 扫描文件夹中的包和类
-                doScanPackageClassesByFile(classes, packageName, filePath, recursive);
+                doScanPackageClassesByFile(classes, packageName, filePath, this.recursive);
             } else if ("jar".equals(protocol)) {
                 // jar包中运行
                 doScanPackageClassesByJar(classes, basePackageFilePath, url);
@@ -76,7 +76,7 @@ public class ClassScanner {
                     log.debug("获取匹配类：{}", jarEntryName);
                     String className = jarEntryName.substring(0, jarEntryName.length() - 6).replace('/', '.');
                     Class<?> loadClass = Thread.currentThread().getContextClassLoader().loadClass(className);
-                    if (classPredicate == null || classPredicate.test(loadClass)) {
+                    if (this.classPredicate == null || this.classPredicate.test(loadClass)) {
                         classes.add(loadClass);
                     }
                 }
@@ -106,8 +106,8 @@ public class ClassScanner {
                     return false;
                 }
 
-                if (packagePredicate != null) {
-                    return packagePredicate.test(packageName + "." + filename);
+                if (this.packagePredicate != null) {
+                    return this.packagePredicate.test(packageName + "." + filename);
                 }
                 return true;
             }
@@ -127,7 +127,7 @@ public class ClassScanner {
                 // 用当前类加载器加载 去除 fileName 的 .class 6 位
                 String className = file.getName().substring(0, file.getName().length() - 6);
                 Class<?> loadClass = Thread.currentThread().getContextClassLoader().loadClass(packageName + '.' + className);
-                if (classPredicate == null || classPredicate.test(loadClass)) {
+                if (this.classPredicate == null || this.classPredicate.test(loadClass)) {
                     classes.add(loadClass);
                 }
             }

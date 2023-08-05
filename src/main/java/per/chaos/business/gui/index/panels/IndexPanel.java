@@ -54,8 +54,8 @@ public class IndexPanel extends JPanel {
     public IndexPanel(RootFrame rootFrame) {
         initComponents();
 
-        jListFileTypeMapping.put(latestFiles, FileListTypeEnum.LATEST);
-        jListFileTypeMapping.put(fastQueryFiles, FileListTypeEnum.FAST_QUERY);
+        this.jListFileTypeMapping.put(latestFiles, FileListTypeEnum.LATEST);
+        this.jListFileTypeMapping.put(fastQueryFiles, FileListTypeEnum.FAST_QUERY);
 
         genericJListTransferHandler = new GenericJListTransferHandler<>(
                 serializable -> JSON.toJSONString(serializable),
@@ -68,8 +68,8 @@ public class IndexPanel extends JPanel {
                         final List<String> fileAbsolutePaths = rawFileRefers.stream()
                                 .map(fileRefer -> fileRefer.getFileRefer().getAbsolutePath())
                                 .collect(Collectors.toList());
-                        FileListTypeEnum sourceListTypeEnum = jListFileTypeMapping.get(sourceJList);
-                        FileListTypeEnum targetListTypeEnum = jListFileTypeMapping.get(targetJList);
+                        FileListTypeEnum sourceListTypeEnum = this.jListFileTypeMapping.get(sourceJList);
+                        FileListTypeEnum targetListTypeEnum = this.jListFileTypeMapping.get(targetJList);
                         fileReferService.batchTransferRawFileRefer(fileAbsolutePaths, sourceListTypeEnum, targetListTypeEnum);
                     } catch (Exception e) {
                         log.info("{}", ExceptionUtils.getStackTrace(e));
@@ -86,8 +86,8 @@ public class IndexPanel extends JPanel {
         latestFiles.setModel(listFilesModels(FileListTypeEnum.LATEST));
         fastQueryFiles.setModel(listFilesModels(FileListTypeEnum.FAST_QUERY));
 
-        latestFiles.setTransferHandler(genericJListTransferHandler);
-        fastQueryFiles.setTransferHandler(genericJListTransferHandler);
+        latestFiles.setTransferHandler(this.genericJListTransferHandler);
+        fastQueryFiles.setTransferHandler(this.genericJListTransferHandler);
 
         latestFiles.setCellRenderer(new RawFileReferCellPanel());
         latestFiles.setFixedCellHeight(50);

@@ -18,7 +18,7 @@ public class BeanConfigurator {
 
     public <T> Bean<T> createBean(final Class<T> beanClass) {
         try {
-            return beanManager.getBean(beanClass);
+            return this.beanManager.getBean(beanClass);
         } catch (final Exception e) {
             log.trace("Not found bean [beanClass={}], so to create it", beanClass);
         }
@@ -33,8 +33,8 @@ public class BeanConfigurator {
 
         log.debug("Adding a bean [name={}, class={}] to the bean manager", name, beanClass.getName());
 
-        final Bean<T> ret = new Bean<>(beanManager, beanClass, stereotypes, name);
-        beanManager.addBean(ret);
+        final Bean<T> ret = new Bean<>(this.beanManager, beanClass, stereotypes, name);
+        this.beanManager.addBean(ret);
 
         return ret;
     }

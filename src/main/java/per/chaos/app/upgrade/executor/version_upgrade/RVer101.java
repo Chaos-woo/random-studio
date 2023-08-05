@@ -46,9 +46,9 @@ public class RVer101 {
                 dataVersionEntity.setCreateTime(now);
                 dataVersionEntity.setUpdateTime(now);
                 mapper.insert(dataVersionEntity);
-                AppUpgrade.baseDataVersion = toVersion;
+                AppUpgrade.BASE_DATA_VERSION = toVersion;
             } else {
-                AppUpgrade.baseDataVersion = dataVersionEntity.getDataVersion();
+                AppUpgrade.BASE_DATA_VERSION = dataVersionEntity.getDataVersion();
             }
         });
     }

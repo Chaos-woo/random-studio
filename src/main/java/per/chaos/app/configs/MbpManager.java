@@ -87,7 +87,7 @@ public class MbpManager {
             // 注册*Mapper.xml文件
             registryMapperXml(configuration, "mappers");
 
-            sqlSessionFactory = builder.build(configuration);
+            this.sqlSessionFactory = builder.build(configuration);
         } catch (Exception e) {
             log.error(ExceptionUtils.getStackTrace(e));
         }
@@ -158,10 +158,10 @@ public class MbpManager {
     }
 
     public SqlSession getSqlSessionWithAutoCommit() throws IOException {
-        return sqlSessionFactory.openSession(true);
+        return this.sqlSessionFactory.openSession(true);
     }
 
     public SqlSession getSqlSessionWithoutAutoCommit() throws IOException {
-        return sqlSessionFactory.openSession(false);
+        return this.sqlSessionFactory.openSession(false);
     }
 }

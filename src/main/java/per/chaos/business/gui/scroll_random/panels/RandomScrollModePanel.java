@@ -42,8 +42,8 @@ public class RandomScrollModePanel extends JPanel {
             try {
                 PreferenceCache preferenceCache = AppContext.instance().getUserPreferenceCtx().getPreferenceCache();
                 Thread.sleep(preferenceCache.getScrollModeTransIntervalMs());
-                randomIndex = (int) (Math.random() * fileCardCtx.getRemainCards().size());
-                labelMainContentVal.setText(fileCardCtx.getRemainCards().get(randomIndex).getText());
+                this.randomIndex = (int) (Math.random() * fileCardCtx.getRemainCards().size());
+                labelMainContentVal.setText(fileCardCtx.getRemainCards().get(this.randomIndex).getText());
                 labelMainContentVal.setFont(new Font(preferenceCache.getScrollModeFontFamily(), Font.BOLD, preferenceCache.getScrollModeFontSize()));
             } catch (Exception e) {
                 throw new RuntimeException("Running random cards exception");
@@ -71,7 +71,7 @@ public class RandomScrollModePanel extends JPanel {
      * 随机滚动模式丢弃当前文字卡片,并继续滚动
      */
     private void dropResume(ActionEvent e) {
-        this.fileCardCtx.dropCard(randomIndex);
+        this.fileCardCtx.dropCard(this.randomIndex);
 
         this.resumableThread.resume();
         changeLabelCardPoolState();
@@ -102,7 +102,7 @@ public class RandomScrollModePanel extends JPanel {
      * 结束滚动模式,并回到主页
      */
     private void stop(ActionEvent e) {
-        resumableThread.stop();
+        this.resumableThread.stop();
         AppContext.instance().getGuiContext().getRootFrame().jumpToIndexPanel();
     }
 
@@ -113,13 +113,13 @@ public class RandomScrollModePanel extends JPanel {
      * @param promptText 提示文字,提示文字的样式为固定样式
      */
     private void changeLabelMainContentStyle(boolean scrolling, String promptText) {
-        this.labelMainContentVal.setText("");
+        labelMainContentVal.setText("");
         if (scrolling) {
             PreferenceCache preferenceCache = AppContext.instance().getUserPreferenceCtx().getPreferenceCache();
-            this.labelMainContentVal.setFont(new Font(preferenceCache.getScrollModeFontFamily(), Font.BOLD, preferenceCache.getScrollModeFontSize()));
+            labelMainContentVal.setFont(new Font(preferenceCache.getScrollModeFontFamily(), Font.BOLD, preferenceCache.getScrollModeFontSize()));
         } else {
-            this.labelMainContentVal.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 24));
-            this.labelMainContentVal.setText(StringUtils.isBlank(promptText) ? "" : promptText);
+            labelMainContentVal.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 24));
+            labelMainContentVal.setText(StringUtils.isBlank(promptText) ? "" : promptText);
         }
     }
 
@@ -127,10 +127,10 @@ public class RandomScrollModePanel extends JPanel {
      * 更新文字卡池状态数据
      */
     private void changeLabelCardPoolState() {
-        this.labelCardPoolVal.setText(
-                fileCardCtx.getRemainCards().size()
+        labelCardPoolVal.setText(
+                this.fileCardCtx.getRemainCards().size()
                 + "（剩余） / " +
-                (fileCardCtx.getRemainCards().size() + fileCardCtx.getUsedCards().size())
+                (this.fileCardCtx.getRemainCards().size() + this.fileCardCtx.getUsedCards().size())
                 + "（总数）"
         );
     }
@@ -150,7 +150,7 @@ public class RandomScrollModePanel extends JPanel {
      * 初始化组件的展示文案
      */
     private void initComponentTitle() {
-        this.labelOpenedFileVal.setText(this.fileCardCtx.getFileName());
+        labelOpenedFileVal.setText(this.fileCardCtx.getFileName());
         changeLabelCardPoolState();
         changeLabelMainContentStyle(false, "请点击『开始』吧~");
     }

@@ -17,13 +17,13 @@ import per.chaos.infrastructure.utils.EventBus;
  * 用户首选项设置上下文
  */
 public class UserPreferenceCtx {
-    private static final UserPreferenceCtx instance = new UserPreferenceCtx();
+    private static final UserPreferenceCtx INSTANCE = new UserPreferenceCtx();
 
     private UserPreferenceCtx() {
     }
 
     public static UserPreferenceCtx instance() {
-        return instance;
+        return INSTANCE;
     }
 
     /**
@@ -36,16 +36,16 @@ public class UserPreferenceCtx {
      * 首选项配置缓存初始化
      */
     public UserPreferenceCtx init() {
-        preferenceCache = new PreferenceCache();
+        this.preferenceCache = new PreferenceCache();
         final ScrollModeTransIntervalPreference scrollModeTransIntervalPreference = BeanManager.instance().getReference(ScrollModeTransIntervalPreference.class);
         final ScrollModeFontSizePreference scrollModeFontSizePreference = BeanManager.instance().getReference(ScrollModeFontSizePreference.class);
         final ScrollModeFontFamilyPreference scrollModeFontFamilyPreference = BeanManager.instance().getReference(ScrollModeFontFamilyPreference.class);
         final AppThemePreference appThemePreference = BeanManager.instance().getReference(AppThemePreference.class);
 
-        preferenceCache.setScrollModeTransIntervalMs(scrollModeTransIntervalPreference.get());
-        preferenceCache.setScrollModeFontSize(scrollModeFontSizePreference.get());
-        preferenceCache.setScrollModeFontFamily(scrollModeFontFamilyPreference.get());
-        preferenceCache.setTheme(appThemePreference.get());
+        this.preferenceCache.setScrollModeTransIntervalMs(scrollModeTransIntervalPreference.get());
+        this.preferenceCache.setScrollModeFontSize(scrollModeFontSizePreference.get());
+        this.preferenceCache.setScrollModeFontFamily(scrollModeFontFamilyPreference.get());
+        this.preferenceCache.setTheme(appThemePreference.get());
 
         EventBus.register(this);
 
@@ -65,10 +65,10 @@ public class UserPreferenceCtx {
         final AppThemePreference appThemePreference = BeanManager.instance().getReference(AppThemePreference.class);
         ThemeEnum newThemeEnum = appThemePreference.get();
 
-        preferenceCache.setScrollModeTransIntervalMs(scrollModeTransIntervalPreference.get());
-        preferenceCache.setScrollModeFontSize(scrollModeFontSizePreference.get());
-        preferenceCache.setScrollModeFontFamily(scrollModeFontFamilyPreference.get());
-        preferenceCache.setTheme(newThemeEnum);
+        this.preferenceCache.setScrollModeTransIntervalMs(scrollModeTransIntervalPreference.get());
+        this.preferenceCache.setScrollModeFontSize(scrollModeFontSizePreference.get());
+        this.preferenceCache.setScrollModeFontFamily(scrollModeFontFamilyPreference.get());
+        this.preferenceCache.setTheme(newThemeEnum);
 
         if (newThemeEnum != oldThemeEnum) {
             AppContext.instance().getGuiContext().updateTheme(newThemeEnum);

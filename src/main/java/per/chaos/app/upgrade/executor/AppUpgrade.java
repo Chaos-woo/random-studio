@@ -14,14 +14,14 @@ public class AppUpgrade {
     /**
      * 基础数据版本
      */
-    public static String baseDataVersion = "1.0.0";
+    public static String BASE_DATA_VERSION = "1.0.0";
 
     /**
      * 应用升级
      */
     public static void upgrade() {
         RVer101.perform();
-        switch (baseDataVersion) {
+        switch (BASE_DATA_VERSION) {
             case RVer102.fromVersion:
                 doUpgrade(RVer102::perform, RVer102.toVersion);
             default:
@@ -46,7 +46,7 @@ public class AppUpgrade {
         BeanManager.instance().executeMapper(DataVersionMapper.class,
                 (mapper) -> {
                     mapper.update(null, lambdaWrapper);
-                    AppUpgrade.baseDataVersion = newBaseUpgradeVersion;
+                    AppUpgrade.BASE_DATA_VERSION = newBaseUpgradeVersion;
                 }
         );
     }

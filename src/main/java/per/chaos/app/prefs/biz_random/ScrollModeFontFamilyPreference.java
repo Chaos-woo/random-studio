@@ -11,11 +11,11 @@ public class ScrollModeFontFamilyPreference implements IPreference<String> {
 
     @Override
     public String get() {
-        return AppPreference.root().get(key, "Microsoft YaHei UI");
+        return AppPreference.root().get(this.key, "Microsoft YaHei UI");
     }
 
     @Override
     public void update(String value) {
-        AppPreference.root().put(key, StringUtils.isBlank(value) ? "Microsoft YaHei UI" : value);
+        AppPreference.root().put(this.key, StringUtils.isBlank(value) ? "Microsoft YaHei UI" : value);
     }
 }

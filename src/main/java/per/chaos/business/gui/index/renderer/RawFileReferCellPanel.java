@@ -36,23 +36,23 @@ public class RawFileReferCellPanel extends JPanel implements ListCellRenderer<Ra
             labelFileExistTip.setOpaque(true);
             labelFileExistTip.setBackground(new Color(242, 140, 40));
             labelFileExistTip.setBorder(new EmptyBorder(4, 4, 4, 4));
-            panel2.add(labelFileExistTip);
+            fileTypePanel.add(labelFileExistTip);
         } else {
-            panel2.remove(labelFileExistTip);
+            fileTypePanel.remove(labelFileExistTip);
         }
 
         labelFilePath.setText(fileRefer.getAbsolutePath());
 
         if (isSelected) {
             setBackground(new Color(167, 199, 231));
-            panel1.setBackground(new Color(167, 199, 231));
-            panel2.setBackground(new Color(167, 199, 231));
-            panel3.setBackground(new Color(167, 199, 231));
+            fileNamePanel.setBackground(new Color(167, 199, 231));
+            fileTypePanel.setBackground(new Color(167, 199, 231));
+            filePathPanel.setBackground(new Color(167, 199, 231));
         } else {
             setBackground(new Color(242, 242, 242));
-            panel1.setBackground(new Color(242, 242, 242));
-            panel2.setBackground(new Color(242, 242, 242));
-            panel3.setBackground(new Color(242, 242, 242));
+            fileNamePanel.setBackground(new Color(242, 242, 242));
+            fileTypePanel.setBackground(new Color(242, 242, 242));
+            filePathPanel.setBackground(new Color(242, 242, 242));
         }
 
         setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -62,68 +62,68 @@ public class RawFileReferCellPanel extends JPanel implements ListCellRenderer<Ra
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
-        panel1 = new JPanel();
+        fileNamePanel = new JPanel();
         labelFileName = new JLabel();
-        panel2 = new JPanel();
+        fileTypePanel = new JPanel();
         labelFileSuffix = new JLabel();
         labelFileExistTip = new JLabel();
-        panel3 = new JPanel();
+        filePathPanel = new JPanel();
         labelFilePath = new JLabel();
 
         //======== this ========
         setLayout(new BorderLayout(10, 5));
 
-        //======== panel1 ========
+        //======== fileNamePanel ========
         {
-            panel1.setMinimumSize(new Dimension(36, 25));
-            panel1.setFont(new Font("Source Code Pro", Font.PLAIN, 18));
-            panel1.setLayout(new HorizontalLayout());
+            fileNamePanel.setMinimumSize(new Dimension(36, 25));
+            fileNamePanel.setFont(new Font("Source Code Pro", Font.PLAIN, 18));
+            fileNamePanel.setLayout(new HorizontalLayout());
 
             //---- labelFileName ----
             labelFileName.setFont(new Font("\u9ed1\u4f53", Font.PLAIN, 16));
             labelFileName.setText("name");
-            panel1.add(labelFileName);
+            fileNamePanel.add(labelFileName);
         }
-        add(panel1, BorderLayout.NORTH);
+        add(fileNamePanel, BorderLayout.NORTH);
 
-        //======== panel2 ========
+        //======== fileTypePanel ========
         {
-            panel2.setLayout(new HorizontalLayout(5));
+            fileTypePanel.setLayout(new HorizontalLayout(5));
 
             //---- labelFileSuffix ----
             labelFileSuffix.setFont(new Font("\u6977\u4f53", Font.PLAIN, 13));
             labelFileSuffix.setForeground(Color.white);
             labelFileSuffix.setText("suffix");
-            panel2.add(labelFileSuffix);
+            fileTypePanel.add(labelFileSuffix);
 
             //---- labelFileExistTip ----
             labelFileExistTip.setFont(new Font("\u6977\u4f53", Font.PLAIN, 13));
             labelFileExistTip.setForeground(Color.white);
             labelFileExistTip.setText("tip");
-            panel2.add(labelFileExistTip);
+            fileTypePanel.add(labelFileExistTip);
         }
-        add(panel2, BorderLayout.WEST);
+        add(fileTypePanel, BorderLayout.WEST);
 
-        //======== panel3 ========
+        //======== filePathPanel ========
         {
-            panel3.setMaximumSize(new Dimension(32767, 20));
-            panel3.setLayout(new HorizontalLayout());
+            filePathPanel.setMaximumSize(new Dimension(32767, 20));
+            filePathPanel.setLayout(new HorizontalLayout());
 
             //---- labelFilePath ----
             labelFilePath.setText("path");
-            panel3.add(labelFilePath);
+            filePathPanel.add(labelFilePath);
         }
-        add(panel3, BorderLayout.CENTER);
+        add(filePathPanel, BorderLayout.CENTER);
         // JFormDesigner - End of component initialization  //GEN-END:initComponents  @formatter:on
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
-    private JPanel panel1;
+    private JPanel fileNamePanel;
     private JLabel labelFileName;
-    private JPanel panel2;
+    private JPanel fileTypePanel;
     private JLabel labelFileSuffix;
     private JLabel labelFileExistTip;
-    private JPanel panel3;
+    private JPanel filePathPanel;
     private JLabel labelFilePath;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }
