@@ -36,6 +36,7 @@ public class RandomScrollModePanel extends JPanel {
         this.fileCardCtx = fileCardCtx;
 
         initComponents();
+        initButtonsStatus();
         initComponentTitle();
 
         this.resumableThread = new ResumableThreadManager(() -> {
@@ -52,12 +53,26 @@ public class RandomScrollModePanel extends JPanel {
     }
 
     /**
+     * 初始化按钮状态
+     */
+    private void initButtonsStatus() {
+        buttonRestart.setEnabled(false);
+        buttonPause.setEnabled(false);
+        buttonDropContinue.setEnabled(false);
+        buttonPutBackContinue.setEnabled(false);
+    }
+
+    /**
      * 随机滚动模式开始
      */
     private void start(ActionEvent e) {
         this.resumableThread.start();
         changeLabelMainContentStyle(true, null);
         changeLabelCardPoolState();
+
+        buttonStart.setEnabled(false);
+        buttonRestart.setEnabled(true);
+        buttonPause.setEnabled(true);
     }
 
     /**
@@ -65,6 +80,10 @@ public class RandomScrollModePanel extends JPanel {
      */
     private void pause(ActionEvent e) {
         this.resumableThread.pause();
+
+        buttonPause.setEnabled(false);
+        buttonDropContinue.setEnabled(true);
+        buttonPutBackContinue.setEnabled(true);
     }
 
     /**
@@ -72,6 +91,10 @@ public class RandomScrollModePanel extends JPanel {
      */
     private void dropResume(ActionEvent e) {
         this.fileCardCtx.dropCard(this.randomIndex);
+
+        buttonPause.setEnabled(true);
+        buttonDropContinue.setEnabled(false);
+        buttonPutBackContinue.setEnabled(false);
 
         this.resumableThread.resume();
         changeLabelCardPoolState();
@@ -84,6 +107,10 @@ public class RandomScrollModePanel extends JPanel {
      * 随机滚动模式放回当前文字卡片,并继续滚动
      */
     private void putBackResume(ActionEvent e) {
+        buttonPause.setEnabled(true);
+        buttonDropContinue.setEnabled(false);
+        buttonPutBackContinue.setEnabled(false);
+
         this.resumableThread.resume();
         changeLabelCardPoolState();
     }
@@ -96,6 +123,10 @@ public class RandomScrollModePanel extends JPanel {
         this.fileCardCtx.resetAllCards();
         this.resumableThread.start();
         changeLabelCardPoolState();
+
+        buttonPause.setEnabled(true);
+        buttonDropContinue.setEnabled(false);
+        buttonPutBackContinue.setEnabled(false);
     }
 
     /**
