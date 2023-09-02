@@ -5,7 +5,7 @@
 package per.chaos.business.gui.index.renderer;
 
 import org.jdesktop.swingx.HorizontalLayout;
-import per.chaos.infrastructure.runtime.models.files.entry.RawFileRefer;
+import per.chaos.infrastructure.runtime.models.files.entity.RawFileRefer;
 import per.chaos.infrastructure.storage.models.sqlite.FileReferEntity;
 
 import javax.swing.*;

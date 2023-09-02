@@ -6,19 +6,22 @@ package per.chaos.business.gui.index.panels;
 
 import cn.hutool.core.io.FileUtil;
 import com.alibaba.fastjson2.JSON;
+import com.formdev.flatlaf.extras.*;
 import com.google.common.eventbus.Subscribe;
 import lombok.extern.slf4j.Slf4j;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import per.chaos.app.context.AppContext;
-import per.chaos.app.context.BeanManager;
+import per.chaos.app.context.BeanContext;
 import per.chaos.business.RootFrame;
+import per.chaos.business.gui.index.dialogs.TTSManagerDialog;
 import per.chaos.business.gui.index.renderer.RawFileReferCellPanel;
 import per.chaos.business.services.FileReferService;
 import per.chaos.infrastructure.runtime.models.GenericJListTransferHandler;
 import per.chaos.infrastructure.runtime.models.events.DnDSystemFilesEvent;
 import per.chaos.infrastructure.runtime.models.events.RootWindowResizeEvent;
-import per.chaos.infrastructure.runtime.models.files.entry.RawFileRefer;
+import per.chaos.infrastructure.runtime.models.files.ctxs.FileCardCtx;
+import per.chaos.infrastructure.runtime.models.files.entity.RawFileRefer;
 import per.chaos.infrastructure.runtime.models.files.enums.FileListTypeEnum;
 import per.chaos.infrastructure.utils.EventBus;
 import per.chaos.infrastructure.utils.gui.GuiUtils;
@@ -57,13 +60,13 @@ public class IndexPanel extends JPanel {
         this.jListFileTypeMapping.put(latestFiles, FileListTypeEnum.LATEST);
         this.jListFileTypeMapping.put(fastQueryFiles, FileListTypeEnum.FAST_QUERY);
 
-        genericJListTransferHandler = new GenericJListTransferHandler<>(
+        this.genericJListTransferHandler = new GenericJListTransferHandler<>(
                 serializable -> JSON.toJSONString(serializable),
                 serializable -> JSON.parseObject(serializable, RawFileRefer.class),
                 (sourceJList, targetJList, transferableData) -> {
                     // 处理传输的数据
                     final List<RawFileRefer> rawFileRefers = transferableData;
-                    final FileReferService fileReferService = BeanManager.instance().getReference(FileReferService.class);
+                    final FileReferService fileReferService = BeanContext.i().getReference(FileReferService.class);
                     try {
                         final List<String> fileAbsolutePaths = rawFileRefers.stream()
                                 .map(fileRefer -> fileRefer.getFileRefer().getAbsolutePath())
@@ -115,7 +118,7 @@ public class IndexPanel extends JPanel {
                 .map(File::getAbsolutePath)
                 .collect(Collectors.toList());
 
-        final FileReferService fileReferService = BeanManager.instance().getReference(FileReferService.class);
+        final FileReferService fileReferService = BeanContext.i().getReference(FileReferService.class);
         fileReferService.batchImportFileRefer(absolutePaths);
         repaintNewFileModels();
     }
@@ -154,9 +157,9 @@ public class IndexPanel extends JPanel {
      *
      * @param listTypeEnum 列表类型
      */
-    public DefaultListModel<RawFileRefer> listFilesModels(FileListTypeEnum listTypeEnum) {
+    private DefaultListModel<RawFileRefer> listFilesModels(FileListTypeEnum listTypeEnum) {
         DefaultListModel<RawFileRefer> listModels = new DefaultListModel<>();
-        final FileReferService fileReferService = BeanManager.instance().getReference(FileReferService.class);
+        final FileReferService fileReferService = BeanContext.i().getReference(FileReferService.class);
         List<RawFileRefer> models = fileReferService.listRawFileReferByType(listTypeEnum);
         for (RawFileRefer model : models) {
             listModels.addElement(model);
@@ -180,7 +183,7 @@ public class IndexPanel extends JPanel {
      * @param listTypeEnum      文件引用所属列表类型
      */
     private void openFileWithScrollMode(RawFileRefer selectedFileRefer, FileListTypeEnum listTypeEnum) {
-        AppContext.instance().getGuiContext().getRootFrame().jumpToScrollModePanel(
+        AppContext.i().getGuiContext().getRootFrame().jumpToScrollModePanel(
                 selectedFileRefer.getFileRefer().getAbsolutePath(), listTypeEnum
         );
     }
@@ -192,7 +195,7 @@ public class IndexPanel extends JPanel {
      * @param listTypeEnum      文件引用所属列表类型
      */
     private void removeFileFromFileList(RawFileRefer selectedFileRefer, FileListTypeEnum listTypeEnum) {
-        final FileReferService fileReferService = BeanManager.instance().getReference(FileReferService.class);
+        final FileReferService fileReferService = BeanContext.i().getReference(FileReferService.class);
         fileReferService.removeRawFileRefer(selectedFileRefer.getFileRefer().getAbsolutePath(), listTypeEnum);
 
         repaintNewFileModels();
@@ -237,7 +240,7 @@ public class IndexPanel extends JPanel {
     private void moveFileBetweenAnyList(RawFileRefer selectedFileRefer,
                                         FileListTypeEnum sourceTypeEnum, FileListTypeEnum targetTypeEnum) {
 
-        final FileReferService fileReferService = BeanManager.instance().getReference(FileReferService.class);
+        final FileReferService fileReferService = BeanContext.i().getReference(FileReferService.class);
         fileReferService.transferRawFileRefer(selectedFileRefer.getFileRefer().getAbsolutePath(),
                 sourceTypeEnum, targetTypeEnum
         );
@@ -286,6 +289,14 @@ public class IndexPanel extends JPanel {
         EventBus.unregister(this);
     }
 
+    private void latestFilesTtsManage(ActionEvent e) {
+        final RawFileRefer selectedItem = GuiUtils.getJListSelectedItem(latestFiles, RawFileRefer.class);
+        final FileReferService fileReferService = BeanContext.i().getReference(FileReferService.class);
+        final FileCardCtx fileCardCtx = fileReferService.findRandomCardFileCtx(selectedItem.getFileRefer().getAbsolutePath());
+        TTSManagerDialog dialog = new TTSManagerDialog(AppContext.i().getGuiContext().getRootFrame(), fileCardCtx);
+        dialog.setVisible(true);
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         scrollPaneLatestFiles = new JScrollPane();
@@ -294,12 +305,13 @@ public class IndexPanel extends JPanel {
         fastQueryFiles = new JList();
         popupMenuLatestFile = new JPopupMenu();
         latestPopupMenuItemOpen = new JMenuItem();
-        latestPopupMenuItemRemove = new JMenuItem();
+        menuItemTtsManage = new JMenuItem();
         latestPopupMenuItemMove2FastUsed = new JMenuItem();
+        latestPopupMenuItemRemove = new JMenuItem();
         popupMenuFastQueryFile = new JPopupMenu();
         fastUsedPopupMenuItemOpen = new JMenuItem();
-        fastUsedPopupMenuItemRemove = new JMenuItem();
         fastUsedPopupMenuItemMove2Latest = new JMenuItem();
+        fastUsedPopupMenuItemRemove = new JMenuItem();
 
         //======== this ========
         setMinimumSize(new Dimension(900, 494));
@@ -366,42 +378,48 @@ public class IndexPanel extends JPanel {
         {
 
             //---- latestPopupMenuItemOpen ----
-            latestPopupMenuItemOpen.setText("\u4ee5\u6eda\u52a8\u968f\u673a\u6a21\u5f0f\u6253\u5f00");
+            latestPopupMenuItemOpen.setText("\u4ee5\u968f\u673a\u6eda\u52a8\u6a21\u5f0f\u6253\u5f00");
+            latestPopupMenuItemOpen.setIcon(new FlatSVGIcon("icons/application.svg"));
             latestPopupMenuItemOpen.addActionListener(e -> latestFilesPopupMenuItemOpen(e));
             popupMenuLatestFile.add(latestPopupMenuItemOpen);
-            popupMenuLatestFile.addSeparator();
 
-            //---- latestPopupMenuItemRemove ----
-            latestPopupMenuItemRemove.setText("\u4ece \"\u6700\u8fd1\u6253\u5f00\u7684\u6587\u4ef6...\" \u5220\u9664");
-            latestPopupMenuItemRemove.addActionListener(e -> latestFilesPopupMenuItemRemove(e));
-            popupMenuLatestFile.add(latestPopupMenuItemRemove);
+            //---- menuItemTtsManage ----
+            menuItemTtsManage.setText("TTS\u7ba1\u7406");
+            menuItemTtsManage.setIcon(new FlatSVGIcon("icons/application.svg"));
+            menuItemTtsManage.addActionListener(e -> latestFilesTtsManage(e));
+            popupMenuLatestFile.add(menuItemTtsManage);
             popupMenuLatestFile.addSeparator();
 
             //---- latestPopupMenuItemMove2FastUsed ----
             latestPopupMenuItemMove2FastUsed.setText("\u79fb\u5230 \"\u5feb\u901f\u67e5\u627e\u533a\u6587\u4ef6...\"");
             latestPopupMenuItemMove2FastUsed.addActionListener(e -> latestPopupMenuItemMove2FastQuery(e));
             popupMenuLatestFile.add(latestPopupMenuItemMove2FastUsed);
+
+            //---- latestPopupMenuItemRemove ----
+            latestPopupMenuItemRemove.setText("\u4ece \"\u6700\u8fd1\u6253\u5f00\u7684\u6587\u4ef6...\" \u5220\u9664");
+            latestPopupMenuItemRemove.addActionListener(e -> latestFilesPopupMenuItemRemove(e));
+            popupMenuLatestFile.add(latestPopupMenuItemRemove);
         }
 
         //======== popupMenuFastQueryFile ========
         {
 
             //---- fastUsedPopupMenuItemOpen ----
-            fastUsedPopupMenuItemOpen.setText("\u4ee5\u6eda\u52a8\u968f\u673a\u6a21\u5f0f\u6253\u5f00");
+            fastUsedPopupMenuItemOpen.setText("\u4ee5\u968f\u673a\u6eda\u52a8\u6a21\u5f0f\u6253\u5f00");
+            fastUsedPopupMenuItemOpen.setIcon(new FlatSVGIcon("icons/application.svg"));
             fastUsedPopupMenuItemOpen.addActionListener(e -> fastQueryFilesPopupMenuItemOpen(e));
             popupMenuFastQueryFile.add(fastUsedPopupMenuItemOpen);
-            popupMenuFastQueryFile.addSeparator();
-
-            //---- fastUsedPopupMenuItemRemove ----
-            fastUsedPopupMenuItemRemove.setText("\u4ece \"\u5feb\u901f\u67e5\u627e\u533a\u6587\u4ef6...\" \u5220\u9664");
-            fastUsedPopupMenuItemRemove.addActionListener(e -> fastQueryFilesPopupMenuItemRemove(e));
-            popupMenuFastQueryFile.add(fastUsedPopupMenuItemRemove);
             popupMenuFastQueryFile.addSeparator();
 
             //---- fastUsedPopupMenuItemMove2Latest ----
             fastUsedPopupMenuItemMove2Latest.setText("\u79fb\u5230 \"\u6700\u8fd1\u6253\u5f00\u7684\u6587\u4ef6...\"");
             fastUsedPopupMenuItemMove2Latest.addActionListener(e -> fastQueryPopupMenuItemMove2Latest(e));
             popupMenuFastQueryFile.add(fastUsedPopupMenuItemMove2Latest);
+
+            //---- fastUsedPopupMenuItemRemove ----
+            fastUsedPopupMenuItemRemove.setText("\u4ece \"\u5feb\u901f\u67e5\u627e\u533a\u6587\u4ef6...\" \u5220\u9664");
+            fastUsedPopupMenuItemRemove.addActionListener(e -> fastQueryFilesPopupMenuItemRemove(e));
+            popupMenuFastQueryFile.add(fastUsedPopupMenuItemRemove);
         }
         // JFormDesigner - End of component initialization  //GEN-END:initComponents  @formatter:on
     }
@@ -413,11 +431,12 @@ public class IndexPanel extends JPanel {
     private JList fastQueryFiles;
     private JPopupMenu popupMenuLatestFile;
     private JMenuItem latestPopupMenuItemOpen;
-    private JMenuItem latestPopupMenuItemRemove;
+    private JMenuItem menuItemTtsManage;
     private JMenuItem latestPopupMenuItemMove2FastUsed;
+    private JMenuItem latestPopupMenuItemRemove;
     private JPopupMenu popupMenuFastQueryFile;
     private JMenuItem fastUsedPopupMenuItemOpen;
-    private JMenuItem fastUsedPopupMenuItemRemove;
     private JMenuItem fastUsedPopupMenuItemMove2Latest;
+    private JMenuItem fastUsedPopupMenuItemRemove;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }

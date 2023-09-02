@@ -3,9 +3,10 @@ package per.chaos.app.upgrade.executor;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import lombok.extern.slf4j.Slf4j;
-import per.chaos.app.context.BeanManager;
+import per.chaos.app.context.BeanContext;
 import per.chaos.app.upgrade.executor.version_upgrade.RVer101;
 import per.chaos.app.upgrade.executor.version_upgrade.RVer102;
+import per.chaos.app.upgrade.executor.version_upgrade.RVer105;
 import per.chaos.infrastructure.mappers.DataVersionMapper;
 import per.chaos.infrastructure.storage.models.sqlite.DataVersionEntity;
 
@@ -24,11 +25,10 @@ public class AppUpgrade {
         switch (BASE_DATA_VERSION) {
             case RVer102.fromVersion:
                 doUpgrade(RVer102::perform, RVer102.toVersion);
-            default:
-                log.info("数据升级结束");
+            case RVer105.fromVersion:
+                doUpgrade(RVer105::perform, RVer105.toVersion);
         }
-
-
+        log.info("数据升级结束");
     }
 
     /**
@@ -43,7 +43,7 @@ public class AppUpgrade {
         LambdaUpdateWrapper<DataVersionEntity> lambdaWrapper = new UpdateWrapper<DataVersionEntity>().lambda();
         lambdaWrapper.set(DataVersionEntity::getDataVersion, newBaseUpgradeVersion)
                 .eq(DataVersionEntity::getId, 1L);
-        BeanManager.instance().executeMapper(DataVersionMapper.class,
+        BeanContext.i().executeMapper(DataVersionMapper.class,
                 (mapper) -> {
                     mapper.update(null, lambdaWrapper);
                     AppUpgrade.BASE_DATA_VERSION = newBaseUpgradeVersion;

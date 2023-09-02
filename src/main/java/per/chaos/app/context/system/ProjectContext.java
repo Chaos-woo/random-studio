@@ -2,7 +2,7 @@ package per.chaos.app.context.system;
 
 import cn.hutool.setting.dialect.Props;
 import lombok.Getter;
-import per.chaos.app.models.entry.Project;
+import per.chaos.app.models.entity.Project;
 
 /**
  * 项目信息上下文
@@ -12,7 +12,7 @@ public class ProjectContext {
 
     private ProjectContext() {}
 
-    public static ProjectContext instance() {
+    public static ProjectContext i() {
         return INSTANCE;
     }
 

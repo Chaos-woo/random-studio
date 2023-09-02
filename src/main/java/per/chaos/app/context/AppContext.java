@@ -15,9 +15,15 @@ public class AppContext {
     private AppContext() {
     }
 
-    public static AppContext instance() {
+    public static AppContext i() {
         return INSTANCE;
     }
+
+    /**
+     * 项目绝对路径
+     */
+    @Getter
+    private final String PROJECT_ROOT_ABSOLUTE_PATH = System.getProperty("user.dir");
 
     /**
      * 数据库管理上下文
@@ -47,9 +53,9 @@ public class AppContext {
      * 应用上下文初始化
      */
     public void init() {
-        this.projectContext = ProjectContext.instance().init();
-        this.dbManagerContext = DbManagerContext.instance().init();
-        this.userPreferenceCtx = UserPreferenceCtx.instance().init();
-        this.guiContext = GuiContext.instance().init();
+        this.projectContext = ProjectContext.i().init();
+        this.dbManagerContext = DbManagerContext.i().init();
+        this.userPreferenceCtx = UserPreferenceCtx.i().init();
+        this.guiContext = GuiContext.i().init();
     }
 }

@@ -1,9 +1,10 @@
 package per.chaos.app.upgrade.log;
 
 import lombok.Getter;
-import per.chaos.app.models.entry.UpgradeVersionLog;
+import per.chaos.app.models.entity.UpgradeVersionLog;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -19,6 +20,15 @@ public class AppUpgradeLog {
         upgradeLogs.add(rVer1p02UpgradeLog());
         upgradeLogs.add(rVer1p03UpgradeLog());
         upgradeLogs.add(rVer1p04UpgradeLog());
+        upgradeLogs.add(rVer1p05UpgradeLog());
+
+        Collections.reverse(upgradeLogs);
+    }
+
+    private static UpgradeVersionLog rVer1p05UpgradeLog() {
+        return UpgradeVersionLog.log("R.V.1.0.5", "支持TTS管理")
+                .featureLog("本次更新后可以为文本中的词句添加并播放音频啦~")
+                .importantFeatureLog("新增TTS管理面板，支持音频文件的管理");
     }
 
     private static UpgradeVersionLog rVer1p04UpgradeLog() {

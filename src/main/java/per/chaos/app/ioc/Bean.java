@@ -1,14 +1,14 @@
 package per.chaos.app.ioc;
 
 import lombok.Getter;
-import per.chaos.app.context.BeanManager;
+import per.chaos.app.context.BeanContext;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
 public class Bean<T> {
-    private final BeanManager beanManager;
+    private final BeanContext beanContext;
     @Getter
     private final Class<T> beanClass;
     @Getter
@@ -16,8 +16,8 @@ public class Bean<T> {
     @Getter
     private final String name;
 
-    public Bean(BeanManager beanManager, Class<T> beanClass, Set<Class<? extends Annotation>> stereotypes, String name) {
-        this.beanManager = beanManager;
+    public Bean(BeanContext beanContext, Class<T> beanClass, Set<Class<? extends Annotation>> stereotypes, String name) {
+        this.beanContext = beanContext;
         this.beanClass = beanClass;
         this.stereotypes = stereotypes;
         this.name = name;

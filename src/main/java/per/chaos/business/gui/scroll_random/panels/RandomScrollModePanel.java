@@ -41,7 +41,7 @@ public class RandomScrollModePanel extends JPanel {
 
         this.resumableThread = new ResumableThreadManager(() -> {
             try {
-                PreferenceCache preferenceCache = AppContext.instance().getUserPreferenceCtx().getPreferenceCache();
+                PreferenceCache preferenceCache = AppContext.i().getUserPreferenceCtx().getPreferenceCache();
                 Thread.sleep(preferenceCache.getScrollModeTransIntervalMs());
                 this.randomIndex = (int) (Math.random() * fileCardCtx.getRemainCards().size());
                 labelMainContentVal.setText(fileCardCtx.getRemainCards().get(this.randomIndex).getText());
@@ -134,7 +134,7 @@ public class RandomScrollModePanel extends JPanel {
      */
     private void stop(ActionEvent e) {
         this.resumableThread.stop();
-        AppContext.instance().getGuiContext().getRootFrame().jumpToIndexPanel();
+        AppContext.i().getGuiContext().getRootFrame().jumpToIndexPanel();
     }
 
     /**
@@ -146,7 +146,7 @@ public class RandomScrollModePanel extends JPanel {
     private void changeLabelMainContentStyle(boolean scrolling, String promptText) {
         labelMainContentVal.setText("");
         if (scrolling) {
-            PreferenceCache preferenceCache = AppContext.instance().getUserPreferenceCtx().getPreferenceCache();
+            PreferenceCache preferenceCache = AppContext.i().getUserPreferenceCtx().getPreferenceCache();
             labelMainContentVal.setFont(new Font(preferenceCache.getScrollModeFontFamily(), Font.BOLD, preferenceCache.getScrollModeFontSize()));
         } else {
             labelMainContentVal.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 24));

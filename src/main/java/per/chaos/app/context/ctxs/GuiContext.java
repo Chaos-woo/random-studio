@@ -25,7 +25,7 @@ public class GuiContext {
     private GuiContext() {
     }
 
-    public static GuiContext instance() {
+    public static GuiContext i() {
         return INSTANCE;
     }
 

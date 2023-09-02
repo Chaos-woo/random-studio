@@ -40,7 +40,7 @@ public class RVer102 {
                 "\"update_time\" datetime NOT NULL," +
                 "PRIMARY KEY (\"id\"));";
 
-        DbManagerContext dbManagerContext = AppContext.instance().getDbManagerContext();
+        DbManagerContext dbManagerContext = AppContext.i().getDbManagerContext();
         try {
             dbManagerContext.transaction((connection -> {
                 try {

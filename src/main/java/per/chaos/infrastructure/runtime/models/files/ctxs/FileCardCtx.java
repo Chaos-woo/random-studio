@@ -4,7 +4,8 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ObjUtil;
 import lombok.Getter;
 import lombok.Setter;
-import per.chaos.infrastructure.runtime.models.files.entry.FileCard;
+import per.chaos.infrastructure.runtime.models.files.entity.FileCard;
+import per.chaos.infrastructure.runtime.models.files.entity.RawFileRefer;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -36,7 +37,11 @@ public class FileCardCtx {
     @Setter
     private long fileSize;
 
-    public FileCardCtx() {
+    @Getter
+    private final RawFileRefer rawFileRefer;
+
+    public FileCardCtx(RawFileRefer rawFileRefer) {
+        this.rawFileRefer = rawFileRefer;
         this.remainCards = new ArrayList<>();
         this.usedCards = new ArrayList<>();
     }
@@ -53,10 +58,14 @@ public class FileCardCtx {
         Collections.shuffle(remainCards, new Random());
     }
 
+    public int getCardSize() {
+        return remainCards.size() + usedCards.size();
+    }
+
     public FileCardCtx copy() {
         resetAllCards();
 
-        FileCardCtx context = new FileCardCtx();
+        FileCardCtx context = new FileCardCtx(this.rawFileRefer);
         context.setFileHandler(FileUtil.file(this.fileAbsolutePath));
         context.setFileName(this.fileName);
         context.setFileAbsolutePath(this.fileAbsolutePath);

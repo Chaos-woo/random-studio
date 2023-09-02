@@ -38,7 +38,7 @@ public class GuiUtils {
      * @return 被选择的文件
      */
     public static List<File> chooseFile(boolean multiSelection, int fileSelectionMode) {
-        RootFrame rootFrame = AppContext.instance().getGuiContext().getRootFrame();
+        RootFrame rootFrame = AppContext.i().getGuiContext().getRootFrame();
         return chooseFile(rootFrame, multiSelection, fileSelectionMode, null);
     }
 
@@ -51,7 +51,7 @@ public class GuiUtils {
      * @return 被选择的文件
      */
     public static List<File> chooseFile(boolean multiSelection, int fileSelectionMode, FileFilter fileFilter) {
-        RootFrame rootFrame = AppContext.instance().getGuiContext().getRootFrame();
+        RootFrame rootFrame = AppContext.i().getGuiContext().getRootFrame();
         return chooseFile(rootFrame, multiSelection, fileSelectionMode, fileFilter);
     }
 

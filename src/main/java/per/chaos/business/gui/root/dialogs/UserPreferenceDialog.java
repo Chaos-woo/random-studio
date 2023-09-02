@@ -7,13 +7,13 @@ package per.chaos.business.gui.root.dialogs;
 import lombok.extern.slf4j.Slf4j;
 import net.miginfocom.swing.MigLayout;
 import per.chaos.app.context.AppContext;
-import per.chaos.app.context.BeanManager;
+import per.chaos.app.context.BeanContext;
 import per.chaos.app.context.system.UserPreferenceCtx;
 import per.chaos.app.models.enums.ThemeEnum;
-import per.chaos.app.prefs.biz_random.ScrollModeFontFamilyPreference;
-import per.chaos.app.prefs.biz_random.ScrollModeFontSizePreference;
-import per.chaos.app.prefs.biz_random.ScrollModeTransIntervalPreference;
-import per.chaos.app.prefs.system.AppThemePreference;
+import per.chaos.app.preference.business.random.preference.ScrollModeFontFamilyPreference;
+import per.chaos.app.preference.business.random.preference.ScrollModeFontSizePreference;
+import per.chaos.app.preference.business.random.preference.ScrollModeTransIntervalPreference;
+import per.chaos.app.preference.system.AppThemePreference;
 import per.chaos.infrastructure.runtime.models.events.RefreshPreferenceCacheEvent;
 import per.chaos.infrastructure.utils.EventBus;
 import per.chaos.infrastructure.utils.gui.GuiUtils;
@@ -58,7 +58,7 @@ public class UserPreferenceDialog extends JDialog {
         // 初始化按钮选项组的默认选择状态
         initButtonGroup();
 
-        final ScrollModeFontFamilyPreference scrollModeFontFamilyPreference = BeanManager.instance().getReference(ScrollModeFontFamilyPreference.class);
+        final ScrollModeFontFamilyPreference scrollModeFontFamilyPreference = BeanContext.i().getReference(ScrollModeFontFamilyPreference.class);
         tempScrollModeFontFamily.set(scrollModeFontFamilyPreference.get());
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -106,7 +106,7 @@ public class UserPreferenceDialog extends JDialog {
      */
     @SuppressWarnings("all")
     private void initTextFiledContext() {
-        final UserPreferenceCtx userPreferenceCtx = AppContext.instance().getUserPreferenceCtx();
+        final UserPreferenceCtx userPreferenceCtx = AppContext.i().getUserPreferenceCtx();
 
         textFieldScrollModeTransIntervalMs.setValue(userPreferenceCtx.getPreferenceCache().getScrollModeTransIntervalMs());
         textFieldScrollModeFontSize.setValue(userPreferenceCtx.getPreferenceCache().getScrollModeFontSize());
@@ -117,10 +117,10 @@ public class UserPreferenceDialog extends JDialog {
     }
 
     private void ok(ActionEvent e) {
-        final ScrollModeTransIntervalPreference scrollModeTransIntervalPreference = BeanManager.instance().getReference(ScrollModeTransIntervalPreference.class);
-        final ScrollModeFontSizePreference scrollModeFontSizePreference = BeanManager.instance().getReference(ScrollModeFontSizePreference.class);
-        final ScrollModeFontFamilyPreference scrollModeFontFamilyPreference = BeanManager.instance().getReference(ScrollModeFontFamilyPreference.class);
-        final AppThemePreference appThemePreference = BeanManager.instance().getReference(AppThemePreference.class);
+        final ScrollModeTransIntervalPreference scrollModeTransIntervalPreference = BeanContext.i().getReference(ScrollModeTransIntervalPreference.class);
+        final ScrollModeFontSizePreference scrollModeFontSizePreference = BeanContext.i().getReference(ScrollModeFontSizePreference.class);
+        final ScrollModeFontFamilyPreference scrollModeFontFamilyPreference = BeanContext.i().getReference(ScrollModeFontFamilyPreference.class);
+        final AppThemePreference appThemePreference = BeanContext.i().getReference(AppThemePreference.class);
 
         scrollModeTransIntervalPreference.update(Objects.isNull(textFieldScrollModeTransIntervalMs.getValue())
                 ? null : (Long) textFieldScrollModeTransIntervalMs.getValue());
@@ -167,7 +167,7 @@ public class UserPreferenceDialog extends JDialog {
     }
 
     private void scrollModeFontFamily(ActionEvent e) {
-        GuiUtils.chooseFont(AppContext.instance().getGuiContext().getRootFrame(),
+        GuiUtils.chooseFont(AppContext.i().getGuiContext().getRootFrame(),
                 "选择随机滚动模式字体",
                 (font) -> this.tempScrollModeFontFamily.set(font.getFamily())
         );

@@ -6,7 +6,7 @@ package per.chaos.business.gui.root.dialogs;
 
 import net.miginfocom.swing.MigLayout;
 import per.chaos.app.context.AppContext;
-import per.chaos.app.models.entry.Project;
+import per.chaos.app.models.entity.Project;
 import per.chaos.infrastructure.utils.formmater.AppFormatter;
 
 import javax.swing.*;
@@ -21,7 +21,7 @@ public class AppProjectDialog extends JDialog {
         super(owner);
         initComponents();
 
-        final Project project = AppContext.instance().getProjectContext().getProject();
+        final Project project = AppContext.i().getProjectContext().getProject();
         labelProjectName.setText(project.getName());
         labelProjectVersion.setText(AppFormatter.getAppVersion());
         labelProjectProfile.setText(project.getDescription());

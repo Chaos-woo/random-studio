@@ -4,10 +4,9 @@
 
 package per.chaos.business.gui.root.dialogs;
 
-import per.chaos.app.models.entry.UpgradeVersionLog;
+import per.chaos.app.models.entity.UpgradeVersionLog;
 import per.chaos.app.upgrade.log.AppUpgradeLog;
 import per.chaos.business.gui.root.renderer.AppUpgradeLogCellPanel;
-import per.chaos.infrastructure.runtime.models.files.entry.RawFileRefer;
 
 import java.awt.*;
 import javax.swing.*;

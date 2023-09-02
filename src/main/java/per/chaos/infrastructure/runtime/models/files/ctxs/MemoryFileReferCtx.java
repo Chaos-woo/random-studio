@@ -2,9 +2,9 @@ package per.chaos.infrastructure.runtime.models.files.ctxs;
 
 import cn.hutool.core.io.FileUtil;
 import lombok.Getter;
-import per.chaos.infrastructure.runtime.models.files.entry.FileCard;
-import per.chaos.infrastructure.runtime.models.files.entry.FilePathHash;
-import per.chaos.infrastructure.runtime.models.files.entry.RawFileRefer;
+import per.chaos.infrastructure.runtime.models.files.entity.FileCard;
+import per.chaos.infrastructure.runtime.models.files.entity.FilePathHash;
+import per.chaos.infrastructure.runtime.models.files.entity.RawFileRefer;
 import per.chaos.infrastructure.runtime.models.files.enums.FileListTypeEnum;
 
 import java.io.File;
@@ -121,8 +121,18 @@ public class MemoryFileReferCtx {
      * @param absolutePath 源文件路径
      */
     private FileCardCtx newFileCardCtx(String absolutePath) {
-        FileCardCtx fcCtx = new FileCardCtx();
         FilePathHash filePathHash = new FilePathHash(absolutePath);
+
+        final RawFileRefer rawFileRefer = fileReferMapping.values().stream()
+                .map(Map::entrySet)
+                .flatMap(Set::stream)
+                .filter(entry -> filePathHash.equals(entry.getKey()))
+                .map(Map.Entry::getValue)
+                .findFirst()
+                .orElse(null);
+
+        FileCardCtx fcCtx = new FileCardCtx(rawFileRefer);
+
         File file = FileUtil.file(absolutePath);
         fcCtx.setFileHandler(file);
         fcCtx.setFileSize(FileUtil.size(file));

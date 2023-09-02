@@ -16,7 +16,7 @@ public class DbManagerContext {
     private DbManagerContext() {
     }
 
-    public static DbManagerContext instance() {
+    public static DbManagerContext i() {
         return INSTANCE;
     }
 
@@ -24,7 +24,7 @@ public class DbManagerContext {
      * 数据库链接上下文初始化
      */
     public DbManagerContext init() {
-        MbpManager.instance().init();
+        MbpManager.i().init();
         return this;
     }
 
@@ -33,7 +33,7 @@ public class DbManagerContext {
      */
     public SqlSession getSqlSessionWithAutoCommit() {
         try {
-            return MbpManager.instance().getSqlSessionWithAutoCommit();
+            return MbpManager.i().getSqlSessionWithAutoCommit();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -44,7 +44,7 @@ public class DbManagerContext {
      */
     public SqlSession getSqlSessionWithoutAutoCommit() {
         try {
-            return MbpManager.instance().getSqlSessionWithoutAutoCommit();
+            return MbpManager.i().getSqlSessionWithoutAutoCommit();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

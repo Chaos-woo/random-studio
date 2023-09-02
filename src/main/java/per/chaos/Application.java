@@ -9,7 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import per.chaos.app.context.AppContext;
-import per.chaos.app.context.BeanManager;
+import per.chaos.app.context.BeanContext;
 import per.chaos.app.models.enums.ThemeEnum;
 import per.chaos.app.upgrade.executor.AppUpgrade;
 import per.chaos.business.RootFrame;
@@ -36,16 +36,16 @@ public class Application {
         }
 
         // 单例Bean初始化
-        BeanManager.instance().init("per.chaos");
+        BeanContext.i().init("per.chaos");
 
         // 应用上下文初始化
-        AppContext.instance().init();
+        AppContext.i().init();
 
         // 数据库程序升级
         AppUpgrade.upgrade();
 
         // 应用主题初始化
-        ThemeEnum themePref = AppContext.instance().getUserPreferenceCtx().getPreferenceCache().getTheme();
+        ThemeEnum themePref = AppContext.i().getUserPreferenceCtx().getPreferenceCache().getTheme();
         FlatLaf flatLafTheme;
         switch (themePref) {
             case LIGHT:
@@ -86,7 +86,7 @@ public class Application {
                 EventBus.publish(new RootWindowResizeEvent(width, height));
             });
 
-            AppContext.instance().getGuiContext().setRootFrame(frame);
+            AppContext.i().getGuiContext().setRootFrame(frame);
 
             frame.pack();
             frame.setLocationRelativeTo(null);
