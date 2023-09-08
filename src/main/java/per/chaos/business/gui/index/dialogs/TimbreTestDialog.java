@@ -55,7 +55,7 @@ public class TimbreTestDialog extends JDialog {
         this.fileCardCtx = fileCardCtx;
         this.selectableCallback = selectableCallback;
 
-        setTitle("TTS管理 - 音声选择 - " + this.fileCardCtx.getFileName());
+        setTitle("TTS管理 - 音声选择 - (" + this.fileCardCtx.getFileName() + ")");
         labelCurrentTimbre.setText(currentFileTimbre);
 
         final TTSManageService ttsManageService = BeanContext.i().getReference(TTSManageService.class);

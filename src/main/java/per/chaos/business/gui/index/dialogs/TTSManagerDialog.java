@@ -13,7 +13,8 @@ import org.jdesktop.swingx.VerticalLayout;
 import per.chaos.app.context.AppContext;
 import per.chaos.app.context.BeanContext;
 import per.chaos.business.gui.common.dialogs.SecondaryConfirmDialog;
-import per.chaos.business.gui.index.renderer.TTSCardCellPanel;
+import per.chaos.business.gui.index.renderer.tts_action.TTSCardActionTableCellEditor;
+import per.chaos.business.gui.index.renderer.tts_action.TTSCardActionTableCellRenderer;
 import per.chaos.business.services.FileReferService;
 import per.chaos.business.services.TTSManageService;
 import per.chaos.infrastructure.runtime.models.callback.TimbreDownloadComplete;
@@ -22,18 +23,24 @@ import per.chaos.infrastructure.runtime.models.files.ctxs.FileCardCtx;
 import per.chaos.infrastructure.runtime.models.files.entity.FileCard;
 import per.chaos.infrastructure.runtime.models.tts.entity.TTSVoice;
 import per.chaos.infrastructure.runtime.models.tts.entity.TTSVoicesDetail;
+import per.chaos.infrastructure.runtime.models.tts.jtable.TTSCardButtonAction;
+import per.chaos.infrastructure.runtime.models.tts.jtable.TTSFileCardTableModel;
+import per.chaos.infrastructure.services.audio.AudioPlayer;
 import per.chaos.infrastructure.storage.models.sqlite.FileReferEntity;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 /**
@@ -45,14 +52,9 @@ public class TTSManagerDialog extends JDialog {
     private final FileCardCtx fileCardCtx;
 
     /**
-     * 是否继续后台下载
+     * 后台是否有正在下载的任务
      */
-    private final AtomicBoolean continueBackgroundDownload = new AtomicBoolean(Boolean.TRUE);
-
-    /**
-     * 当前队列中是否有正在下载的任务
-     */
-    private final AtomicBoolean currentBackgroundDownloading = new AtomicBoolean(Boolean.FALSE);
+    private final AtomicBoolean backgroundDownloading = new AtomicBoolean(Boolean.FALSE);
 
     public TTSManagerDialog(Window owner, FileCardCtx fileCardCtx) {
         super(owner);
@@ -60,11 +62,38 @@ public class TTSManagerDialog extends JDialog {
 
         this.fileCardCtx = fileCardCtx;
 
-        setTitle("TTS管理 - " + this.fileCardCtx.getFileName());
+        setTitle("TTS管理 (" + this.fileCardCtx.getFileName() + ")");
         final TTSManageService ttsManageService = BeanContext.i().getReference(TTSManageService.class);
 
         refreshFileCardListModel();
-        ttsFileItems.setCellRenderer(new TTSCardCellPanel(this.fileCardCtx));
+
+        ttsTable.setDefaultRenderer(FileCard.class, new TTSCardActionTableCellRenderer());
+        ttsTable.setDefaultEditor(FileCard.class, new TTSCardActionTableCellEditor(new TTSCardButtonAction() {
+            @Override
+            public void play(FileCard fc, final AtomicReference<AudioPlayer> player) {
+                if (Objects.nonNull(player.get())) {
+                    player.get().close();
+                }
+
+                player.set(new AudioPlayer(fc.getAudioFile().getAbsolutePath()));
+                player.get().play((p) -> player.set(null));
+            }
+
+            @Override
+            public void download(FileCard fc) {
+                // TODO 考虑单个下载和全部下载之间的关系，可以用队列解耦？
+            }
+
+            @Override
+            public void delete(FileCard fc, final AtomicReference<AudioPlayer> player) {
+                final TTSManageService ttsManageService = BeanContext.i().getReference(TTSManageService.class);
+                final File ttsAudioFile = ttsManageService.getTTSAudioFile(fileCardCtx.getRawFileRefer().getFileRefer().getId(), fc.getText());
+                FileUtil.del(ttsAudioFile);
+                player.set(null);
+                refreshFileCardListModel();
+                changeTTSFileStatisticsLabel();
+            }
+        }));
 
         downloadProgressBar.setMinimum(0);
         downloadProgressBar.setMaximum(this.fileCardCtx.getCardSize());
@@ -78,7 +107,7 @@ public class TTSManagerDialog extends JDialog {
      */
     private void refreshFileCardListModel() {
         List<FileCard> fileCards = listFileCards();
-        ttsFileItems.setModel(listFileCardModels(fileCards));
+        ttsTable.setModel(new TTSFileCardTableModel(fileCards));
     }
 
     /**
@@ -205,7 +234,7 @@ public class TTSManagerDialog extends JDialog {
             }
 
             String specialTextTip = "";
-            if (currentBackgroundDownloading.get()) {
+            if (backgroundDownloading.get()) {
                 specialTextTip = "<br/><br/><font color=\"red\">注意，当前有正在下载的任务，若确认下载将会终止下载中的任务！</font>";
             }
 
@@ -236,10 +265,10 @@ public class TTSManagerDialog extends JDialog {
      */
     private void downloadAllTTSFilesByVoiceId(final Long voiceId) {
         final TTSManageService ttsManageService = BeanContext.i().getReference(TTSManageService.class);
-        if (currentBackgroundDownloading.get()) {
-            currentBackgroundDownloading.set(Boolean.FALSE);
+        if (backgroundDownloading.get()) {
+            backgroundDownloading.set(Boolean.FALSE);
             try {
-                Thread.sleep(1000L);
+                Thread.sleep(4000L);
             } catch (InterruptedException ex) {
                 // do nothing
             }
@@ -254,7 +283,7 @@ public class TTSManagerDialog extends JDialog {
 
         this.deleteAllTTSFile();
 
-        currentBackgroundDownloading.set(Boolean.TRUE);
+        backgroundDownloading.set(Boolean.TRUE);
         final AtomicInteger downloadProgress = new AtomicInteger(0);
         ttsManageService.backgroundDownloadTTSFiles(
                 voiceId,
@@ -290,8 +319,10 @@ public class TTSManagerDialog extends JDialog {
                     // 恢复界面操作按钮
                     buttonDeleteAll.setEnabled(true);
                     buttonDownload.setEnabled(true);
+
+                    backgroundDownloading.set(Boolean.FALSE);
                 },
-                () -> continueBackgroundDownload.get()
+                () -> backgroundDownloading.get()
         );
     }
 
@@ -320,12 +351,16 @@ public class TTSManagerDialog extends JDialog {
                     }
 
                     deleteAllTTSFile();
+                    changeTTSFileStatisticsLabel();
                 }
         );
 
         confirmDialog.setVisible(true);
     }
 
+    /**
+     * 根据当前音声下载全部TTS音频文件
+     */
     private void downloadAll(ActionEvent e) {
         FileReferEntity fileRefer = this.fileCardCtx.getRawFileRefer().getFileRefer();
         if (StringUtils.isBlank(fileRefer.getTimbre())) {
@@ -333,6 +368,36 @@ public class TTSManagerDialog extends JDialog {
         }
 
         downloadAllTTSFilesByVoiceId(Long.valueOf(fileRefer.getTimbre()));
+    }
+
+    private void thisWindowClosing(WindowEvent e) {
+        if (backgroundDownloading.get()) {
+            final String specialTextTip = "<html><body><p><font color=\"red\">注意，当前有正在下载的任务，若确认下载将会终止下载中的任务！</font></p></body><html>";
+            SecondaryConfirmDialog confirmDialog = new SecondaryConfirmDialog(
+                    AppContext.i().getGuiContext().getRootFrame(),
+                    "退出确认",
+                    specialTextTip,
+                    "是的",
+                    "点错了",
+                    (ret) -> {
+                        if (!ret) {
+                            return;
+                        }
+
+                        backgroundDownloading.set(Boolean.FALSE);
+                        try {
+                            Thread.sleep(4000L);
+                        } catch (InterruptedException ex) {
+                            // do nothing
+                        }
+
+                        this.dispose();
+                    }
+            );
+            confirmDialog.setVisible(true);
+        } else {
+            this.dispose();
+        }
     }
 
     private void initComponents() {
@@ -346,8 +411,8 @@ public class TTSManagerDialog extends JDialog {
         buttonDeleteAll = new JButton();
         buttonDownload = new JButton();
         contentPanel = new JPanel();
-        scrollPanelTts = new JScrollPane();
-        ttsFileItems = new JList();
+        ttsScrollPanel = new JScrollPane();
+        ttsTable = new JTable();
         footerPanel = new JPanel();
         timbreListPanel = new JPanel();
         labelCurrentTimbreTip = new JLabel();
@@ -358,6 +423,13 @@ public class TTSManagerDialog extends JDialog {
         //======== this ========
         setPreferredSize(new Dimension(600, 580));
         setResizable(false);
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                thisWindowClosing(e);
+            }
+        });
         var contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
 
@@ -415,11 +487,16 @@ public class TTSManagerDialog extends JDialog {
             {
                 contentPanel.setLayout(new BorderLayout());
 
-                //======== scrollPanelTts ========
+                //======== ttsScrollPanel ========
                 {
-                    scrollPanelTts.setViewportView(ttsFileItems);
+
+                    //---- ttsTable ----
+                    ttsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+                    ttsTable.setRowHeight(35);
+                    ttsTable.setRowMargin(3);
+                    ttsScrollPanel.setViewportView(ttsTable);
                 }
-                contentPanel.add(scrollPanelTts, BorderLayout.CENTER);
+                contentPanel.add(ttsScrollPanel, BorderLayout.CENTER);
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
 
@@ -476,8 +553,8 @@ public class TTSManagerDialog extends JDialog {
     private JButton buttonDeleteAll;
     private JButton buttonDownload;
     private JPanel contentPanel;
-    private JScrollPane scrollPanelTts;
-    private JList ttsFileItems;
+    private JScrollPane ttsScrollPanel;
+    private JTable ttsTable;
     private JPanel footerPanel;
     private JPanel timbreListPanel;
     private JLabel labelCurrentTimbreTip;

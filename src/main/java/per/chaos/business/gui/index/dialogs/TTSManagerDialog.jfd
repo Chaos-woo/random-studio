@@ -7,6 +7,8 @@ new FormModel {
 			name: "this"
 			"preferredSize": new java.awt.Dimension( 600, 580 )
 			"resizable": false
+			"defaultCloseOperation": 0
+			addEvent( new FormEvent( "java.awt.event.WindowListener", "windowClosing", "thisWindowClosing", true ) )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) {
 				"vgap": 10
 			} ) {
@@ -61,9 +63,12 @@ new FormModel {
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 					name: "contentPanel"
 					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-						name: "scrollPanelTts"
-						add( new FormComponent( "javax.swing.JList" ) {
-							name: "ttsFileItems"
+						name: "ttsScrollPanel"
+						add( new FormComponent( "javax.swing.JTable" ) {
+							name: "ttsTable"
+							"selectionMode": 0
+							"rowHeight": 35
+							"rowMargin": 3
 						} )
 					}, new FormLayoutConstraints( class java.lang.String ) {
 						"value": "Center"

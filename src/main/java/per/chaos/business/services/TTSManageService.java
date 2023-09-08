@@ -253,8 +253,4 @@ public class TTSManageService {
             downloadAllCompleteCallback.accept(new TimbreAllDownloadComplete());
         }
     }
-
-    public static void main(String[] args) {
-
-    }
 }

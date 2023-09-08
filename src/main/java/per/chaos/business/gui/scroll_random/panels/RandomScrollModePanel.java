@@ -169,7 +169,7 @@ public class RandomScrollModePanel extends JPanel {
     /**
      * 组件销毁前处理
      */
-    private void componentDispose(AncestorEvent e) {
+    private void thisComponentRemoved(AncestorEvent e) {
         if (Objects.nonNull(resumableThread)) {
             this.resumableThread.stop();
         }
@@ -225,7 +225,7 @@ public class RandomScrollModePanel extends JPanel {
             public void ancestorMoved(AncestorEvent e) {}
             @Override
             public void ancestorRemoved(AncestorEvent e) {
-                componentDispose(e);
+                thisComponentRemoved(e);
             }
         });
         setLayout(new BorderLayout(10, 10));

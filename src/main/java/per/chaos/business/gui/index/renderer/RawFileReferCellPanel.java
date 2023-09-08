@@ -4,6 +4,8 @@
 
 package per.chaos.business.gui.index.renderer;
 
+import cn.hutool.core.io.FileUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.jdesktop.swingx.HorizontalLayout;
 import per.chaos.infrastructure.runtime.models.files.entity.RawFileRefer;
 import per.chaos.infrastructure.storage.models.sqlite.FileReferEntity;
@@ -24,7 +26,7 @@ public class RawFileReferCellPanel extends JPanel implements ListCellRenderer<Ra
     @Override
     public Component getListCellRendererComponent(JList<? extends RawFileRefer> list, RawFileRefer value, int index, boolean isSelected, boolean cellHasFocus) {
         final FileReferEntity fileRefer = value.getFileRefer();
-        labelFileName.setText(fileRefer.getFileName());
+        labelFileName.setText(StringUtils.remove(fileRefer.getFileName(), "." + FileUtil.getSuffix(value.getFileHandler())));
 
         labelFileSuffix.setText(fileRefer.getSystemFileTypeEnum().getTagName());
         labelFileSuffix.setOpaque(true);

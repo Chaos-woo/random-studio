@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 /**
  * 内存TTS音声上下文列表
  */
+@SuppressWarnings("all")
 public class MemoryTTSVoiceCtx {
     /**
      * 音声列表

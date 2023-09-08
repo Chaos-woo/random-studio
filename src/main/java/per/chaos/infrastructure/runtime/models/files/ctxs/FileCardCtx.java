@@ -65,11 +65,11 @@ public class FileCardCtx {
     public FileCardCtx copy() {
         resetAllCards();
 
-        FileCardCtx context = new FileCardCtx(this.rawFileRefer);
-        context.setFileHandler(FileUtil.file(this.fileAbsolutePath));
-        context.setFileName(this.fileName);
-        context.setFileAbsolutePath(this.fileAbsolutePath);
-        context.getRemainCards().addAll(ObjUtil.cloneByStream(this.remainCards));
-        return context;
+        FileCardCtx ctx = new FileCardCtx(this.rawFileRefer);
+        ctx.setFileHandler(FileUtil.file(this.fileAbsolutePath));
+        ctx.setFileName(this.fileName);
+        ctx.setFileAbsolutePath(this.fileAbsolutePath);
+        ctx.getRemainCards().addAll(ObjUtil.cloneByStream(this.remainCards));
+        return ctx;
     }
 }
