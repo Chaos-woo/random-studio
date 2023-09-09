@@ -121,7 +121,12 @@ public class RandomScrollModePanel extends JPanel {
      */
     private void restart(ActionEvent e) {
         this.resumableThread.stop();
+
+        // 文字卡片重置
         this.fileCardCtx.resetAllCards();
+        // 打乱文字卡片
+        this.fileCardCtx.shuffleRemainCards();
+
         this.resumableThread.start();
         changeLabelCardPoolState();
 
@@ -161,9 +166,9 @@ public class RandomScrollModePanel extends JPanel {
     private void changeLabelCardPoolState() {
         labelCardPoolVal.setText(
                 this.fileCardCtx.getRemainCards().size()
-                + "（剩余） / " +
-                (this.fileCardCtx.getRemainCards().size() + this.fileCardCtx.getUsedCards().size())
-                + "（总数）"
+                        + "（剩余） / " +
+                        this.fileCardCtx.getCardSize()
+                        + "（总数）"
         );
     }
 

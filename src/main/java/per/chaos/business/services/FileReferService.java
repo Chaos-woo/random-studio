@@ -8,7 +8,7 @@ import per.chaos.app.context.BeanContext;
 import per.chaos.app.ioc.BeanReference;
 import per.chaos.infrastructure.mappers.FileReferMapper;
 import per.chaos.infrastructure.runtime.models.files.ctxs.FileCardCtx;
-import per.chaos.infrastructure.runtime.models.files.ctxs.MemoryFileReferCtx;
+import per.chaos.infrastructure.runtime.models.files.ctxs.MemoryFileReferCache;
 import per.chaos.infrastructure.runtime.models.files.entity.FilePathHash;
 import per.chaos.infrastructure.runtime.models.files.entity.RawFileRefer;
 import per.chaos.infrastructure.runtime.models.files.enums.FileListTypeEnum;
@@ -26,14 +26,14 @@ public class FileReferService {
     /**
      * 文件引用列表上下文缓存
      */
-    private final MemoryFileReferCtx mFileReferCtx = new MemoryFileReferCtx();
+    private final MemoryFileReferCache fileReferCache = new MemoryFileReferCache();
 
     /**
      * 刷新内存中的所有文件引用数据
      */
     public void refreshMemoryFileReferCtx() {
         Map<FileListTypeEnum, List<RawFileRefer>> fileReferMapping = listAllFileReferByType();
-        this.mFileReferCtx.fileReferMapping(fileReferMapping);
+        this.fileReferCache.fileReferMapping(fileReferMapping);
     }
 
     /**
@@ -66,7 +66,7 @@ public class FileReferService {
      * @param typeEnum 文件列表类型
      */
     public List<RawFileRefer> listRawFileReferByType(FileListTypeEnum typeEnum) {
-        return this.mFileReferCtx.listRawFileReferByType(typeEnum).stream()
+        return this.fileReferCache.listRawFileReferByType(typeEnum).stream()
                 .sorted(Comparator.comparing(rawFileRefer -> rawFileRefer.getFileRefer().getId()))
                 .collect(Collectors.toList());
     }
@@ -77,7 +77,7 @@ public class FileReferService {
      * @param absolutePath 源文件路径
      */
     public FileCardCtx findRandomCardFileCtx(String absolutePath) {
-        return this.mFileReferCtx.findRandomCardFileContext(absolutePath);
+        return this.fileReferCache.findRandomCardFileContext(absolutePath);
     }
 
     /**
@@ -87,7 +87,7 @@ public class FileReferService {
      * @param typeEnum     文件列表类型
      */
     public void removeRawFileRefer(String absolutePath, FileListTypeEnum typeEnum) {
-        Long fileReferId = this.mFileReferCtx.removeRawFileRefer(absolutePath, typeEnum);
+        Long fileReferId = this.fileReferCache.removeRawFileRefer(absolutePath, typeEnum);
 
         if (Objects.nonNull(fileReferId)) {
             BeanContext.i().executeMapper(FileReferMapper.class, (mapper) -> mapper.deleteById(fileReferId));
@@ -119,7 +119,7 @@ public class FileReferService {
     public void batchTransferRawFileRefer(List<String> absolutePaths,
                                           FileListTypeEnum sourceTypeEnum, FileListTypeEnum targetTypeEnum) {
 
-        final List<RawFileRefer> rawFileRefers = this.mFileReferCtx.transferRawFileRefer(absolutePaths, sourceTypeEnum, targetTypeEnum);
+        final List<RawFileRefer> rawFileRefers = this.fileReferCache.transferRawFileRefer(absolutePaths, sourceTypeEnum, targetTypeEnum);
         final List<String> fileReferHashPaths = rawFileRefers.stream()
                 .map(rawFileRefer -> rawFileRefer.getFileRefer().getPathHash())
                 .collect(Collectors.toList());
@@ -153,7 +153,7 @@ public class FileReferService {
                     entity.setUpdateTime(now);
                     return entity;
                 })
-                .filter(entity -> !this.mFileReferCtx.existFileRefer(new FilePathHash(entity.getAbsolutePath())))
+                .filter(entity -> !this.fileReferCache.existFileRefer(new FilePathHash(entity.getAbsolutePath())))
                 .collect(Collectors.toList());
 
         if (CollectionUtil.isEmpty(entities)) {

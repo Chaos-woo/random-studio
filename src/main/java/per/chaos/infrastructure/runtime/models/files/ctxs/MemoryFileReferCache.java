@@ -16,18 +16,17 @@ import java.util.stream.Collectors;
 /**
  * 内存文件引用列表上下文
  */
-public class MemoryFileReferCtx {
+@Getter
+public class MemoryFileReferCache {
     /**
      * 文件引用列表
      */
-    @Getter
     private final Map<FileListTypeEnum, Map<FilePathHash, RawFileRefer>> fileReferMapping = new ConcurrentHashMap<>();
 
     /**
      * 随机卡片文件上下文映射
      * [fileAbsolutePath]-FileCardCtx
      */
-    @Getter
     private final Map<FilePathHash, FileCardCtx> fileCardCtxMapping = new ConcurrentHashMap<>();
 
     /**
@@ -89,30 +88,30 @@ public class MemoryFileReferCtx {
             return null;
         }
 
-        FileCardCtx rcfContext;
+        FileCardCtx fileCardCtx;
         if (!fileCardCtxMapping.containsKey(filePathHash)) {
             // 创建新上下文
-            rcfContext = newFileCardCtx(absolutePath);
-            if (Objects.isNull(rcfContext)) {
+            fileCardCtx = newFileCardCtx(absolutePath);
+            if (Objects.isNull(fileCardCtx)) {
                 return null;
             }
-            fileCardCtxMapping.put(filePathHash, rcfContext);
-            return rcfContext.copy();
+            fileCardCtxMapping.put(filePathHash, fileCardCtx);
+            return fileCardCtx.originalCopy();
         }
 
-        rcfContext = fileCardCtxMapping.get(filePathHash);
+        fileCardCtx = fileCardCtxMapping.get(filePathHash);
         long size = FileUtil.size(FileUtil.file(absolutePath));
-        if (size != rcfContext.getFileSize()) {
+        if (size != fileCardCtx.getFileSize()) {
             // 文件大小发生变更时重新加载上下文
-            rcfContext = newFileCardCtx(absolutePath);
-            if (Objects.isNull(rcfContext)) {
+            fileCardCtx = newFileCardCtx(absolutePath);
+            if (Objects.isNull(fileCardCtx)) {
                 return null;
             }
-            fileCardCtxMapping.put(filePathHash, rcfContext);
-            return rcfContext.copy();
+            fileCardCtxMapping.put(filePathHash, fileCardCtx);
+            return fileCardCtx.originalCopy();
         }
 
-        return rcfContext.copy();
+        return fileCardCtx.originalCopy();
     }
 
     /**
@@ -152,7 +151,7 @@ public class MemoryFileReferCtx {
                     return cardModel;
                 })
                 .collect(Collectors.toList());
-        fcCtx.getRemainCards().addAll(cards);
+        fcCtx.initOriginalCards(cards);
         return fcCtx;
     }
 

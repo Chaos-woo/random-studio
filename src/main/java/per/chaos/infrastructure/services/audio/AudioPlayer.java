@@ -27,6 +27,8 @@ public class AudioPlayer {
                 // 网络流
                 URL url = new URL(path);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setConnectTimeout(5_000);
+                conn.setReadTimeout(10_000);
                 conn.setDoInput(true);
                 conn.connect();
                 inputStream = conn.getInputStream();

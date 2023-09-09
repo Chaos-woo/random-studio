@@ -13,19 +13,24 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-// 文件内容卡片上下文
+/**
+ * 文件内容卡片上下文
+ */
+
 public class FileCardCtx {
-    @Getter
     @Setter
+    @Getter
     private File fileHandler;
 
-    @Getter
     @Setter
+    @Getter
     private String fileName;
 
-    @Getter
     @Setter
+    @Getter
     private String fileAbsolutePath;
+    
+    private final List<FileCard> originalCards;
 
     @Getter
     private final List<FileCard> remainCards;
@@ -33,8 +38,8 @@ public class FileCardCtx {
     @Getter
     private final List<FileCard> usedCards;
 
-    @Getter
     @Setter
+    @Getter
     private long fileSize;
 
     @Getter
@@ -42,8 +47,19 @@ public class FileCardCtx {
 
     public FileCardCtx(RawFileRefer rawFileRefer) {
         this.rawFileRefer = rawFileRefer;
-        this.remainCards = new ArrayList<>();
-        this.usedCards = new ArrayList<>();
+        originalCards = new ArrayList<>();
+        remainCards = new ArrayList<>();
+        usedCards = new ArrayList<>();
+    }
+
+    public void initOriginalCards(List<FileCard> originalCards) {
+        this.originalCards.clear();
+        this.originalCards.addAll(originalCards);
+        resetAllCards();
+    }
+
+    public List<FileCard> getOriginalCards() {
+        return ObjUtil.cloneByStream(originalCards);
     }
 
     public void dropCard(int index) {
@@ -53,23 +69,26 @@ public class FileCardCtx {
     }
 
     public void resetAllCards() {
-        remainCards.addAll(usedCards);
+        remainCards.clear();
         usedCards.clear();
-        Collections.shuffle(remainCards, new Random());
+        
+        remainCards.addAll(ObjUtil.cloneByStream(originalCards));
     }
 
     public int getCardSize() {
-        return remainCards.size() + usedCards.size();
+        return originalCards.size();
     }
 
-    public FileCardCtx copy() {
-        resetAllCards();
-
-        FileCardCtx ctx = new FileCardCtx(this.rawFileRefer);
-        ctx.setFileHandler(FileUtil.file(this.fileAbsolutePath));
-        ctx.setFileName(this.fileName);
-        ctx.setFileAbsolutePath(this.fileAbsolutePath);
-        ctx.getRemainCards().addAll(ObjUtil.cloneByStream(this.remainCards));
+    public FileCardCtx originalCopy() {
+        FileCardCtx ctx = new FileCardCtx(rawFileRefer);
+        ctx.setFileHandler(FileUtil.file(fileAbsolutePath));
+        ctx.setFileName(fileName);
+        ctx.setFileAbsolutePath(fileAbsolutePath);
+        ctx.initOriginalCards(ObjUtil.cloneByStream(originalCards));
         return ctx;
+    }
+    
+    public void shuffleRemainCards() {
+        Collections.shuffle(remainCards, new Random());
     }
 }

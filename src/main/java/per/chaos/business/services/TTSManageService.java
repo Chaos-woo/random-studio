@@ -157,7 +157,7 @@ public class TTSManageService {
                                            final Consumer<TimbreAllDownloadComplete> downloadAllCompleteCallback,
                                            final Supplier<Boolean> continueDownload) {
         final FileReferEntity fileRefer = fileCardCtx.getRawFileRefer().getFileRefer();
-        List<String> textList = fileCardCtx.copy().getRemainCards().stream()
+        List<String> textList = fileCardCtx.getOriginalCards().stream()
                 .map(FileCard::getText)
                 .collect(Collectors.toList());
         ThreadUtil.execute(() -> downloadTTSFiles(

@@ -174,7 +174,7 @@ public class TTSManagerDialog extends JDialog {
      * 音声本地文件是否存在检查及获取
      */
     private List<FileCard> listFileCards() {
-        List<FileCard> fileCards = this.fileCardCtx.getRemainCards();
+        List<FileCard> fileCards = this.fileCardCtx.getOriginalCards();
         final TTSManageService ttsManageService = BeanContext.i().getReference(TTSManageService.class);
         Long fileReferDatabaseId = this.fileCardCtx.getRawFileRefer().getFileRefer().getId();
         for (FileCard model : fileCards) {
@@ -293,7 +293,7 @@ public class TTSManagerDialog extends JDialog {
                         return;
                     }
 
-                    for (FileCard fc : this.fileCardCtx.getRemainCards()) {
+                    for (FileCard fc : this.fileCardCtx.getOriginalCards()) {
                         if (fc.getText().equals(downloadResult.getText())) {
                             fc.setAudioFile(FileUtil.file(downloadResult.getFileAbsolutePath()));
                         }
@@ -359,7 +359,7 @@ public class TTSManagerDialog extends JDialog {
                         return;
                     }
 
-                    for (FileCard fileCard : this.fileCardCtx.getRemainCards()) {
+                    for (FileCard fileCard : this.fileCardCtx.getOriginalCards()) {
                         if (fileCard.getText().equals(downloadResult.getText())) {
                             fileCard.setAudioFile(FileUtil.file(downloadResult.getFileAbsolutePath()));
                         }
