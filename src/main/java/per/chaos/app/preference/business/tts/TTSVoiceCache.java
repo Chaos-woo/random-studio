@@ -6,7 +6,7 @@ import per.chaos.app.preference.IPreference;
 
 @BeanReference
 public class TTSVoiceCache implements IPreference<String> {
-    private final String key = "kTtsVoiceCache";
+    private final String key = "kTTSVoiceCache";
 
     @Override
     public String get() {

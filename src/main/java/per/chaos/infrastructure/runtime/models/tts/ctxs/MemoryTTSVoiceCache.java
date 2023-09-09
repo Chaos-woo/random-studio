@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  * 内存TTS音声上下文列表
  */
 @SuppressWarnings("all")
-public class MemoryTTSVoiceCtx {
+public class MemoryTTSVoiceCache {
     /**
      * 音声列表
      */
@@ -27,7 +27,7 @@ public class MemoryTTSVoiceCtx {
      * 音声id反向映射语言
      */
     @Getter
-    private final Map<Long, TTSVoice> idTtsVoiceMapping = new HashMap<>();
+    private final Map<Long, TTSVoice> idTTSVoiceMapping = new HashMap<>();
 
     /**
      * 刷新内存音声列表
@@ -48,7 +48,7 @@ public class MemoryTTSVoiceCtx {
             ttsVoice.setVoicesDetail(voicesDetails);
 
             for (TTSVoicesDetail voicesDetail : voicesDetails) {
-                this.idTtsVoiceMapping.put(voicesDetail.getId(), ttsVoice);
+                this.idTTSVoiceMapping.put(voicesDetail.getId(), ttsVoice);
             }
 
             this.ttsVoiceList.add(ttsVoice);
@@ -57,7 +57,7 @@ public class MemoryTTSVoiceCtx {
 
     private void clearAll() {
         this.ttsVoiceList.clear();
-        this.idTtsVoiceMapping.clear();
+        this.idTTSVoiceMapping.clear();
     }
 
     public TTSVoice findTTSVoice(String language) {

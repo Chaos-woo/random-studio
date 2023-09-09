@@ -15,7 +15,7 @@ import per.chaos.infrastructure.runtime.models.callback.TimbreAllDownloadComplet
 import per.chaos.infrastructure.runtime.models.callback.TimbreDownloadComplete;
 import per.chaos.infrastructure.runtime.models.files.ctxs.FileCardCtx;
 import per.chaos.infrastructure.runtime.models.files.entity.FileCard;
-import per.chaos.infrastructure.runtime.models.tts.ctxs.MemoryTTSVoiceCtx;
+import per.chaos.infrastructure.runtime.models.tts.ctxs.MemoryTTSVoiceCache;
 import per.chaos.infrastructure.runtime.models.tts.entity.CreateTTSOrderApiDTO;
 import per.chaos.infrastructure.runtime.models.tts.entity.TTSVoiceGetApiDTO;
 import per.chaos.infrastructure.storage.models.sqlite.FileReferEntity;
@@ -40,23 +40,23 @@ public class TTSManageService {
      * 音声列表上下文缓存
      */
     @Getter
-    private MemoryTTSVoiceCtx mTtsVoiceCtx = new MemoryTTSVoiceCtx();
+    private final MemoryTTSVoiceCache ttsVoiceCache = new MemoryTTSVoiceCache();
 
     public TTSManageService() {
-        refreshMemoryTtsVoiceCtx();
+        refreshMemoryTTSVoiceCache();
     }
 
-    private void refreshMemoryTtsVoiceCtx() {
-        ThreadUtil.execute(this::doRefreshMemoryTTSVoiceCtx);
+    private void refreshMemoryTTSVoiceCache() {
+        ThreadUtil.execute(this::doRefreshMemoryTTSVoiceCache);
     }
 
     /**
      * 实际执行刷新音声列表上下文缓存
      */
-    private void doRefreshMemoryTTSVoiceCtx() {
+    private void doRefreshMemoryTTSVoiceCache() {
         final TTSMakerApi apiClient = BeanContext.i().getReference(TTSMakerApi.class);
         final TTSVoiceGetApiDTO ret = apiClient.getTTSVoice();
-        this.mTtsVoiceCtx.ttsVoiceMapping(ret.getTtsVoicesDetail());
+        this.ttsVoiceCache.ttsVoiceMapping(ret.getTtsVoicesDetail());
     }
 
     /**

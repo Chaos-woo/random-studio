@@ -63,7 +63,7 @@ public class TimbreTestDialog extends JDialog {
         comboBoxLanguageList.setRenderer(new TTSLanguageCellPanel());
         comboBoxVoiceList.setRenderer(new TTSVoiceDetailCellPanel());
 
-        List<TTSVoice> ttsVoiceList = ttsManageService.getMTtsVoiceCtx().getTtsVoiceList();
+        List<TTSVoice> ttsVoiceList = ttsManageService.getTtsVoiceCache().getTtsVoiceList();
         ListComboBoxModel<TTSVoice> languageComboBoxModel = new ListComboBoxModel<>(ttsVoiceList);
         ListComboBoxModel<TTSVoicesDetail> voiceListComboBoxModel = new ListComboBoxModel<>(ttsVoiceList.get(0).getVoicesDetail());
         comboBoxLanguageList.setModel(languageComboBoxModel);
@@ -75,7 +75,7 @@ public class TimbreTestDialog extends JDialog {
      */
     private void languageComboBoxChangeLisener(String language) {
         final TTSManageService ttsManageService = BeanContext.i().getReference(TTSManageService.class);
-        TTSVoice ttsVoice = ttsManageService.getMTtsVoiceCtx().findTTSVoice(language);
+        TTSVoice ttsVoice = ttsManageService.getTtsVoiceCache().findTTSVoice(language);
         if (Objects.nonNull(ttsVoice)) {
             ListComboBoxModel<TTSVoicesDetail> voiceListComboBoxModel = new ListComboBoxModel<>(ttsVoice.getVoicesDetail());
             comboBoxVoiceList.setModel(voiceListComboBoxModel);

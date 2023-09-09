@@ -124,7 +124,7 @@ public class TTSManagerDialog extends JDialog {
         String voiceId = this.fileCardCtx.getRawFileRefer().getFileRefer().getTimbre();
         if (StringUtils.isNotBlank(voiceId)) {
             final TTSManageService ttsManageService = BeanContext.i().getReference(TTSManageService.class);
-            TTSVoice ttsVoice = ttsManageService.getMTtsVoiceCtx().getIdTtsVoiceMapping().getOrDefault(Long.valueOf(voiceId), null);
+            TTSVoice ttsVoice = ttsManageService.getTtsVoiceCache().getIdTTSVoiceMapping().getOrDefault(Long.valueOf(voiceId), null);
             if (Objects.nonNull(ttsVoice)) {
                 TTSVoicesDetail voiceDetail = ttsVoice.findByVoiceId(Long.valueOf(voiceId));
                 String text = ttsVoice.getLanguageTitle() + " - " + voiceDetail.getName();
@@ -217,7 +217,7 @@ public class TTSManagerDialog extends JDialog {
             String currentTimbreText = "无";
             String newTimbreText = "无";
             String currentVoiceId = this.fileCardCtx.getRawFileRefer().getFileRefer().getTimbre();
-            TTSVoice newTTSVoice = ttsManageService.getMTtsVoiceCtx().getIdTtsVoiceMapping().getOrDefault(ttsVoicesDetail.getId(), null);
+            TTSVoice newTTSVoice = ttsManageService.getTtsVoiceCache().getIdTTSVoiceMapping().getOrDefault(ttsVoicesDetail.getId(), null);
             if (Objects.nonNull(newTTSVoice)) {
                 TTSVoicesDetail voiceDetail = newTTSVoice.findByVoiceId(ttsVoicesDetail.getId());
                 String text = newTTSVoice.getLanguageTitle() + " - " + voiceDetail.getName();
@@ -225,7 +225,7 @@ public class TTSManagerDialog extends JDialog {
             }
 
             if (StringUtils.isNotBlank(currentVoiceId)) {
-                TTSVoice currentTTSVoice = ttsManageService.getMTtsVoiceCtx().getIdTtsVoiceMapping().getOrDefault(Long.valueOf(currentVoiceId), null);
+                TTSVoice currentTTSVoice = ttsManageService.getTtsVoiceCache().getIdTTSVoiceMapping().getOrDefault(Long.valueOf(currentVoiceId), null);
                 if (Objects.nonNull(currentTTSVoice)) {
                     TTSVoicesDetail voiceDetail = currentTTSVoice.findByVoiceId(Long.valueOf(currentVoiceId));
                     String text = currentTTSVoice.getLanguageTitle() + " - " + voiceDetail.getName();
