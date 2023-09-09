@@ -81,7 +81,7 @@ public class TTSManagerDialog extends JDialog {
 
             @Override
             public void download(FileCard fc) {
-                // TODO 考虑单个下载和全部下载之间的关系，可以用队列解耦？
+                downloadSingleTTSFiles(fc);
             }
 
             @Override
@@ -187,7 +187,7 @@ public class TTSManagerDialog extends JDialog {
     /**
      * 音声试听弹窗
      */
-    private void timbreTest(ActionEvent e) {
+    private void timbreTestAndDownloadTTS(ActionEvent e) {
         final Consumer<TimbreSelectable> timbreTestCallback = (timbreSelectable) -> {
             final TTSManageService ttsManageService = BeanContext.i().getReference(TTSManageService.class);
             final FileReferService fileReferService = BeanContext.i().getReference(FileReferService.class);
@@ -256,6 +256,65 @@ public class TTSManagerDialog extends JDialog {
                 timbreTestCallback
         );
         dialog.setVisible(true);
+    }
+
+    /**
+     * 下载单个TTS文件
+     */
+    private void downloadSingleTTSFiles(FileCard fileCard) {
+        FileReferEntity fileRefer = this.fileCardCtx.getRawFileRefer().getFileRefer();
+        if (StringUtils.isBlank(fileRefer.getTimbre())) {
+            return;
+        }
+
+        final Long voiceId = Long.valueOf(fileRefer.getTimbre());
+        final TTSManageService ttsManageService = BeanContext.i().getReference(TTSManageService.class);
+        if (backgroundDownloading.get()) {
+            backgroundDownloading.set(Boolean.FALSE);
+            try {
+                Thread.sleep(4000L);
+            } catch (InterruptedException ex) {
+                // do nothing
+            }
+        }
+
+        // 禁止界面操作按钮
+        this.buttonDeleteAll.setEnabled(false);
+        this.buttonDownload.setEnabled(false);
+
+        backgroundDownloading.set(Boolean.TRUE);
+        ttsManageService.backgroundDownloadTTSFile(
+                voiceId,
+                this.fileCardCtx,
+                fileCard,
+                (downloadResult) -> {
+                    log.info("下载完成，{}", downloadResult.getDownloadResult());
+                    if (TimbreDownloadComplete.DownloadResult.FAIL == downloadResult.getDownloadResult()) {
+                        return;
+                    }
+
+                    for (FileCard fc : this.fileCardCtx.getRemainCards()) {
+                        if (fc.getText().equals(downloadResult.getText())) {
+                            fc.setAudioFile(FileUtil.file(downloadResult.getFileAbsolutePath()));
+                        }
+                    }
+
+                    refreshFileCardListModel();
+                },
+                (downloadAllComplete) -> {
+                    this.downloadProgressBar.setToolTipText("当前暂无下载任务");
+                    this.downloadProgressBar.setString(" ");
+                    this.downloadProgressBar.setValue(0);
+                    changeTTSFileStatisticsLabel();
+
+                    // 恢复界面操作按钮
+                    buttonDeleteAll.setEnabled(true);
+                    buttonDownload.setEnabled(true);
+
+                    backgroundDownloading.set(Boolean.FALSE);
+                },
+                () -> backgroundDownloading.get()
+        );
     }
 
     /**
@@ -530,7 +589,7 @@ public class TTSManagerDialog extends JDialog {
                     buttonTimbreTest.setMaximumSize(new Dimension(200, 30));
                     buttonTimbreTest.setMinimumSize(new Dimension(200, 30));
                     buttonTimbreTest.setPreferredSize(new Dimension(200, 30));
-                    buttonTimbreTest.addActionListener(e -> timbreTest(e));
+                    buttonTimbreTest.addActionListener(e -> timbreTestAndDownloadTTS(e));
                     panel1.add(buttonTimbreTest);
                 }
                 footerPanel.add(panel1, BorderLayout.WEST);

@@ -21,6 +21,7 @@ import per.chaos.infrastructure.runtime.models.tts.entity.TTSVoiceGetApiDTO;
 import per.chaos.infrastructure.storage.models.sqlite.FileReferEntity;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -163,6 +164,34 @@ public class TTSManageService {
                 voiceId,
                 fileRefer.getId().toString(),
                 textList,
+                Boolean.TRUE,
+                downloadCompleteCallback,
+                downloadAllCompleteCallback,
+                continueDownload
+        ));
+    }
+
+    /**
+     * 后台下载TTS文件
+     *
+     * @param voiceId                  音声id
+     * @param fileCardCtx              文件卡片上下文
+     * @param downloadCompleteCallback 下载完成回调
+     * @param continueDownload         是否继续下载
+     */
+    public void backgroundDownloadTTSFile(Long voiceId,
+                                          FileCardCtx fileCardCtx,
+                                          FileCard fileCard,
+                                          final Consumer<TimbreDownloadComplete> downloadCompleteCallback,
+                                          final Consumer<TimbreAllDownloadComplete> downloadAllCompleteCallback,
+                                          final Supplier<Boolean> continueDownload) {
+        final FileReferEntity fileRefer = fileCardCtx.getRawFileRefer().getFileRefer();
+        List<String> textList = Collections.singletonList(fileCard.getText());
+        ThreadUtil.execute(() -> downloadTTSFiles(
+                voiceId,
+                fileRefer.getId().toString(),
+                textList,
+                Boolean.FALSE,
                 downloadCompleteCallback,
                 downloadAllCompleteCallback,
                 continueDownload
@@ -175,12 +204,14 @@ public class TTSManageService {
      * @param voiceId                  音声id
      * @param parentFolderName         父文件夹名
      * @param textList                 文字行列表
+     * @param clearParentFolder        下载前是否清空父文件夹
      * @param downloadCompleteCallback 下载完成回调
      * @param continueDownload         是否继续下载
      */
     public void downloadTTSFiles(Long voiceId,
                                  String parentFolderName,
                                  List<String> textList,
+                                 final boolean clearParentFolder,
                                  final Consumer<TimbreDownloadComplete> downloadCompleteCallback,
                                  final Consumer<TimbreAllDownloadComplete> downloadAllCompleteCallback,
                                  final Supplier<Boolean> continueDownload) {
@@ -191,7 +222,10 @@ public class TTSManageService {
         );
 
         // 删除原有的文件夹
-        FileUtil.del(parentFolderAbsolutePath);
+        if (clearParentFolder) {
+            FileUtil.del(parentFolderAbsolutePath);
+        }
+
         if (CollectionUtil.isEmpty(textList)) {
             if (Objects.nonNull(downloadAllCompleteCallback)) {
                 downloadAllCompleteCallback.accept(new TimbreAllDownloadComplete());
@@ -233,7 +267,7 @@ public class TTSManageService {
 
             if (!continueDownload.get()) {
                 // 不继续下载
-                return;
+                break;
             }
 
             try {
@@ -245,7 +279,7 @@ public class TTSManageService {
 
             if (!continueDownload.get()) {
                 // 不继续下载
-                return;
+                break;
             }
         }
 
