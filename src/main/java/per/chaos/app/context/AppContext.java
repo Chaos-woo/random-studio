@@ -23,7 +23,7 @@ public class AppContext {
      * 项目绝对路径
      */
     @Getter
-    private final String PROJECT_ROOT_ABSOLUTE_PATH = System.getProperty("user.dir");
+    private final String projectRootAbsolutePath = System.getProperty("user.dir");
 
     /**
      * 数据库管理上下文

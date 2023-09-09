@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "8.1.0.0.283" Java: "17.0.7" encoding: "UTF-8"
+JFDML JFormDesigner: "8.1.0.0.283" Java: "17.0.8" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -45,7 +45,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "menuItemInfo"
-						"text": "简介"
+						"text": "软件信息"
 						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "showAppProjectDialog", true ) )
 					} )
 					add( new FormComponent( "javax.swing.JMenuItem" ) {

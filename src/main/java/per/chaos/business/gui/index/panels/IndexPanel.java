@@ -289,8 +289,16 @@ public class IndexPanel extends JPanel {
         EventBus.unregister(this);
     }
 
-    private void latestFilesTtsManage(ActionEvent e) {
+    private void latestFilesTTSManage(ActionEvent e) {
         final RawFileRefer selectedItem = GuiUtils.getJListSelectedItem(latestFiles, RawFileRefer.class);
+        final FileReferService fileReferService = BeanContext.i().getReference(FileReferService.class);
+        final FileCardCtx fileCardCtx = fileReferService.findRandomCardFileCtx(selectedItem.getFileRefer().getAbsolutePath());
+        TTSManagerDialog dialog = new TTSManagerDialog(AppContext.i().getGuiContext().getRootFrame(), fileCardCtx);
+        dialog.setVisible(true);
+    }
+
+    private void fastQueryFilesTTSManage(ActionEvent e) {
+        final RawFileRefer selectedItem = GuiUtils.getJListSelectedItem(fastQueryFiles, RawFileRefer.class);
         final FileReferService fileReferService = BeanContext.i().getReference(FileReferService.class);
         final FileCardCtx fileCardCtx = fileReferService.findRandomCardFileCtx(selectedItem.getFileRefer().getAbsolutePath());
         TTSManagerDialog dialog = new TTSManagerDialog(AppContext.i().getGuiContext().getRootFrame(), fileCardCtx);
@@ -305,11 +313,12 @@ public class IndexPanel extends JPanel {
         fastQueryFiles = new JList();
         popupMenuLatestFile = new JPopupMenu();
         latestPopupMenuItemOpen = new JMenuItem();
-        menuItemTtsManage = new JMenuItem();
+        menuItemLatestPopupMenuTTSManage = new JMenuItem();
         latestPopupMenuItemMove2FastUsed = new JMenuItem();
         latestPopupMenuItemRemove = new JMenuItem();
         popupMenuFastQueryFile = new JPopupMenu();
         fastUsedPopupMenuItemOpen = new JMenuItem();
+        menuItemFastQueryPopupMenuTTSManage = new JMenuItem();
         fastUsedPopupMenuItemMove2Latest = new JMenuItem();
         fastUsedPopupMenuItemRemove = new JMenuItem();
 
@@ -383,11 +392,11 @@ public class IndexPanel extends JPanel {
             latestPopupMenuItemOpen.addActionListener(e -> latestFilesPopupMenuItemOpen(e));
             popupMenuLatestFile.add(latestPopupMenuItemOpen);
 
-            //---- menuItemTtsManage ----
-            menuItemTtsManage.setText("TTS\u7ba1\u7406");
-            menuItemTtsManage.setIcon(new FlatSVGIcon("icons/application.svg"));
-            menuItemTtsManage.addActionListener(e -> latestFilesTtsManage(e));
-            popupMenuLatestFile.add(menuItemTtsManage);
+            //---- menuItemLatestPopupMenuTTSManage ----
+            menuItemLatestPopupMenuTTSManage.setText("TTS\u7ba1\u7406");
+            menuItemLatestPopupMenuTTSManage.setIcon(new FlatSVGIcon("icons/application.svg"));
+            menuItemLatestPopupMenuTTSManage.addActionListener(e -> latestFilesTTSManage(e));
+            popupMenuLatestFile.add(menuItemLatestPopupMenuTTSManage);
             popupMenuLatestFile.addSeparator();
 
             //---- latestPopupMenuItemMove2FastUsed ----
@@ -409,6 +418,12 @@ public class IndexPanel extends JPanel {
             fastUsedPopupMenuItemOpen.setIcon(new FlatSVGIcon("icons/application.svg"));
             fastUsedPopupMenuItemOpen.addActionListener(e -> fastQueryFilesPopupMenuItemOpen(e));
             popupMenuFastQueryFile.add(fastUsedPopupMenuItemOpen);
+
+            //---- menuItemFastQueryPopupMenuTTSManage ----
+            menuItemFastQueryPopupMenuTTSManage.setText("TTS\u7ba1\u7406");
+            menuItemFastQueryPopupMenuTTSManage.setIcon(new FlatSVGIcon("icons/application.svg"));
+            menuItemFastQueryPopupMenuTTSManage.addActionListener(e -> fastQueryFilesTTSManage(e));
+            popupMenuFastQueryFile.add(menuItemFastQueryPopupMenuTTSManage);
             popupMenuFastQueryFile.addSeparator();
 
             //---- fastUsedPopupMenuItemMove2Latest ----
@@ -431,11 +446,12 @@ public class IndexPanel extends JPanel {
     private JList fastQueryFiles;
     private JPopupMenu popupMenuLatestFile;
     private JMenuItem latestPopupMenuItemOpen;
-    private JMenuItem menuItemTtsManage;
+    private JMenuItem menuItemLatestPopupMenuTTSManage;
     private JMenuItem latestPopupMenuItemMove2FastUsed;
     private JMenuItem latestPopupMenuItemRemove;
     private JPopupMenu popupMenuFastQueryFile;
     private JMenuItem fastUsedPopupMenuItemOpen;
+    private JMenuItem menuItemFastQueryPopupMenuTTSManage;
     private JMenuItem fastUsedPopupMenuItemMove2Latest;
     private JMenuItem fastUsedPopupMenuItemRemove;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on

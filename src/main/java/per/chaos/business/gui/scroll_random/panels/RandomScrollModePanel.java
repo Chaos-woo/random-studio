@@ -5,6 +5,7 @@
 package per.chaos.business.gui.scroll_random.panels;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.io.FileUtil;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.StringUtils;
 import org.jdesktop.swingx.HorizontalLayout;
@@ -181,7 +182,7 @@ public class RandomScrollModePanel extends JPanel {
      * 初始化组件的展示文案
      */
     private void initComponentTitle() {
-        labelOpenedFileVal.setText(this.fileCardCtx.getFileName());
+        labelOpenedFileVal.setText(StringUtils.remove(this.fileCardCtx.getFileName(), "." + FileUtil.getSuffix(this.fileCardCtx.getFileHandler())));
         changeLabelCardPoolState();
         changeLabelMainContentStyle(false, "请点击『开始』吧~");
     }

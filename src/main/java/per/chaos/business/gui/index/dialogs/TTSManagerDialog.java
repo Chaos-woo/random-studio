@@ -62,7 +62,7 @@ public class TTSManagerDialog extends JDialog {
 
         this.fileCardCtx = fileCardCtx;
 
-        setTitle("TTS管理 (" + this.fileCardCtx.getFileName() + ")");
+        setTitle("TTS管理 （" + this.fileCardCtx.getFileName() + "）");
         final TTSManageService ttsManageService = BeanContext.i().getReference(TTSManageService.class);
 
         refreshFileCardListModel();

@@ -265,7 +265,7 @@ public class RootFrame extends JFrame implements DropTargetListener {
                 menuAbout.addSeparator();
 
                 //---- menuItemInfo ----
-                menuItemInfo.setText("\u7b80\u4ecb");
+                menuItemInfo.setText("\u8f6f\u4ef6\u4fe1\u606f");
                 menuItemInfo.addActionListener(e -> showAppProjectDialog(e));
                 menuAbout.add(menuItemInfo);
 

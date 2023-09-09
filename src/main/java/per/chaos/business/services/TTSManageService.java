@@ -78,7 +78,7 @@ public class TTSManageService {
      */
     public String getFileReferTTSAbsolutePath(Long fileReferDatabaseId) {
         return fileAbsolutePath(
-                AppContext.i().getPROJECT_ROOT_ABSOLUTE_PATH(),
+                AppContext.i().getProjectRootAbsolutePath(),
                 TTS_FOLDER,
                 fileReferDatabaseId.toString()
         );
@@ -92,7 +92,7 @@ public class TTSManageService {
      */
     public boolean existTTSAudio(Long fileReferDatabaseId, String text) {
         final String absolutePath = fileAbsolutePath(
-                AppContext.i().getPROJECT_ROOT_ABSOLUTE_PATH(),
+                AppContext.i().getProjectRootAbsolutePath(),
                 TTS_FOLDER,
                 fileReferDatabaseId.toString(),
                 text + ".mp3"
@@ -108,7 +108,7 @@ public class TTSManageService {
      */
     public File getTTSAudioFile(Long fileReferDatabaseId, String text) {
         final String absolutePath = fileAbsolutePath(
-                AppContext.i().getPROJECT_ROOT_ABSOLUTE_PATH(),
+                AppContext.i().getProjectRootAbsolutePath(),
                 TTS_FOLDER,
                 fileReferDatabaseId.toString(),
                 text + ".mp3"
@@ -129,7 +129,7 @@ public class TTSManageService {
      */
     public File getTTSAudioFileWithAutoCreate(Long fileReferDatabaseId, String text) {
         final String absolutePath = fileAbsolutePath(
-                AppContext.i().getPROJECT_ROOT_ABSOLUTE_PATH(),
+                AppContext.i().getProjectRootAbsolutePath(),
                 TTS_FOLDER,
                 fileReferDatabaseId.toString(),
                 text + ".mp3"
@@ -185,7 +185,7 @@ public class TTSManageService {
                                  final Consumer<TimbreAllDownloadComplete> downloadAllCompleteCallback,
                                  final Supplier<Boolean> continueDownload) {
         final String parentFolderAbsolutePath = fileAbsolutePath(
-                AppContext.i().getPROJECT_ROOT_ABSOLUTE_PATH(),
+                AppContext.i().getProjectRootAbsolutePath(),
                 TTS_FOLDER,
                 parentFolderName
         );
