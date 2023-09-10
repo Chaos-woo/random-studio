@@ -15,6 +15,7 @@ import per.chaos.app.context.BeanContext;
 import per.chaos.business.gui.common.dialogs.SecondaryConfirmDialog;
 import per.chaos.business.gui.index.renderer.tts_action.TTSCardActionTableCellEditor;
 import per.chaos.business.gui.index.renderer.tts_action.TTSCardActionTableCellRenderer;
+import per.chaos.business.gui.root.dialogs.ProxySettingDialog;
 import per.chaos.business.services.FileReferService;
 import per.chaos.business.services.TTSManageService;
 import per.chaos.infrastructure.runtime.models.callback.TimbreDownloadComplete;
@@ -182,80 +183,6 @@ public class TTSManagerDialog extends JDialog {
             model.setAudioFile(ttsAudioFile);
         }
         return fileCards;
-    }
-
-    /**
-     * 音声试听弹窗
-     */
-    private void timbreTestAndDownloadTTS(ActionEvent e) {
-        final Consumer<TimbreSelectable> timbreTestCallback = (timbreSelectable) -> {
-            final TTSManageService ttsManageService = BeanContext.i().getReference(TTSManageService.class);
-            final FileReferService fileReferService = BeanContext.i().getReference(FileReferService.class);
-            final TTSVoicesDetail ttsVoicesDetail = timbreSelectable.getTtsVoicesDetail();
-
-            final Consumer<Boolean> secondaryConfirmCallback = (ret) -> {
-                if (!ret) {
-                    return;
-                }
-
-                // 确认后更新文件引用
-                FileReferEntity fileRefer = this.fileCardCtx.getRawFileRefer().getFileRefer();
-                fileRefer.setTimbre(ttsVoicesDetail.getId().toString());
-                fileReferService.batchUpdateFileRefer(Collections.singletonList(fileRefer));
-                // 更新当前文件引用音声标签
-                changeCurrentTimbreLabel();
-
-                // 开始下载
-                downloadAllTTSFilesByVoiceId(ttsVoicesDetail.getId());
-            };
-
-            final String confirmContentFormat = "<html><body><p>" +
-                    "当前音声：%s<br/>" +
-                    "新音声：%s<br/><br/>" +
-                    "<font color=\"red\">注意，更换音声时已有的音频文件将被全部删除！</font>" +
-                    "%s</p></body></html>";
-            String currentTimbreText = "无";
-            String newTimbreText = "无";
-            String currentVoiceId = this.fileCardCtx.getRawFileRefer().getFileRefer().getTimbre();
-            TTSVoice newTTSVoice = ttsManageService.getTtsVoiceCache().getIdTTSVoiceMapping().getOrDefault(ttsVoicesDetail.getId(), null);
-            if (Objects.nonNull(newTTSVoice)) {
-                TTSVoicesDetail voiceDetail = newTTSVoice.findByVoiceId(ttsVoicesDetail.getId());
-                String text = newTTSVoice.getLanguageTitle() + " - " + voiceDetail.getName();
-                newTimbreText = text;
-            }
-
-            if (StringUtils.isNotBlank(currentVoiceId)) {
-                TTSVoice currentTTSVoice = ttsManageService.getTtsVoiceCache().getIdTTSVoiceMapping().getOrDefault(Long.valueOf(currentVoiceId), null);
-                if (Objects.nonNull(currentTTSVoice)) {
-                    TTSVoicesDetail voiceDetail = currentTTSVoice.findByVoiceId(Long.valueOf(currentVoiceId));
-                    String text = currentTTSVoice.getLanguageTitle() + " - " + voiceDetail.getName();
-                    currentTimbreText = text;
-                }
-            }
-
-            String specialTextTip = "";
-            if (backgroundDownloading.get()) {
-                specialTextTip = "<br/><br/><font color=\"red\">注意，当前有正在下载的任务，若确认下载将会终止下载中的任务！</font>";
-            }
-
-            SecondaryConfirmDialog confirmDialog = new SecondaryConfirmDialog(
-                    AppContext.i().getGuiContext().getRootFrame(),
-                    "音声更换确认",
-                    String.format(confirmContentFormat, currentTimbreText, newTimbreText, specialTextTip),
-                    "是的",
-                    "点错了",
-                    secondaryConfirmCallback
-            );
-            confirmDialog.setVisible(true);
-        };
-
-        TimbreTestDialog dialog = new TimbreTestDialog(
-                AppContext.i().getGuiContext().getRootFrame(),
-                this.fileCardCtx,
-                labelCurrentTimbre.getText(),
-                timbreTestCallback
-        );
-        dialog.setVisible(true);
     }
 
     /**
@@ -459,6 +386,85 @@ public class TTSManagerDialog extends JDialog {
         }
     }
 
+    /**
+     * 音声试听更换
+     */
+    private void timbreTest(ActionEvent e) {
+        final Consumer<TimbreSelectable> timbreTestCallback = (timbreSelectable) -> {
+            final TTSManageService ttsManageService = BeanContext.i().getReference(TTSManageService.class);
+            final FileReferService fileReferService = BeanContext.i().getReference(FileReferService.class);
+            final TTSVoicesDetail ttsVoicesDetail = timbreSelectable.getTtsVoicesDetail();
+
+            final Consumer<Boolean> secondaryConfirmCallback = (ret) -> {
+                if (!ret) {
+                    return;
+                }
+
+                // 确认后更新文件引用
+                FileReferEntity fileRefer = this.fileCardCtx.getRawFileRefer().getFileRefer();
+                fileRefer.setTimbre(ttsVoicesDetail.getId().toString());
+                fileReferService.batchUpdateFileRefer(Collections.singletonList(fileRefer));
+                // 更新当前文件引用音声标签
+                changeCurrentTimbreLabel();
+
+                // 开始下载
+                downloadAllTTSFilesByVoiceId(ttsVoicesDetail.getId());
+            };
+
+            final String confirmContentFormat = "<html><body><p>" +
+                    "当前音声：%s<br/>" +
+                    "新音声：%s<br/><br/>" +
+                    "<font color=\"red\">注意，更换音声时已有的音频文件将被全部删除！</font>" +
+                    "%s</p></body></html>";
+            String currentTimbreText = "无";
+            String newTimbreText = "无";
+            String currentVoiceId = this.fileCardCtx.getRawFileRefer().getFileRefer().getTimbre();
+            TTSVoice newTTSVoice = ttsManageService.getTtsVoiceCache().getIdTTSVoiceMapping().getOrDefault(ttsVoicesDetail.getId(), null);
+            if (Objects.nonNull(newTTSVoice)) {
+                TTSVoicesDetail voiceDetail = newTTSVoice.findByVoiceId(ttsVoicesDetail.getId());
+                String text = newTTSVoice.getLanguageTitle() + " - " + voiceDetail.getName();
+                newTimbreText = text;
+            }
+
+            if (StringUtils.isNotBlank(currentVoiceId)) {
+                TTSVoice currentTTSVoice = ttsManageService.getTtsVoiceCache().getIdTTSVoiceMapping().getOrDefault(Long.valueOf(currentVoiceId), null);
+                if (Objects.nonNull(currentTTSVoice)) {
+                    TTSVoicesDetail voiceDetail = currentTTSVoice.findByVoiceId(Long.valueOf(currentVoiceId));
+                    String text = currentTTSVoice.getLanguageTitle() + " - " + voiceDetail.getName();
+                    currentTimbreText = text;
+                }
+            }
+
+            String specialTextTip = "";
+            if (backgroundDownloading.get()) {
+                specialTextTip = "<br/><br/><font color=\"red\">注意，当前有正在下载的任务，若确认下载将会终止下载中的任务！</font>";
+            }
+
+            SecondaryConfirmDialog confirmDialog = new SecondaryConfirmDialog(
+                    AppContext.i().getGuiContext().getRootFrame(),
+                    "音声更换确认",
+                    String.format(confirmContentFormat, currentTimbreText, newTimbreText, specialTextTip),
+                    "是的",
+                    "点错了",
+                    secondaryConfirmCallback
+            );
+            confirmDialog.setVisible(true);
+        };
+
+        TimbreTestDialog dialog = new TimbreTestDialog(
+                AppContext.i().getGuiContext().getRootFrame(),
+                this.fileCardCtx,
+                labelCurrentTimbre.getText(),
+                timbreTestCallback
+        );
+        dialog.setVisible(true);
+    }
+
+    private void proxySetting(ActionEvent e) {
+        ProxySettingDialog dialog = new ProxySettingDialog(this);
+        dialog.setVisible(true);
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         dialogPane = new JPanel();
@@ -469,6 +475,7 @@ public class TTSManagerDialog extends JDialog {
         ttsManageOperatePanel = new JPanel();
         buttonDeleteAll = new JButton();
         buttonDownload = new JButton();
+        buttonProxy = new JButton();
         contentPanel = new JPanel();
         ttsScrollPanel = new JScrollPane();
         ttsTable = new JTable();
@@ -537,6 +544,11 @@ public class TTSManagerDialog extends JDialog {
                     buttonDownload.setIcon(new FlatSVGIcon("icons/download.svg"));
                     buttonDownload.addActionListener(e -> downloadAll(e));
                     ttsManageOperatePanel.add(buttonDownload);
+
+                    //---- buttonProxy ----
+                    buttonProxy.setText("\u4ee3\u7406\u8bbe\u7f6e");
+                    buttonProxy.addActionListener(e -> proxySetting(e));
+                    ttsManageOperatePanel.add(buttonProxy);
                 }
                 headerPanel.add(ttsManageOperatePanel, BorderLayout.EAST);
             }
@@ -585,11 +597,8 @@ public class TTSManagerDialog extends JDialog {
                     panel1.setLayout(new HorizontalLayout());
 
                     //---- buttonTimbreTest ----
-                    buttonTimbreTest.setText("\u66f4\u6362\u5f53\u524d\u6587\u4ef6\u97f3\u58f0");
-                    buttonTimbreTest.setMaximumSize(new Dimension(200, 30));
-                    buttonTimbreTest.setMinimumSize(new Dimension(200, 30));
-                    buttonTimbreTest.setPreferredSize(new Dimension(200, 30));
-                    buttonTimbreTest.addActionListener(e -> timbreTestAndDownloadTTS(e));
+                    buttonTimbreTest.setText("\u97f3\u58f0\u66f4\u6362");
+                    buttonTimbreTest.addActionListener(e -> timbreTest(e));
                     panel1.add(buttonTimbreTest);
                 }
                 footerPanel.add(panel1, BorderLayout.WEST);
@@ -611,6 +620,7 @@ public class TTSManagerDialog extends JDialog {
     private JPanel ttsManageOperatePanel;
     private JButton buttonDeleteAll;
     private JButton buttonDownload;
+    private JButton buttonProxy;
     private JPanel contentPanel;
     private JScrollPane ttsScrollPanel;
     private JTable ttsTable;

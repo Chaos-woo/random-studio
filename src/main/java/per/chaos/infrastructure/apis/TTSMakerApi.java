@@ -6,7 +6,10 @@ import cn.hutool.http.HttpResponse;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import lombok.extern.slf4j.Slf4j;
+import per.chaos.app.context.BeanContext;
 import per.chaos.app.ioc.BeanReference;
+import per.chaos.app.preference.system.ProxyPreference;
+import per.chaos.configs.models.CustomProxy;
 import per.chaos.infrastructure.runtime.models.tts.entity.CreateTTSOrderApiDTO;
 import per.chaos.infrastructure.runtime.models.tts.entity.TTSVoiceGetApiDTO;
 
@@ -26,13 +29,34 @@ public class TTSMakerApi {
     private static final String DEFAULT_USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36";
 
     /**
+     * 校验TTSMaker API连通性
+     */
+    public void verifyTTSMakerApiConnectivity(CustomProxy proxy) {
+        final String uri = "https://api.ttsmaker.com/v1/get-voice-list?token=" + FREE_TOKEN;
+        try {
+            HttpRequest.get(uri)
+                    .header(Header.USER_AGENT, DEFAULT_USER_AGENT)
+                    .setHttpProxy(proxy.getHost(), proxy.getPort())
+                    .setConnectionTimeout(3_000)
+                    .setReadTimeout(5_000)
+                    .execute()
+                    .body();
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
+    }
+
+    /**
      * 获取TTS支持的声音
      */
     public TTSVoiceGetApiDTO getTTSVoice() {
+        final ProxyPreference proxyPreference = BeanContext.i().getReference(ProxyPreference.class);
+        CustomProxy proxy = proxyPreference.get();
+
         final String uri = "https://api.ttsmaker.com/v1/get-voice-list?token=" + FREE_TOKEN;
         String ret = HttpRequest.get(uri)
                 .header(Header.USER_AGENT, DEFAULT_USER_AGENT)
-                .setHttpProxy("127.0.0.1", 10809)
+                .setHttpProxy(proxy.getHost(), proxy.getPort())
                 .execute()
                 .body();
         log.debug("获取音声列表：{}", ret);
@@ -50,6 +74,9 @@ public class TTSMakerApi {
      * text_paragraph_pause_time: int = 0  // optional, auto insert audio paragraph pause time, range 500-5000, unit: millisecond, maximum 50 pauses can be inserted. If more than 50 pauses, all pauses will be canceled automatically. default 0
      */
     public CreateTTSOrderApiDTO createTTS(String text, Long voiceId) {
+        final ProxyPreference proxyPreference = BeanContext.i().getReference(ProxyPreference.class);
+        CustomProxy proxy = proxyPreference.get();
+
         final String uri = "https://api.ttsmaker.com/v1/create-tts-order";
         JSONObject oRequest = new JSONObject()
                 .fluentPut("token", FREE_TOKEN)
@@ -59,7 +86,7 @@ public class TTSMakerApi {
         HttpResponse response = HttpRequest.post(uri)
                 .header(Header.CONTENT_TYPE, "application/json; charset=utf-8")
                 .header(Header.USER_AGENT, DEFAULT_USER_AGENT)
-                .setHttpProxy("127.0.0.1", 10809)
+                .setHttpProxy(proxy.getHost(), proxy.getPort())
                 .body(oRequest.toJSONString())
                 .execute();
 

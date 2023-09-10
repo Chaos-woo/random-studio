@@ -40,6 +40,11 @@ new FormModel {
 						"text": "首选项"
 						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "showUserPreferenceDialog", true ) )
 					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "menuItem1"
+						"text": "代理设置"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "menuItemProxy", true ) )
+					} )
 					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
 						name: "separator2"
 					} )

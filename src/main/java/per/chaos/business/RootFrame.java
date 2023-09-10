@@ -13,10 +13,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import per.chaos.Application;
 import per.chaos.app.context.BeanContext;
 import per.chaos.business.gui.index.panels.IndexPanel;
-import per.chaos.business.gui.root.dialogs.AppHelpDocDialog;
-import per.chaos.business.gui.root.dialogs.AppProjectDialog;
-import per.chaos.business.gui.root.dialogs.AppUpgradeLogDialog;
-import per.chaos.business.gui.root.dialogs.UserPreferenceDialog;
+import per.chaos.business.gui.root.dialogs.*;
 import per.chaos.business.gui.scroll_random.panels.RandomScrollModePanel;
 import per.chaos.business.services.FileReferService;
 import per.chaos.infrastructure.runtime.models.events.DnDSystemFilesEvent;
@@ -208,6 +205,11 @@ public class RootFrame extends JFrame implements DropTargetListener {
         }
     }
 
+    private void menuItemProxy(ActionEvent e) {
+        ProxySettingDialog dialog = new ProxySettingDialog(this);
+        dialog.setVisible(true);
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         menuBar0 = new JMenuBar();
@@ -216,6 +218,7 @@ public class RootFrame extends JFrame implements DropTargetListener {
         menuItemBatchImportFiles = new JMenuItem();
         menuAbout = new JMenu();
         menuItemPref = new JMenuItem();
+        menuItem1 = new JMenuItem();
         menuItemInfo = new JMenuItem();
         menuItemHelp = new JMenuItem();
         menuItemUpdateLog = new JMenuItem();
@@ -262,6 +265,11 @@ public class RootFrame extends JFrame implements DropTargetListener {
                 menuItemPref.setText("\u9996\u9009\u9879");
                 menuItemPref.addActionListener(e -> showUserPreferenceDialog(e));
                 menuAbout.add(menuItemPref);
+
+                //---- menuItem1 ----
+                menuItem1.setText("\u4ee3\u7406\u8bbe\u7f6e");
+                menuItem1.addActionListener(e -> menuItemProxy(e));
+                menuAbout.add(menuItem1);
                 menuAbout.addSeparator();
 
                 //---- menuItemInfo ----
@@ -294,6 +302,7 @@ public class RootFrame extends JFrame implements DropTargetListener {
     private JMenuItem menuItemBatchImportFiles;
     private JMenu menuAbout;
     private JMenuItem menuItemPref;
+    private JMenuItem menuItem1;
     private JMenuItem menuItemInfo;
     private JMenuItem menuItemHelp;
     private JMenuItem menuItemUpdateLog;
