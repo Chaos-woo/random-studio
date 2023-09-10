@@ -11,9 +11,13 @@ import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.StringUtils;
 import org.jdesktop.swingx.HorizontalLayout;
 import per.chaos.app.context.AppContext;
+import per.chaos.app.context.BeanContext;
+import per.chaos.business.services.TTSManageService;
 import per.chaos.configs.models.PreferenceCache;
 import per.chaos.infrastructure.runtime.models.events.RootWindowResizeEvent;
 import per.chaos.infrastructure.runtime.models.files.ctxs.FileCardCtx;
+import per.chaos.infrastructure.runtime.models.files.entity.FileCard;
+import per.chaos.infrastructure.services.audio.AudioPlayer;
 import per.chaos.infrastructure.utils.EventBus;
 import per.chaos.infrastructure.utils.gui.GuiUtils;
 import per.chaos.infrastructure.utils.pausable_task.ResumableThreadManager;
@@ -25,6 +29,7 @@ import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.File;
 import java.util.Objects;
 
 /**
@@ -34,22 +39,24 @@ public class RandomScrollModePanel extends JPanel {
     private final FileCardCtx fileCardCtx;
     private final ResumableThreadManager resumableThread;
 
-    private int randomIndex;
+    private int randomIndex = -1;
 
     public RandomScrollModePanel(FileCardCtx fileCardCtx) {
-        this.fileCardCtx = fileCardCtx;
+        this.fileCardCtx = fileCardCtx.originalCopy();
 
         initComponents();
 
         initButtonsStatus();
         initComponentTitle();
+        initFileCardTTSAudio();
 
         this.resumableThread = new ResumableThreadManager(() -> {
             try {
                 PreferenceCache preferenceCache = AppContext.i().getUserPreferenceCtx().getPreferenceCache();
                 Thread.sleep(preferenceCache.getScrollModeTransIntervalMs());
-                this.randomIndex = (int) (Math.random() * fileCardCtx.getRemainCards().size());
-                labelMainContentVal.setText(fileCardCtx.getRemainCards().get(this.randomIndex).getText());
+                this.randomIndex = (int) (Math.random() * this.fileCardCtx.getRemainCards().size());
+                FileCard fileCard = this.fileCardCtx.getRemainCards().get(this.randomIndex);
+                labelMainContentVal.setText(fileCard.getText());
                 labelMainContentVal.setFont(new Font(preferenceCache.getScrollModeFontFamily(), Font.BOLD, preferenceCache.getScrollModeFontSize()));
             } catch (Exception e) {
                 throw new RuntimeException("Running random cards exception");
@@ -57,6 +64,16 @@ public class RandomScrollModePanel extends JPanel {
         });
 
         EventBus.register(this);
+    }
+
+    private void initFileCardTTSAudio() {
+        final Long rawFileReferId = this.fileCardCtx.getRawFileRefer().getFileRefer().getId();
+        final TTSManageService ttsManageService = BeanContext.i().getReference(TTSManageService.class);
+        for (FileCard fileCard : this.fileCardCtx.getRemainCards()) {
+            String text = fileCard.getText();
+            File ttsAudioFile = ttsManageService.getTTSAudioFile(rawFileReferId, text);
+            fileCard.setAudioFile(ttsAudioFile);
+        }
     }
 
     /**
@@ -67,6 +84,7 @@ public class RandomScrollModePanel extends JPanel {
         buttonPause.setEnabled(false);
         buttonDropContinue.setEnabled(false);
         buttonPutBackContinue.setEnabled(false);
+        buttonPlayAudio.setEnabled(false);
     }
 
     /**
@@ -119,6 +137,13 @@ public class RandomScrollModePanel extends JPanel {
         buttonPause.setEnabled(false);
         buttonDropContinue.setEnabled(true);
         buttonPutBackContinue.setEnabled(true);
+
+        if (this.randomIndex > -1) {
+            FileCard fileCard = this.fileCardCtx.getRemainCards().get(this.randomIndex);
+            if (Objects.nonNull(fileCard.getAudioFile())) {
+                buttonPlayAudio.setEnabled(true);
+            }
+        }
     }
 
     /**
@@ -130,6 +155,7 @@ public class RandomScrollModePanel extends JPanel {
         buttonPause.setEnabled(true);
         buttonDropContinue.setEnabled(false);
         buttonPutBackContinue.setEnabled(false);
+        buttonPlayAudio.setEnabled(false);
 
         this.resumableThread.resume();
         changeLabelCardPoolState();
@@ -145,6 +171,7 @@ public class RandomScrollModePanel extends JPanel {
         buttonPause.setEnabled(true);
         buttonDropContinue.setEnabled(false);
         buttonPutBackContinue.setEnabled(false);
+        buttonPlayAudio.setEnabled(false);
 
         this.resumableThread.resume();
         changeLabelCardPoolState();
@@ -160,6 +187,7 @@ public class RandomScrollModePanel extends JPanel {
         this.fileCardCtx.resetAllCards();
         // 打乱文字卡片
         this.fileCardCtx.shuffleRemainCards();
+        initFileCardTTSAudio();
 
         this.resumableThread.start();
         changeLabelCardPoolState();
@@ -167,6 +195,7 @@ public class RandomScrollModePanel extends JPanel {
         buttonPause.setEnabled(true);
         buttonDropContinue.setEnabled(false);
         buttonPutBackContinue.setEnabled(false);
+        buttonPlayAudio.setEnabled(false);
     }
 
     /**
@@ -226,6 +255,20 @@ public class RandomScrollModePanel extends JPanel {
         changeLabelMainContentStyle(false, "请点击『开始』吧~");
     }
 
+    /**
+     * 播放当前文字行TTS音频
+     * @param e
+     */
+    private void playAudio(ActionEvent e) {
+        FileCard fileCard = this.fileCardCtx.getRemainCards().get(this.randomIndex);
+        try {
+            AudioPlayer player = new AudioPlayer(fileCard.getAudioFile().getAbsolutePath());
+            player.play(null);
+        } catch (Exception ex) {
+            // do not anything
+        }
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         headerPanel = new JPanel();
@@ -255,6 +298,7 @@ public class RandomScrollModePanel extends JPanel {
         buttonPutBackContinue = new JButton();
         opPausePanel = new JPanel();
         buttonPause = new JButton();
+        buttonPlayAudio = new JButton();
 
         //======== this ========
         setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -420,7 +464,7 @@ public class RandomScrollModePanel extends JPanel {
                 //======== opContinuePanel ========
                 {
                     opContinuePanel.setLayout(new MigLayout(
-                        "fill,insets 0 5 0 5,hidemode 3,align center center,gap 5 0",
+                        "fillx,insets 0 5 5 5,hidemode 3,gap 5 0",
                         // columns
                         "[fill]" +
                         "[fill]",
@@ -429,13 +473,13 @@ public class RandomScrollModePanel extends JPanel {
 
                     //---- buttonDropContinue ----
                     buttonDropContinue.setText("\u5b8c\u6210\u5e76\u7ee7\u7eed\uff08\u4e0d\u653e\u56de\u5361\u6c60\uff09");
-                    buttonDropContinue.setPreferredSize(new Dimension(119, 45));
+                    buttonDropContinue.setPreferredSize(new Dimension(224, 45));
                     buttonDropContinue.addActionListener(e -> dropResume(e));
                     opContinuePanel.add(buttonDropContinue, "cell 0 0");
 
                     //---- buttonPutBackContinue ----
                     buttonPutBackContinue.setText("\u653e\u56de\u5e76\u7ee7\u7eed\uff08\u653e\u56de\u5361\u6c60\uff09");
-                    buttonPutBackContinue.setPreferredSize(new Dimension(119, 45));
+                    buttonPutBackContinue.setPreferredSize(new Dimension(224, 45));
                     buttonPutBackContinue.addActionListener(e -> putBackResume(e));
                     opContinuePanel.add(buttonPutBackContinue, "cell 1 0");
                 }
@@ -444,17 +488,24 @@ public class RandomScrollModePanel extends JPanel {
                 //======== opPausePanel ========
                 {
                     opPausePanel.setLayout(new MigLayout(
-                        "fill,insets 0 5 5 5,hidemode 3,align center center",
+                        "fill,insets 0 5 5 5,hidemode 3,align center center,gap 5 0",
                         // columns
+                        "[fill]" +
                         "[fill]",
                         // rows
                         "[grow,center]"));
 
                     //---- buttonPause ----
                     buttonPause.setText("\u6682\u505c\uff08\u67e5\u770b\u7ed3\u679c\uff09");
-                    buttonPause.setPreferredSize(new Dimension(164, 45));
+                    buttonPause.setPreferredSize(new Dimension(224, 45));
                     buttonPause.addActionListener(e -> pause(e));
                     opPausePanel.add(buttonPause, "cell 0 0");
+
+                    //---- buttonPlayAudio ----
+                    buttonPlayAudio.setText("\u64ad\u653e\u97f3\u9891\uff08TTS\uff09");
+                    buttonPlayAudio.setPreferredSize(new Dimension(224, 45));
+                    buttonPlayAudio.addActionListener(e -> playAudio(e));
+                    opPausePanel.add(buttonPlayAudio, "cell 1 0");
                 }
                 operatePanel3.add(opPausePanel, BorderLayout.SOUTH);
             }
@@ -492,5 +543,6 @@ public class RandomScrollModePanel extends JPanel {
     private JButton buttonPutBackContinue;
     private JPanel opPausePanel;
     private JButton buttonPause;
+    private JButton buttonPlayAudio;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }
