@@ -33,6 +33,7 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -320,6 +321,30 @@ public class IndexPanel extends JPanel {
         removeFileFromFileList(selectedItem, FileListTypeEnum.FAST_QUERY);
     }
 
+    private void latestFileOpenByExplore(ActionEvent e) {
+        final RawFileRefer selectedItem = GuiUtils.getJListSelectedItem(latestFiles, RawFileRefer.class);
+        if (Desktop.isDesktopSupported()) {
+            File parentFile = selectedItem.getFileHandler().getParentFile();
+            try {
+                Desktop.getDesktop().open(parentFile);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+    }
+
+    private void fastQueryFileOpenByExplore(ActionEvent e) {
+        final RawFileRefer selectedItem = GuiUtils.getJListSelectedItem(fastQueryFiles, RawFileRefer.class);
+        if (Desktop.isDesktopSupported()) {
+            File parentFile = selectedItem.getFileHandler().getParentFile();
+            try {
+                Desktop.getDesktop().open(parentFile);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         scrollPanelLatestFiles = new JScrollPane();
@@ -331,11 +356,13 @@ public class IndexPanel extends JPanel {
         menuItemLatestPopupMenuTTSManage = new JMenuItem();
         latestPopupMenuItemMove2FastUsed = new JMenuItem();
         latestPopupMenuItemRemove = new JMenuItem();
+        menuItemLatestFileOpenByExplore = new JMenuItem();
         popupMenuFastQueryFile = new JPopupMenu();
         fastUsedPopupMenuItemOpen = new JMenuItem();
         menuItemFastQueryPopupMenuTTSManage = new JMenuItem();
         fastUsedPopupMenuItemMove2Latest = new JMenuItem();
         fastUsedPopupMenuItemRemove = new JMenuItem();
+        menuItemFastQueryFileOpenByExplore = new JMenuItem();
         popupMenuLatestNonExistFile = new JPopupMenu();
         menuItem1 = new JMenuItem();
         popupMenuFastQueryNonExistFile = new JPopupMenu();
@@ -427,6 +454,12 @@ public class IndexPanel extends JPanel {
             latestPopupMenuItemRemove.setText("\u4ece \"\u6700\u8fd1\u6253\u5f00\u7684\u6587\u4ef6...\" \u5220\u9664");
             latestPopupMenuItemRemove.addActionListener(e -> latestFilesPopupMenuItemRemove(e));
             popupMenuLatestFile.add(latestPopupMenuItemRemove);
+            popupMenuLatestFile.addSeparator();
+
+            //---- menuItemLatestFileOpenByExplore ----
+            menuItemLatestFileOpenByExplore.setText("\u5728\u6587\u4ef6\u7ba1\u7406\u5668\u4e2d\u6253\u5f00");
+            menuItemLatestFileOpenByExplore.addActionListener(e -> latestFileOpenByExplore(e));
+            popupMenuLatestFile.add(menuItemLatestFileOpenByExplore);
         }
 
         //======== popupMenuFastQueryFile ========
@@ -454,6 +487,12 @@ public class IndexPanel extends JPanel {
             fastUsedPopupMenuItemRemove.setText("\u4ece \"\u5feb\u901f\u67e5\u627e\u533a\u6587\u4ef6...\" \u5220\u9664");
             fastUsedPopupMenuItemRemove.addActionListener(e -> fastQueryFilesPopupMenuItemRemove(e));
             popupMenuFastQueryFile.add(fastUsedPopupMenuItemRemove);
+            popupMenuFastQueryFile.addSeparator();
+
+            //---- menuItemFastQueryFileOpenByExplore ----
+            menuItemFastQueryFileOpenByExplore.setText("\u5728\u6587\u4ef6\u7ba1\u7406\u5668\u4e2d\u6253\u5f00");
+            menuItemFastQueryFileOpenByExplore.addActionListener(e -> fastQueryFileOpenByExplore(e));
+            popupMenuFastQueryFile.add(menuItemFastQueryFileOpenByExplore);
         }
 
         //======== popupMenuLatestNonExistFile ========
@@ -486,11 +525,13 @@ public class IndexPanel extends JPanel {
     private JMenuItem menuItemLatestPopupMenuTTSManage;
     private JMenuItem latestPopupMenuItemMove2FastUsed;
     private JMenuItem latestPopupMenuItemRemove;
+    private JMenuItem menuItemLatestFileOpenByExplore;
     private JPopupMenu popupMenuFastQueryFile;
     private JMenuItem fastUsedPopupMenuItemOpen;
     private JMenuItem menuItemFastQueryPopupMenuTTSManage;
     private JMenuItem fastUsedPopupMenuItemMove2Latest;
     private JMenuItem fastUsedPopupMenuItemRemove;
+    private JMenuItem menuItemFastQueryFileOpenByExplore;
     private JPopupMenu popupMenuLatestNonExistFile;
     private JMenuItem menuItem1;
     private JPopupMenu popupMenuFastQueryNonExistFile;

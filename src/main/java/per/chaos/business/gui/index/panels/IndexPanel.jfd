@@ -74,6 +74,14 @@ new FormModel {
 				"text": "从 \"最近打开的文件...\" 删除"
 				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "latestFilesPopupMenuItemRemove", true ) )
 			} )
+			add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
+				name: "separator2"
+			} )
+			add( new FormComponent( "javax.swing.JMenuItem" ) {
+				name: "menuItemLatestFileOpenByExplore"
+				"text": "在文件管理器中打开"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "latestFileOpenByExplore", true ) )
+			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 35, 450 )
 		} )
@@ -103,6 +111,14 @@ new FormModel {
 				name: "fastUsedPopupMenuItemRemove"
 				"text": "从 \"快速查找区文件...\" 删除"
 				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "fastQueryFilesPopupMenuItemRemove", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
+				name: "separator4"
+			} )
+			add( new FormComponent( "javax.swing.JMenuItem" ) {
+				name: "menuItemFastQueryFileOpenByExplore"
+				"text": "在文件管理器中打开"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "fastQueryFileOpenByExplore", true ) )
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 260, 450 )
