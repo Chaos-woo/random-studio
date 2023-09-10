@@ -116,4 +116,15 @@ public class GuiUtils {
         dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         dialog.setVisible(true);
     }
+
+    /**
+     * 根据字体获取文字宽度
+     *
+     * @param font 字体
+     * @param text 文字
+     */
+    public static int getStringWidthByFont(Font font, String text) {
+        FontMetrics fontMetrics = Toolkit.getDefaultToolkit().getFontMetrics(font);
+        return SwingUtilities.computeStringWidth(fontMetrics, text);
+    }
 }

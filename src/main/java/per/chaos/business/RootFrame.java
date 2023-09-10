@@ -222,9 +222,9 @@ public class RootFrame extends JFrame implements DropTargetListener {
 
         //======== this ========
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new Dimension(900, 520));
+        setMinimumSize(new Dimension(940, 520));
         setBackground(Color.white);
-        setPreferredSize(new Dimension(900, 520));
+        setPreferredSize(new Dimension(940, 520));
         var contentPane = getContentPane();
         contentPane.setLayout(new MigLayout(
             "fill,insets 0,hidemode 3,align center center",

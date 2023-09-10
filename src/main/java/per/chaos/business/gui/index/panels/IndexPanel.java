@@ -8,6 +8,7 @@ import cn.hutool.core.io.FileUtil;
 import com.alibaba.fastjson2.JSON;
 import com.formdev.flatlaf.extras.*;
 import com.google.common.eventbus.Subscribe;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -54,6 +55,9 @@ public class IndexPanel extends JPanel {
      */
     private Map<JList, FileListTypeEnum> jListFileTypeMapping = new HashMap<>(2);
 
+    @Getter
+    private int indexScrollPanelWidth;
+
     public IndexPanel(RootFrame rootFrame) {
         initComponents();
 
@@ -92,9 +96,9 @@ public class IndexPanel extends JPanel {
         latestFiles.setTransferHandler(this.genericJListTransferHandler);
         fastQueryFiles.setTransferHandler(this.genericJListTransferHandler);
 
-        latestFiles.setCellRenderer(new RawFileReferCellPanel());
+        latestFiles.setCellRenderer(new RawFileReferCellPanel(this));
         latestFiles.setFixedCellHeight(50);
-        fastQueryFiles.setCellRenderer(new RawFileReferCellPanel());
+        fastQueryFiles.setCellRenderer(new RawFileReferCellPanel(this));
         fastQueryFiles.setFixedCellHeight(50);
 
         // 监听窗口宽高调整变化事件
@@ -140,16 +144,13 @@ public class IndexPanel extends JPanel {
     private void updateScrolPaneDimension(int windowWidth, int windowHeight) {
         final double widthScale = 0.48;
         final double heightScale = 0.88;
-        final int scrollPaneWidth = (int) (windowWidth * widthScale);
-        final int scrollPaneHeight = (int) (windowHeight * heightScale);
+        final int scrollPanelWidth = (int) (windowWidth * widthScale);
+        final int scrollPanelHeight = (int) (windowHeight * heightScale);
 
-        scrollPaneLatestFiles.setSize(new Dimension(scrollPaneWidth, scrollPaneHeight));
-        scrollPaneFastQueryFiles.setSize(new Dimension(scrollPaneWidth, scrollPaneHeight));
+        this.indexScrollPanelWidth = scrollPanelWidth;
 
-        scrollPaneLatestFiles.setMinimumSize(new Dimension(scrollPaneWidth, scrollPaneHeight));
-        scrollPaneLatestFiles.setMaximumSize(new Dimension(scrollPaneWidth, scrollPaneHeight));
-        scrollPaneFastQueryFiles.setMinimumSize(new Dimension(scrollPaneWidth, scrollPaneHeight));
-        scrollPaneFastQueryFiles.setMaximumSize(new Dimension(scrollPaneWidth, scrollPaneHeight));
+        scrollPanelLatestFiles.setPreferredSize(new Dimension(scrollPanelWidth, scrollPanelHeight));
+        scrollPanelFastQueryFiles.setPreferredSize(new Dimension(scrollPanelWidth, scrollPanelHeight));
     }
 
     /**
@@ -219,13 +220,17 @@ public class IndexPanel extends JPanel {
             final RawFileRefer rawFileRefer = (RawFileRefer) invoker.getSelectedValue();
             if (Objects.isNull(rawFileRefer.getFileHandler())
                 || !FileUtil.exist(rawFileRefer.getFileRefer().getAbsolutePath())) {
-                return;
-            }
-
-            if (FileListTypeEnum.LATEST == listTypeEnum) {
-                popupMenuLatestFile.show(invoker, e.getX(), e.getY());
-            } else if (FileListTypeEnum.FAST_QUERY == listTypeEnum) {
-                popupMenuFastQueryFile.show(invoker, e.getX(), e.getY());
+                if (FileListTypeEnum.LATEST == listTypeEnum) {
+                    popupMenuLatestNonExistFile.show(invoker, e.getX(), e.getY());
+                } else if (FileListTypeEnum.FAST_QUERY == listTypeEnum) {
+                    popupMenuFastQueryNonExistFile.show(invoker, e.getX(), e.getY());
+                }
+            } else {
+                if (FileListTypeEnum.LATEST == listTypeEnum) {
+                    popupMenuLatestFile.show(invoker, e.getX(), e.getY());
+                } else if (FileListTypeEnum.FAST_QUERY == listTypeEnum) {
+                    popupMenuFastQueryFile.show(invoker, e.getX(), e.getY());
+                }
             }
         }
     }
@@ -305,11 +310,21 @@ public class IndexPanel extends JPanel {
         dialog.setVisible(true);
     }
 
+    private void menuItemRemoveLatestFileNonExist(ActionEvent e) {
+        RawFileRefer selectedItem = GuiUtils.getJListSelectedItem(latestFiles, RawFileRefer.class);
+        removeFileFromFileList(selectedItem, FileListTypeEnum.LATEST);
+    }
+
+    private void menuItemRemoveFastQueryFileNonExist(ActionEvent e) {
+        RawFileRefer selectedItem = GuiUtils.getJListSelectedItem(fastQueryFiles, RawFileRefer.class);
+        removeFileFromFileList(selectedItem, FileListTypeEnum.FAST_QUERY);
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
-        scrollPaneLatestFiles = new JScrollPane();
+        scrollPanelLatestFiles = new JScrollPane();
         latestFiles = new JList();
-        scrollPaneFastQueryFiles = new JScrollPane();
+        scrollPanelFastQueryFiles = new JScrollPane();
         fastQueryFiles = new JList();
         popupMenuLatestFile = new JPopupMenu();
         latestPopupMenuItemOpen = new JMenuItem();
@@ -321,6 +336,10 @@ public class IndexPanel extends JPanel {
         menuItemFastQueryPopupMenuTTSManage = new JMenuItem();
         fastUsedPopupMenuItemMove2Latest = new JMenuItem();
         fastUsedPopupMenuItemRemove = new JMenuItem();
+        popupMenuLatestNonExistFile = new JPopupMenu();
+        menuItem1 = new JMenuItem();
+        popupMenuFastQueryNonExistFile = new JPopupMenu();
+        menuItem2 = new JMenuItem();
 
         //======== this ========
         setMinimumSize(new Dimension(900, 494));
@@ -341,12 +360,12 @@ public class IndexPanel extends JPanel {
             "[]" +
             "[]"));
 
-        //======== scrollPaneLatestFiles ========
+        //======== scrollPanelLatestFiles ========
         {
-            scrollPaneLatestFiles.setMinimumSize(new Dimension(27, 41));
-            scrollPaneLatestFiles.setBorder(new TitledBorder(new LineBorder(Color.lightGray, 1, true), "\u6700\u8fd1\u6253\u5f00\u7684\u6587\u4ef6...", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, null, Color.lightGray));
-            scrollPaneLatestFiles.setBackground(Color.white);
-            scrollPaneLatestFiles.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+            scrollPanelLatestFiles.setMinimumSize(new Dimension(27, 41));
+            scrollPanelLatestFiles.setBorder(new TitledBorder(new LineBorder(Color.lightGray, 1, true), "\u6700\u8fd1\u6253\u5f00\u7684\u6587\u4ef6...", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, null, Color.lightGray));
+            scrollPanelLatestFiles.setBackground(Color.white);
+            scrollPanelLatestFiles.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
             //---- latestFiles ----
             latestFiles.setVisibleRowCount(20);
@@ -359,14 +378,14 @@ public class IndexPanel extends JPanel {
                     latestFilesMouseReleased(e);
                 }
             });
-            scrollPaneLatestFiles.setViewportView(latestFiles);
+            scrollPanelLatestFiles.setViewportView(latestFiles);
         }
-        add(scrollPaneLatestFiles, "span 2 5");
+        add(scrollPanelLatestFiles, "span 2 5");
 
-        //======== scrollPaneFastQueryFiles ========
+        //======== scrollPanelFastQueryFiles ========
         {
-            scrollPaneFastQueryFiles.setBorder(new TitledBorder(new LineBorder(Color.lightGray, 1, true), "\u5feb\u901f\u67e5\u627e\u533a\u6587\u4ef6...", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, null, Color.lightGray));
-            scrollPaneFastQueryFiles.setBackground(Color.white);
+            scrollPanelFastQueryFiles.setBorder(new TitledBorder(new LineBorder(Color.lightGray, 1, true), "\u5feb\u901f\u67e5\u627e\u533a\u6587\u4ef6...", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, null, Color.lightGray));
+            scrollPanelFastQueryFiles.setBackground(Color.white);
 
             //---- fastQueryFiles ----
             fastQueryFiles.setVisibleRowCount(20);
@@ -379,9 +398,9 @@ public class IndexPanel extends JPanel {
                     fastQueryFilesMouseReleased(e);
                 }
             });
-            scrollPaneFastQueryFiles.setViewportView(fastQueryFiles);
+            scrollPanelFastQueryFiles.setViewportView(fastQueryFiles);
         }
-        add(scrollPaneFastQueryFiles, "cell 0 0 2 4");
+        add(scrollPanelFastQueryFiles, "cell 0 0 2 4");
 
         //======== popupMenuLatestFile ========
         {
@@ -436,13 +455,31 @@ public class IndexPanel extends JPanel {
             fastUsedPopupMenuItemRemove.addActionListener(e -> fastQueryFilesPopupMenuItemRemove(e));
             popupMenuFastQueryFile.add(fastUsedPopupMenuItemRemove);
         }
+
+        //======== popupMenuLatestNonExistFile ========
+        {
+
+            //---- menuItem1 ----
+            menuItem1.setText("\u79fb\u9664");
+            menuItem1.addActionListener(e -> menuItemRemoveLatestFileNonExist(e));
+            popupMenuLatestNonExistFile.add(menuItem1);
+        }
+
+        //======== popupMenuFastQueryNonExistFile ========
+        {
+
+            //---- menuItem2 ----
+            menuItem2.setText("\u79fb\u9664");
+            menuItem2.addActionListener(e -> menuItemRemoveFastQueryFileNonExist(e));
+            popupMenuFastQueryNonExistFile.add(menuItem2);
+        }
         // JFormDesigner - End of component initialization  //GEN-END:initComponents  @formatter:on
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
-    private JScrollPane scrollPaneLatestFiles;
+    private JScrollPane scrollPanelLatestFiles;
     private JList latestFiles;
-    private JScrollPane scrollPaneFastQueryFiles;
+    private JScrollPane scrollPanelFastQueryFiles;
     private JList fastQueryFiles;
     private JPopupMenu popupMenuLatestFile;
     private JMenuItem latestPopupMenuItemOpen;
@@ -454,5 +491,9 @@ public class IndexPanel extends JPanel {
     private JMenuItem menuItemFastQueryPopupMenuTTSManage;
     private JMenuItem fastUsedPopupMenuItemMove2Latest;
     private JMenuItem fastUsedPopupMenuItemRemove;
+    private JPopupMenu popupMenuLatestNonExistFile;
+    private JMenuItem menuItem1;
+    private JPopupMenu popupMenuFastQueryNonExistFile;
+    private JMenuItem menuItem2;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }

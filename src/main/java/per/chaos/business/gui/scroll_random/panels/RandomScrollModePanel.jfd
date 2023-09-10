@@ -20,7 +20,7 @@ new FormModel {
 					name: "labelFileTipPanel"
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "labelOpenedFile"
-						"text": "正在读取中的文件："
+						"text": "读取中："
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "labelOpenedFileVal"

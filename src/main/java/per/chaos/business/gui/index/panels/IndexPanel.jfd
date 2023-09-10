@@ -12,7 +12,7 @@ new FormModel {
 			"minimumSize": new java.awt.Dimension( 900, 494 )
 			addEvent( new FormEvent( "java.awt.event.ContainerListener", "componentRemoved", "componentDispose", true ) )
 			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-				name: "scrollPaneLatestFiles"
+				name: "scrollPanelLatestFiles"
 				"minimumSize": new java.awt.Dimension( 27, 41 )
 				"border": new javax.swing.border.TitledBorder( new javax.swing.border.LineBorder( sfield java.awt.Color lightGray, 1, true ), "最近打开的文件...", 4, 0, null, sfield java.awt.Color lightGray )
 				"background": sfield java.awt.Color white
@@ -29,7 +29,7 @@ new FormModel {
 				"value": "span 2 5"
 			} )
 			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-				name: "scrollPaneFastQueryFiles"
+				name: "scrollPanelFastQueryFiles"
 				"border": new javax.swing.border.TitledBorder( new javax.swing.border.LineBorder( sfield java.awt.Color lightGray, 1, true ), "快速查找区文件...", 4, 0, null, sfield java.awt.Color lightGray )
 				"background": sfield java.awt.Color white
 				add( new FormComponent( "javax.swing.JList" ) {
@@ -106,6 +106,26 @@ new FormModel {
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 260, 450 )
+		} )
+		add( new FormContainer( "javax.swing.JPopupMenu", new FormLayoutManager( class javax.swing.JPopupMenu ) ) {
+			name: "popupMenuLatestNonExistFile"
+			add( new FormComponent( "javax.swing.JMenuItem" ) {
+				name: "menuItem1"
+				"text": "移除"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "menuItemRemoveLatestFileNonExist", true ) )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 506, 455 )
+		} )
+		add( new FormContainer( "javax.swing.JPopupMenu", new FormLayoutManager( class javax.swing.JPopupMenu ) ) {
+			name: "popupMenuFastQueryNonExistFile"
+			add( new FormComponent( "javax.swing.JMenuItem" ) {
+				name: "menuItem2"
+				"text": "移除"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "menuItemRemoveFastQueryFileNonExist", true ) )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 506, 510 )
 		} )
 	}
 }

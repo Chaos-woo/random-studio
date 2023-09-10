@@ -6,13 +6,16 @@ package per.chaos.business.gui.scroll_random.panels;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
+import com.google.common.eventbus.Subscribe;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.StringUtils;
 import org.jdesktop.swingx.HorizontalLayout;
 import per.chaos.app.context.AppContext;
 import per.chaos.configs.models.PreferenceCache;
+import per.chaos.infrastructure.runtime.models.events.RootWindowResizeEvent;
 import per.chaos.infrastructure.runtime.models.files.ctxs.FileCardCtx;
 import per.chaos.infrastructure.utils.EventBus;
+import per.chaos.infrastructure.utils.gui.GuiUtils;
 import per.chaos.infrastructure.utils.pausable_task.ResumableThreadManager;
 
 import javax.swing.*;
@@ -37,6 +40,7 @@ public class RandomScrollModePanel extends JPanel {
         this.fileCardCtx = fileCardCtx;
 
         initComponents();
+
         initButtonsStatus();
         initComponentTitle();
 
@@ -51,6 +55,8 @@ public class RandomScrollModePanel extends JPanel {
                 throw new RuntimeException("Running random cards exception");
             }
         });
+
+        EventBus.register(this);
     }
 
     /**
@@ -61,6 +67,34 @@ public class RandomScrollModePanel extends JPanel {
         buttonPause.setEnabled(false);
         buttonDropContinue.setEnabled(false);
         buttonPutBackContinue.setEnabled(false);
+    }
+
+    /**
+     * 监听窗口大小变化事件
+     */
+    @Subscribe
+    public void onResized(RootWindowResizeEvent event) {
+        resizeOpenedFileLabel(event.getWidth());
+    }
+
+    /**
+     * 重置当前打开文件的文件名Label的宽度
+     */
+    private void resizeOpenedFileLabel(int width) {
+        String fileName = StringUtils.remove(this.fileCardCtx.getFileName(), "." + FileUtil.getSuffix(this.fileCardCtx.getFileHandler()));
+        labelOpenedFileVal.setText(fileName);
+
+        final String labelTip = labelOpenedFile.getText();
+        int labelTipWidth = GuiUtils.getStringWidthByFont(labelOpenedFile.getFont(), labelTip);
+        final double totalWidth = (width * 0.2) - labelTipWidth;
+        int fileNameWidth = GuiUtils.getStringWidthByFont(labelOpenedFileVal.getFont(), fileName);
+        if (fileNameWidth > totalWidth) {
+            labelOpenedFileVal.setPreferredSize(new Dimension((int) totalWidth, 20));
+            labelOpenedFileVal.setToolTipText(fileName);
+        } else {
+            labelOpenedFileVal.setPreferredSize(new Dimension(fileNameWidth, 20));
+            labelOpenedFileVal.setToolTipText(null);
+        }
     }
 
     /**
@@ -187,7 +221,7 @@ public class RandomScrollModePanel extends JPanel {
      * 初始化组件的展示文案
      */
     private void initComponentTitle() {
-        labelOpenedFileVal.setText(StringUtils.remove(this.fileCardCtx.getFileName(), "." + FileUtil.getSuffix(this.fileCardCtx.getFileHandler())));
+        resizeOpenedFileLabel(AppContext.i().getGuiContext().getRootFrame().getWidth());
         changeLabelCardPoolState();
         changeLabelMainContentStyle(false, "请点击『开始』吧~");
     }
@@ -245,7 +279,7 @@ public class RandomScrollModePanel extends JPanel {
                 labelFileTipPanel.setLayout(new HorizontalLayout(5));
 
                 //---- labelOpenedFile ----
-                labelOpenedFile.setText("\u6b63\u5728\u8bfb\u53d6\u4e2d\u7684\u6587\u4ef6\uff1a");
+                labelOpenedFile.setText("\u8bfb\u53d6\u4e2d\uff1a");
                 labelFileTipPanel.add(labelOpenedFile);
 
                 //---- labelOpenedFileVal ----

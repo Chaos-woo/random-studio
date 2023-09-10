@@ -11,9 +11,9 @@ new FormModel {
 			name: "this"
 			"$locationPolicy": 1
 			"defaultCloseOperation": 3
-			"minimumSize": new java.awt.Dimension( 900, 520 )
+			"minimumSize": new java.awt.Dimension( 940, 520 )
 			"background": sfield java.awt.Color white
-			"preferredSize": new java.awt.Dimension( 900, 520 )
+			"preferredSize": new java.awt.Dimension( 940, 520 )
 			menuBar: new FormContainer( "javax.swing.JMenuBar", new FormLayoutManager( class javax.swing.JMenuBar ) ) {
 				name: "menuBar0"
 				"maximumSize": new java.awt.Dimension( 90, 26 )

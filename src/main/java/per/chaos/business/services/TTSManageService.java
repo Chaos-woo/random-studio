@@ -37,6 +37,11 @@ public class TTSManageService {
     private static final String TTS_FOLDER = "tts";
 
     /**
+     * MP3文件后缀
+     */
+    private static final String MP3_FILE_SUFFIX = ".mp3";
+
+    /**
      * 音声列表上下文缓存
      */
     @Getter
@@ -96,7 +101,7 @@ public class TTSManageService {
                 AppContext.i().getProjectRootAbsolutePath(),
                 TTS_FOLDER,
                 fileReferDatabaseId.toString(),
-                text + ".mp3"
+                text + MP3_FILE_SUFFIX
         );
         return FileUtil.exist(absolutePath);
     }
@@ -112,7 +117,7 @@ public class TTSManageService {
                 AppContext.i().getProjectRootAbsolutePath(),
                 TTS_FOLDER,
                 fileReferDatabaseId.toString(),
-                text + ".mp3"
+                text + MP3_FILE_SUFFIX
         );
 
         if (FileUtil.exist(absolutePath)) {
@@ -133,7 +138,7 @@ public class TTSManageService {
                 AppContext.i().getProjectRootAbsolutePath(),
                 TTS_FOLDER,
                 fileReferDatabaseId.toString(),
-                text + ".mp3"
+                text + MP3_FILE_SUFFIX
         );
 
         if (FileUtil.exist(absolutePath)) {
