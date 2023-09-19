@@ -11,7 +11,7 @@ import per.chaos.app.preference.business.random.preference.ScrollModeTransInterv
 import per.chaos.app.preference.system.AppThemePreference;
 import per.chaos.configs.models.PreferenceCache;
 import per.chaos.infrastructure.runtime.models.events.RefreshPreferenceCacheEvent;
-import per.chaos.infrastructure.utils.EventBus;
+import per.chaos.infrastructure.utils.EventBusHolder;
 
 /**
  * 用户首选项设置上下文
@@ -47,7 +47,7 @@ public class UserPreferenceCtx {
         this.preferenceCache.setScrollModeFontFamily(scrollModeFontFamilyPreference.get());
         this.preferenceCache.setTheme(appThemePreference.get());
 
-        EventBus.register(this);
+        EventBusHolder.register(this);
 
         return this;
     }

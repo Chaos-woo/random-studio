@@ -4,6 +4,7 @@
 
 package per.chaos.business.gui.scroll_random.panels;
 
+import java.awt.event.*;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
 import com.google.common.eventbus.Subscribe;
@@ -18,15 +19,13 @@ import per.chaos.infrastructure.runtime.models.events.RootWindowResizeEvent;
 import per.chaos.infrastructure.runtime.models.files.ctxs.FileCardCtx;
 import per.chaos.infrastructure.runtime.models.files.entity.FileCard;
 import per.chaos.infrastructure.services.audio.AudioPlayer;
-import per.chaos.infrastructure.utils.EventBus;
+import per.chaos.infrastructure.utils.EventBusHolder;
 import per.chaos.infrastructure.utils.gui.GuiUtils;
 import per.chaos.infrastructure.utils.pausable_task.ResumableThreadManager;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -63,7 +62,7 @@ public class RandomScrollModePanel extends JPanel {
             }
         });
 
-        EventBus.register(this);
+        EventBusHolder.register(this);
     }
 
     private void initFileCardTTSAudio() {
@@ -236,17 +235,6 @@ public class RandomScrollModePanel extends JPanel {
     }
 
     /**
-     * 组件销毁前处理
-     */
-    private void thisComponentRemoved(AncestorEvent e) {
-        if (Objects.nonNull(resumableThread)) {
-            this.resumableThread.stop();
-        }
-
-        EventBus.unregister(this);
-    }
-
-    /**
      * 初始化组件的展示文案
      */
     private void initComponentTitle() {
@@ -267,6 +255,14 @@ public class RandomScrollModePanel extends JPanel {
         } catch (Exception ex) {
             // do not anything
         }
+    }
+
+    private void componentRemoved(ContainerEvent e) {
+        if (Objects.nonNull(resumableThread)) {
+            this.resumableThread.stop();
+        }
+
+        EventBusHolder.unregister(this);
     }
 
     private void initComponents() {
@@ -302,14 +298,10 @@ public class RandomScrollModePanel extends JPanel {
 
         //======== this ========
         setBorder(new EmptyBorder(10, 10, 10, 10));
-        addAncestorListener(new AncestorListener() {
+        addContainerListener(new ContainerAdapter() {
             @Override
-            public void ancestorAdded(AncestorEvent e) {}
-            @Override
-            public void ancestorMoved(AncestorEvent e) {}
-            @Override
-            public void ancestorRemoved(AncestorEvent e) {
-                thisComponentRemoved(e);
+            public void componentRemoved(ContainerEvent e) {
+                RandomScrollModePanel.this.componentRemoved(e);
             }
         });
         setLayout(new BorderLayout(10, 10));

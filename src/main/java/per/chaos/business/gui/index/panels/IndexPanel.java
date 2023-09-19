@@ -6,7 +6,7 @@ package per.chaos.business.gui.index.panels;
 
 import cn.hutool.core.io.FileUtil;
 import com.alibaba.fastjson2.JSON;
-import com.formdev.flatlaf.extras.*;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.google.common.eventbus.Subscribe;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ import per.chaos.infrastructure.runtime.models.events.RootWindowResizeEvent;
 import per.chaos.infrastructure.runtime.models.files.ctxs.FileCardCtx;
 import per.chaos.infrastructure.runtime.models.files.entity.RawFileRefer;
 import per.chaos.infrastructure.runtime.models.files.enums.FileListTypeEnum;
-import per.chaos.infrastructure.utils.EventBus;
+import per.chaos.infrastructure.utils.EventBusHolder;
 import per.chaos.infrastructure.utils.gui.GuiUtils;
 
 import javax.swing.*;
@@ -103,7 +103,7 @@ public class IndexPanel extends JPanel {
         fastQueryFiles.setFixedCellHeight(50);
 
         // 监听窗口宽高调整变化事件
-        EventBus.register(this);
+        EventBusHolder.register(this);
     }
 
     /**
@@ -220,7 +220,7 @@ public class IndexPanel extends JPanel {
             invoker.setSelectedIndex(clickedListIndex);
             final RawFileRefer rawFileRefer = (RawFileRefer) invoker.getSelectedValue();
             if (Objects.isNull(rawFileRefer.getFileHandler())
-                || !FileUtil.exist(rawFileRefer.getFileRefer().getAbsolutePath())) {
+                    || !FileUtil.exist(rawFileRefer.getFileRefer().getAbsolutePath())) {
                 if (FileListTypeEnum.LATEST == listTypeEnum) {
                     popupMenuLatestNonExistFile.show(invoker, e.getX(), e.getY());
                 } else if (FileListTypeEnum.FAST_QUERY == listTypeEnum) {
@@ -292,7 +292,7 @@ public class IndexPanel extends JPanel {
     }
 
     private void componentDispose(ContainerEvent e) {
-        EventBus.unregister(this);
+        EventBusHolder.unregister(this);
     }
 
     private void latestFilesTTSManage(ActionEvent e) {
@@ -323,26 +323,12 @@ public class IndexPanel extends JPanel {
 
     private void latestFileOpenByExplore(ActionEvent e) {
         final RawFileRefer selectedItem = GuiUtils.getJListSelectedItem(latestFiles, RawFileRefer.class);
-        if (Desktop.isDesktopSupported()) {
-            File parentFile = selectedItem.getFileHandler().getParentFile();
-            try {
-                Desktop.getDesktop().open(parentFile);
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
+        GuiUtils.openInExplorer(selectedItem.getFileHandler().getParentFile());
     }
 
     private void fastQueryFileOpenByExplore(ActionEvent e) {
         final RawFileRefer selectedItem = GuiUtils.getJListSelectedItem(fastQueryFiles, RawFileRefer.class);
-        if (Desktop.isDesktopSupported()) {
-            File parentFile = selectedItem.getFileHandler().getParentFile();
-            try {
-                Desktop.getDesktop().open(parentFile);
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
+        GuiUtils.openInExplorer(selectedItem.getFileHandler().getParentFile());
     }
 
     private void initComponents() {

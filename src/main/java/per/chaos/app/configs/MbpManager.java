@@ -128,6 +128,7 @@ public class MbpManager {
                 String path = url.getPath();
                 File file = new File(path);
                 File[] files = file.listFiles();
+                assert files != null;
                 for (File f : files) {
                     FileInputStream in = new FileInputStream(f);
                     XMLMapperBuilder xmlMapperBuilder = new XMLMapperBuilder(in, configuration, f.getPath(), configuration.getSqlFragments());

@@ -19,6 +19,7 @@ import per.chaos.infrastructure.runtime.models.tts.ctxs.MemoryTTSVoiceCache;
 import per.chaos.infrastructure.runtime.models.tts.entity.CreateTTSOrderApiDTO;
 import per.chaos.infrastructure.runtime.models.tts.entity.TTSVoiceGetApiDTO;
 import per.chaos.infrastructure.storage.models.sqlite.FileReferEntity;
+import per.chaos.infrastructure.utils.PathUtils;
 
 import java.io.File;
 import java.util.Collections;
@@ -34,7 +35,7 @@ public class TTSManageService {
     /**
      * 音声路径
      */
-    private static final String TTS_FOLDER = "tts";
+    private static final String TTS_FOLDER = "rclib-TTSAudio";
 
     /**
      * MP3文件后缀
@@ -65,45 +66,14 @@ public class TTSManageService {
     }
 
     /**
-     * 文件绝对路径拼装
-     *
-     * @param args 文件层级
-     */
-    private String fileAbsolutePath(String... args) {
-        StringBuilder sb = new StringBuilder();
-        for (String arg : args) {
-            sb.append(arg).append("/");
-        }
-
-        String path = sb.toString();
-        return path.substring(0, path.length() - 1);
-    }
-
-    /**
      * 获取XX文件TTS根目录
      */
     public String getFileReferTTSAbsolutePath(Long fileReferDatabaseId) {
-        return fileAbsolutePath(
+        return PathUtils.joinAbsolutePathByFileSeparator(
                 AppContext.i().getProjectRootAbsolutePath(),
                 TTS_FOLDER,
                 fileReferDatabaseId.toString()
         );
-    }
-
-    /**
-     * TTS音频文件是否存在
-     *
-     * @param fileReferDatabaseId 文件引用数据库自增id
-     * @param text                文字行
-     */
-    public boolean existTTSAudio(Long fileReferDatabaseId, String text) {
-        final String absolutePath = fileAbsolutePath(
-                AppContext.i().getProjectRootAbsolutePath(),
-                TTS_FOLDER,
-                fileReferDatabaseId.toString(),
-                text + MP3_FILE_SUFFIX
-        );
-        return FileUtil.exist(absolutePath);
     }
 
     /**
@@ -113,7 +83,7 @@ public class TTSManageService {
      * @param text                文字行
      */
     public File getTTSAudioFile(Long fileReferDatabaseId, String text) {
-        final String absolutePath = fileAbsolutePath(
+        final String absolutePath = PathUtils.joinAbsolutePathByFileSeparator(
                 AppContext.i().getProjectRootAbsolutePath(),
                 TTS_FOLDER,
                 fileReferDatabaseId.toString(),
@@ -134,7 +104,7 @@ public class TTSManageService {
      * @param text                文字行
      */
     public File getTTSAudioFileWithAutoCreate(Long fileReferDatabaseId, String text) {
-        final String absolutePath = fileAbsolutePath(
+        final String absolutePath = PathUtils.joinAbsolutePathByFileSeparator(
                 AppContext.i().getProjectRootAbsolutePath(),
                 TTS_FOLDER,
                 fileReferDatabaseId.toString(),
@@ -220,7 +190,7 @@ public class TTSManageService {
                                  final Consumer<TimbreDownloadComplete> downloadCompleteCallback,
                                  final Consumer<TimbreAllDownloadComplete> downloadAllCompleteCallback,
                                  final Supplier<Boolean> continueDownload) {
-        final String parentFolderAbsolutePath = fileAbsolutePath(
+        final String parentFolderAbsolutePath = PathUtils.joinAbsolutePathByFileSeparator(
                 AppContext.i().getProjectRootAbsolutePath(),
                 TTS_FOLDER,
                 parentFolderName

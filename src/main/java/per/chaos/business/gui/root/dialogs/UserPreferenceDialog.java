@@ -15,7 +15,7 @@ import per.chaos.app.preference.business.random.preference.ScrollModeFontSizePre
 import per.chaos.app.preference.business.random.preference.ScrollModeTransIntervalPreference;
 import per.chaos.app.preference.system.AppThemePreference;
 import per.chaos.infrastructure.runtime.models.events.RefreshPreferenceCacheEvent;
-import per.chaos.infrastructure.utils.EventBus;
+import per.chaos.infrastructure.utils.EventBusHolder;
 import per.chaos.infrastructure.utils.gui.GuiUtils;
 
 import javax.swing.*;
@@ -129,7 +129,7 @@ public class UserPreferenceDialog extends JDialog {
         scrollModeFontFamilyPreference.update(this.tempScrollModeFontFamily.get());
         appThemePreference.update(ThemeEnum.getBy((String) comboBoxTheme.getSelectedItem()));
 
-        EventBus.publish(new RefreshPreferenceCacheEvent());
+        EventBusHolder.publish(new RefreshPreferenceCacheEvent());
 
         this.dispose();
     }

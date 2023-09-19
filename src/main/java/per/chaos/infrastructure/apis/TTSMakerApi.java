@@ -6,6 +6,9 @@ import cn.hutool.http.HttpResponse;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import per.chaos.app.configs.EHCacheManager;
+import per.chaos.app.configs.cache.models.TTSCache;
 import per.chaos.app.context.BeanContext;
 import per.chaos.app.ioc.BeanReference;
 import per.chaos.app.preference.system.ProxyPreference;
@@ -50,6 +53,11 @@ public class TTSMakerApi {
      * 获取TTS支持的声音
      */
     public TTSVoiceGetApiDTO getTTSVoice() {
+        String ttsCache = EHCacheManager.getTTSCache(TTSCache.Keys.TTSMAKER_API_VOICE_LIST);
+        if (StringUtils.isNotBlank(ttsCache)) {
+            return JSON.parseObject(ttsCache, TTSVoiceGetApiDTO.class);
+        }
+
         final ProxyPreference proxyPreference = BeanContext.i().getReference(ProxyPreference.class);
         CustomProxy proxy = proxyPreference.get();
 
@@ -59,7 +67,7 @@ public class TTSMakerApi {
                 .setHttpProxy(proxy.getHost(), proxy.getPort())
                 .execute()
                 .body();
-        log.debug("获取音声列表：{}", ret);
+        EHCacheManager.putTTSCache(TTSCache.Keys.TTSMAKER_API_VOICE_LIST, ret);
         return JSON.parseObject(ret, TTSVoiceGetApiDTO.class);
     }
 

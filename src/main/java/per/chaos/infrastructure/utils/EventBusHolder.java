@@ -1,14 +1,16 @@
 package per.chaos.infrastructure.utils;
 
+import com.google.common.eventbus.EventBus;
+
 /**
  * 消息总线
  */
-public class EventBus {
+public class EventBusHolder {
 
     /**
      * Guava事件总线
      */
-    private static final com.google.common.eventbus.EventBus eventBus = new com.google.common.eventbus.EventBus();
+    private static final EventBus eventBus = new EventBus();
 
     /**
      * 注册监听器

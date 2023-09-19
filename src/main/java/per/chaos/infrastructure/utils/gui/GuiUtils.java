@@ -8,6 +8,7 @@ import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -126,5 +127,18 @@ public class GuiUtils {
     public static int getStringWidthByFont(Font font, String text) {
         FontMetrics fontMetrics = Toolkit.getDefaultToolkit().getFontMetrics(font);
         return SwingUtilities.computeStringWidth(fontMetrics, text);
+    }
+
+    /**
+     * 使用系统文件管理器打开指定路径文件/文件夹
+     */
+    public static void openInExplorer(File file) {
+        if (Desktop.isDesktopSupported()) {
+            try {
+                Desktop.getDesktop().open(file);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
     }
 }

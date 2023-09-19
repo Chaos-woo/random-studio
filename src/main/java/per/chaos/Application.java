@@ -14,7 +14,7 @@ import per.chaos.app.models.enums.ThemeEnum;
 import per.chaos.app.upgrade.executor.AppUpgrade;
 import per.chaos.business.RootFrame;
 import per.chaos.infrastructure.runtime.models.events.RootWindowResizeEvent;
-import per.chaos.infrastructure.utils.EventBus;
+import per.chaos.infrastructure.utils.EventBusHolder;
 
 import javax.swing.*;
 import java.awt.event.ComponentAdapter;
@@ -76,14 +76,14 @@ public class Application {
 
                     int width = frame.getWidth();
                     int height = frame.getHeight();
-                    EventBus.publish(new RootWindowResizeEvent(width, height));
+                    EventBusHolder.publish(new RootWindowResizeEvent(width, height));
                 }
             });
 
             frame.addWindowStateListener(e -> {
                 int width = frame.getWidth();
                 int height = frame.getHeight();
-                EventBus.publish(new RootWindowResizeEvent(width, height));
+                EventBusHolder.publish(new RootWindowResizeEvent(width, height));
             });
 
             AppContext.i().getGuiContext().setRootFrame(frame);

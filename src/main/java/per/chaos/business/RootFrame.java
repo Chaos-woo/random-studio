@@ -20,7 +20,7 @@ import per.chaos.infrastructure.runtime.models.events.DnDSystemFilesEvent;
 import per.chaos.infrastructure.runtime.models.files.ctxs.FileCardCtx;
 import per.chaos.infrastructure.runtime.models.files.enums.FileListTypeEnum;
 import per.chaos.infrastructure.runtime.models.files.enums.SystemFileTypeEnum;
-import per.chaos.infrastructure.utils.EventBus;
+import per.chaos.infrastructure.utils.EventBusHolder;
 import per.chaos.infrastructure.utils.formmater.AppFormatter;
 import per.chaos.infrastructure.utils.gui.GuiUtils;
 
@@ -192,7 +192,7 @@ public class RootFrame extends JFrame implements DropTargetListener {
                         .filter(file -> supportFileSuffix.contains(FileUtil.getSuffix(file)))
                         .collect(Collectors.toList());
                 if (CollectionUtil.isNotEmpty(files)) {
-                    EventBus.publish(new DnDSystemFilesEvent(files));
+                    EventBusHolder.publish(new DnDSystemFilesEvent(files));
                 }
             } else {
                 dtde.rejectDrop();
