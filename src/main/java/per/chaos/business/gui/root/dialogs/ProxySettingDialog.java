@@ -9,6 +9,7 @@ import java.awt.event.*;
 import java.util.regex.Pattern;
 import javax.swing.*;
 import javax.swing.border.*;
+import net.miginfocom.swing.*;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jdesktop.swingx.*;
@@ -89,6 +90,8 @@ public class ProxySettingDialog extends JDialog {
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         dialogPane = new JPanel();
+        panel5 = new JPanel();
+        label1 = new JLabel();
         contentPanel = new JPanel();
         panel1 = new JPanel();
         labelHost = new JLabel();
@@ -117,8 +120,23 @@ public class ProxySettingDialog extends JDialog {
         //======== dialogPane ========
         {
             dialogPane.setBorder(new EmptyBorder(12, 12, 12, 12));
-            dialogPane.setPreferredSize(new Dimension(500, 240));
+            dialogPane.setPreferredSize(new Dimension(500, 310));
             dialogPane.setLayout(new BorderLayout());
+
+            //======== panel5 ========
+            {
+                panel5.setLayout(new MigLayout(
+                    "fillx,hidemode 3",
+                    // columns
+                    "[fill]",
+                    // rows
+                    "[]"));
+
+                //---- label1 ----
+                label1.setIcon(new ImageIcon(getClass().getResource("/icons/proxy_example.png")));
+                panel5.add(label1, "cell 0 0");
+            }
+            dialogPane.add(panel5, BorderLayout.NORTH);
 
             //======== contentPanel ========
             {
@@ -225,6 +243,8 @@ public class ProxySettingDialog extends JDialog {
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
     private JPanel dialogPane;
+    private JPanel panel5;
+    private JLabel label1;
     private JPanel contentPanel;
     private JPanel panel1;
     private JLabel labelHost;
