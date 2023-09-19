@@ -14,6 +14,7 @@ import org.jdesktop.swingx.HorizontalLayout;
 import org.jdesktop.swingx.VerticalLayout;
 import per.chaos.app.context.AppContext;
 import per.chaos.app.context.BeanContext;
+import per.chaos.business.gui.common.dialogs.PromptDialog;
 import per.chaos.business.gui.common.dialogs.SecondaryConfirmDialog;
 import per.chaos.business.gui.index.renderer.tts_action.TTSCardActionTableCellEditor;
 import per.chaos.business.gui.index.renderer.tts_action.TTSCardActionTableCellRenderer;
@@ -361,6 +362,13 @@ public class TTSManagerDialog extends JDialog {
     private void downloadAll(ActionEvent e) {
         FileReferEntity fileRefer = this.fileCardCtx.getRawFileRefer().getFileRefer();
         if (StringUtils.isBlank(fileRefer.getTimbre())) {
+            PromptDialog dialog = new PromptDialog(
+                    AppContext.i().getGuiContext().getRootFrame(),
+                    "提示",
+                    "[ " + fileRefer.getFileName() + " ] 当前未选择任何音声，请先选择音声后再使用【一键下载】功能",
+                    "好的"
+            );
+            dialog.setVisible(true);
             return;
         }
 

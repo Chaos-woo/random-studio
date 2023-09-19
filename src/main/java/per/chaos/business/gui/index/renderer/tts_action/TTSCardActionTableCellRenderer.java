@@ -25,11 +25,7 @@ public class TTSCardActionTableCellRenderer implements TableCellRenderer {
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         final FileCard fileCard = (FileCard) value;
         TTSCardActionPanel panel = new TTSCardActionPanel(fileCard, row);
-        if (isSelected) {
-            panel.setBackground(table.getSelectionBackground());
-        } else {
-            panel.setBackground(new Color(219, 219, 219));
-        }
+        panel.setBackground(table.getBackground());
         return panel;
     }
 }

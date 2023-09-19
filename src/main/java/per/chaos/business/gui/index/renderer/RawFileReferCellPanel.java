@@ -79,15 +79,15 @@ public class RawFileReferCellPanel extends JPanel implements ListCellRenderer<Ra
         }
 
         if (isSelected) {
-            setBackground(new Color(167, 199, 231));
-            fileNamePanel.setBackground(new Color(167, 199, 231));
-            fileTypePanel.setBackground(new Color(167, 199, 231));
-            filePathPanel.setBackground(new Color(167, 199, 231));
+            setBackground(list.getSelectionBackground());
+            fileNamePanel.setBackground(list.getSelectionBackground());
+            fileTypePanel.setBackground(list.getSelectionBackground());
+            filePathPanel.setBackground(list.getSelectionBackground());
         } else {
-            setBackground(new Color(242, 242, 242));
-            fileNamePanel.setBackground(new Color(242, 242, 242));
-            fileTypePanel.setBackground(new Color(242, 242, 242));
-            filePathPanel.setBackground(new Color(242, 242, 242));
+            setBackground(list.getBackground());
+            fileNamePanel.setBackground(list.getBackground());
+            fileTypePanel.setBackground(list.getBackground());
+            filePathPanel.setBackground(list.getBackground());
         }
 
         setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -127,8 +127,8 @@ public class RawFileReferCellPanel extends JPanel implements ListCellRenderer<Ra
 
             //---- labelFileSuffix ----
             labelFileSuffix.setFont(new Font("\u6977\u4f53", Font.PLAIN, 13));
-            labelFileSuffix.setForeground(Color.white);
             labelFileSuffix.setText("suffix");
+            labelFileSuffix.setForeground(Color.white);
             fileTypePanel.add(labelFileSuffix);
 
             //---- labelFileExistTip ----

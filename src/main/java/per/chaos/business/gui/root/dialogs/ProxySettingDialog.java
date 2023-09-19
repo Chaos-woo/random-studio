@@ -90,8 +90,8 @@ public class ProxySettingDialog extends JDialog {
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         dialogPane = new JPanel();
-        panel5 = new JPanel();
-        label1 = new JLabel();
+        headerPanel = new JPanel();
+        examplePic = new JLabel();
         contentPanel = new JPanel();
         panel1 = new JPanel();
         labelHost = new JLabel();
@@ -123,20 +123,20 @@ public class ProxySettingDialog extends JDialog {
             dialogPane.setPreferredSize(new Dimension(500, 310));
             dialogPane.setLayout(new BorderLayout());
 
-            //======== panel5 ========
+            //======== headerPanel ========
             {
-                panel5.setLayout(new MigLayout(
+                headerPanel.setLayout(new MigLayout(
                     "fillx,hidemode 3",
                     // columns
                     "[fill]",
                     // rows
                     "[]"));
 
-                //---- label1 ----
-                label1.setIcon(new ImageIcon(getClass().getResource("/icons/proxy_example.png")));
-                panel5.add(label1, "cell 0 0");
+                //---- examplePic ----
+                examplePic.setIcon(new ImageIcon(getClass().getResource("/icons/proxy_example.png")));
+                headerPanel.add(examplePic, "cell 0 0");
             }
-            dialogPane.add(panel5, BorderLayout.NORTH);
+            dialogPane.add(headerPanel, BorderLayout.NORTH);
 
             //======== contentPanel ========
             {
@@ -243,8 +243,8 @@ public class ProxySettingDialog extends JDialog {
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
     private JPanel dialogPane;
-    private JPanel panel5;
-    private JLabel label1;
+    private JPanel headerPanel;
+    private JLabel examplePic;
     private JPanel contentPanel;
     private JPanel panel1;
     private JLabel labelHost;

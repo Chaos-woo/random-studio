@@ -102,10 +102,6 @@ public class TTSCardActionPanel extends JPanel {
         }
     }
 
-    private void thisAncestorRemoved(AncestorEvent e) {
-
-    }
-
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         ttsTextPanel = new JPanel();
@@ -120,21 +116,11 @@ public class TTSCardActionPanel extends JPanel {
         //======== this ========
         setPreferredSize(new Dimension(123, 25));
         setBorder(new EmptyBorder(0, 5, 0, 3));
-        addAncestorListener(new AncestorListener() {
-            @Override
-            public void ancestorAdded(AncestorEvent e) {}
-            @Override
-            public void ancestorMoved(AncestorEvent e) {}
-            @Override
-            public void ancestorRemoved(AncestorEvent e) {
-                thisAncestorRemoved(e);
-            }
-        });
         setLayout(new BorderLayout());
 
         //======== ttsTextPanel ========
         {
-            ttsTextPanel.setLayout(new HorizontalLayout(3));
+            ttsTextPanel.setLayout(new HorizontalLayout(5));
 
             //---- labelIndex ----
             labelIndex.setText("text");

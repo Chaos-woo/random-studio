@@ -12,7 +12,7 @@ import java.awt.*;
  */
 public class TTSCardActionTableCellEditor extends AbstractCellEditor implements TableCellEditor {
     private TTSCardActionPanel panel;
-    private TTSCardButtonAction action;
+    private final TTSCardButtonAction action;
 
     public TTSCardActionTableCellEditor(TTSCardButtonAction action) {
         this.action = action;
@@ -23,11 +23,7 @@ public class TTSCardActionTableCellEditor extends AbstractCellEditor implements 
         final FileCard fileCard = (FileCard) value;
         panel = new TTSCardActionPanel(fileCard,  row);
         panel.initButtonAction(action);
-        if (isSelected) {
-            panel.setBackground(table.getSelectionBackground());
-        } else {
-            panel.setBackground(new Color(219, 219, 219));
-        }
+        panel.setBackground(table.getBackground());
         return panel;
     }
 
