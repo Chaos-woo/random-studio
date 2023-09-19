@@ -13,12 +13,14 @@ import per.chaos.app.ioc.BeanReference;
 import per.chaos.infrastructure.apis.TTSMakerApi;
 import per.chaos.infrastructure.runtime.models.callback.TimbreAllDownloadComplete;
 import per.chaos.infrastructure.runtime.models.callback.TimbreDownloadComplete;
+import per.chaos.infrastructure.runtime.models.events.RefreshPreferenceCacheEvent;
 import per.chaos.infrastructure.runtime.models.files.ctxs.FileCardCtx;
 import per.chaos.infrastructure.runtime.models.files.entity.FileCard;
 import per.chaos.infrastructure.runtime.models.tts.ctxs.MemoryTTSVoiceCache;
 import per.chaos.infrastructure.runtime.models.tts.entity.CreateTTSOrderApiDTO;
 import per.chaos.infrastructure.runtime.models.tts.entity.TTSVoiceGetApiDTO;
 import per.chaos.infrastructure.storage.models.sqlite.FileReferEntity;
+import per.chaos.infrastructure.utils.EventBusHolder;
 import per.chaos.infrastructure.utils.PathUtils;
 
 import java.io.File;
@@ -52,7 +54,7 @@ public class TTSManageService {
         refreshMemoryTTSVoiceCache();
     }
 
-    private void refreshMemoryTTSVoiceCache() {
+    public void refreshMemoryTTSVoiceCache() {
         ThreadUtil.execute(this::doRefreshMemoryTTSVoiceCache);
     }
 
@@ -63,6 +65,8 @@ public class TTSManageService {
         final TTSMakerApi apiClient = BeanContext.i().getReference(TTSMakerApi.class);
         final TTSVoiceGetApiDTO ret = apiClient.getTTSVoice();
         this.ttsVoiceCache.ttsVoiceMapping(ret.getTtsVoicesDetail());
+
+        EventBusHolder.publish(new RefreshPreferenceCacheEvent());
     }
 
     /**

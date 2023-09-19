@@ -16,6 +16,7 @@ import per.chaos.infrastructure.utils.EventBusHolder;
 /**
  * 用户首选项设置上下文
  */
+@Getter
 public class UserPreferenceCtx {
     private static final UserPreferenceCtx INSTANCE = new UserPreferenceCtx();
 
@@ -29,7 +30,6 @@ public class UserPreferenceCtx {
     /**
      * 首选项配置缓存
      */
-    @Getter
     private PreferenceCache preferenceCache;
 
     /**

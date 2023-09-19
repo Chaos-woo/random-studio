@@ -12,10 +12,9 @@ import javax.swing.border.*;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jdesktop.swingx.*;
-import per.chaos.app.context.AppContext;
 import per.chaos.app.context.BeanContext;
-import per.chaos.app.context.system.UserPreferenceCtx;
 import per.chaos.app.preference.system.ProxyPreference;
+import per.chaos.business.services.TTSManageService;
 import per.chaos.configs.models.CustomProxy;
 import per.chaos.infrastructure.apis.TTSMakerApi;
 
@@ -53,7 +52,7 @@ public class ProxySettingDialog extends JDialog {
                 return;
             }
 
-            ttsMakerApi.verifyTTSMakerApiConnectivity(new CustomProxy(host, Integer.valueOf(port)));
+            ttsMakerApi.checkTTSMakerApiConnectivity(new CustomProxy(host, Integer.valueOf(port)));
             labelConnectivityCheckRet.setText(connectivitySuccessText);
         } catch (Exception ex) {
             labelConnectivityCheckRet.setText(connectivityFailText);
@@ -74,6 +73,9 @@ public class ProxySettingDialog extends JDialog {
                 return;
             }
             proxyPreference.update(new CustomProxy(host, Integer.valueOf(port)));
+
+            final TTSManageService ttsManageService = BeanContext.i().getReference(TTSManageService.class);
+            ttsManageService.refreshMemoryTTSVoiceCache();
             super.dispose();
         } catch (Exception ex) {
             labelConnectivityCheckRet.setText(saveFailText);

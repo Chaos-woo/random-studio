@@ -34,7 +34,7 @@ public class TTSMakerApi {
     /**
      * 校验TTSMaker API连通性
      */
-    public void verifyTTSMakerApiConnectivity(CustomProxy proxy) {
+    public void checkTTSMakerApiConnectivity(CustomProxy proxy) {
         final String uri = "https://api.ttsmaker.com/v1/get-voice-list?token=" + FREE_TOKEN;
         try {
             HttpRequest.get(uri)

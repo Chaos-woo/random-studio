@@ -4,8 +4,10 @@
 
 package per.chaos.business.gui.index.dialogs;
 
+import java.awt.event.*;
 import cn.hutool.core.io.FileUtil;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.google.common.eventbus.Subscribe;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jdesktop.swingx.HorizontalLayout;
@@ -20,6 +22,7 @@ import per.chaos.business.services.FileReferService;
 import per.chaos.business.services.TTSManageService;
 import per.chaos.infrastructure.runtime.models.callback.TimbreDownloadComplete;
 import per.chaos.infrastructure.runtime.models.callback.TimbreSelectable;
+import per.chaos.infrastructure.runtime.models.events.RefreshMemoryTTSVoiceCacheEvent;
 import per.chaos.infrastructure.runtime.models.files.ctxs.FileCardCtx;
 import per.chaos.infrastructure.runtime.models.files.entity.FileCard;
 import per.chaos.infrastructure.runtime.models.tts.entity.TTSVoice;
@@ -28,6 +31,7 @@ import per.chaos.infrastructure.runtime.models.tts.jtable.TTSCardButtonAction;
 import per.chaos.infrastructure.runtime.models.tts.jtable.TTSFileCardTableModel;
 import per.chaos.infrastructure.services.audio.AudioPlayer;
 import per.chaos.infrastructure.storage.models.sqlite.FileReferEntity;
+import per.chaos.infrastructure.utils.EventBusHolder;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -100,6 +104,13 @@ public class TTSManagerDialog extends JDialog {
         downloadProgressBar.setMaximum(this.fileCardCtx.getCardSize());
 
         changeTTSFileStatisticsLabel();
+        changeCurrentTimbreLabel();
+
+        EventBusHolder.register(this);
+    }
+
+    @Subscribe
+    public void onTTSVoiceRefresh(RefreshMemoryTTSVoiceCacheEvent event) {
         changeCurrentTimbreLabel();
     }
 
@@ -465,6 +476,10 @@ public class TTSManagerDialog extends JDialog {
         dialog.setVisible(true);
     }
 
+    private void componentRemoved(ContainerEvent e) {
+        EventBusHolder.unregister(this);
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         dialogPane = new JPanel();
@@ -494,6 +509,12 @@ public class TTSManagerDialog extends JDialog {
             @Override
             public void windowClosing(WindowEvent e) {
                 thisWindowClosing(e);
+            }
+        });
+        addContainerListener(new ContainerAdapter() {
+            @Override
+            public void componentRemoved(ContainerEvent e) {
+                TTSManagerDialog.this.componentRemoved(e);
             }
         });
         var contentPane = getContentPane();
