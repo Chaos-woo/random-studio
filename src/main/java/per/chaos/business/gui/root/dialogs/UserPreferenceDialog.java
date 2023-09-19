@@ -49,7 +49,7 @@ public class UserPreferenceDialog extends JDialog {
     private final AtomicReference<String> tempScrollModeFontFamily = new AtomicReference<>("");
 
     public UserPreferenceDialog(Window owner) {
-        super(owner);
+        super(owner, Dialog.DEFAULT_MODALITY_TYPE);
         initComponents();
         // 初始化TextField输入框格式化器
         initTextFiledFormatter();

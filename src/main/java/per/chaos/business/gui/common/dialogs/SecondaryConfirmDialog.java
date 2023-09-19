@@ -27,7 +27,7 @@ public class SecondaryConfirmDialog extends JDialog {
                                   String confirmButtonTitle,
                                   String cancelButtonTitle,
                                   final Consumer<Boolean> confirmRetCallback) {
-        super(owner);
+        super(owner, Dialog.DEFAULT_MODALITY_TYPE);
         initComponents();
 
         setTitle(title);

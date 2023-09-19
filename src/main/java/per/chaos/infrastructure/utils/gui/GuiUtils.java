@@ -107,7 +107,7 @@ public class GuiUtils {
      * @param fontChooseConsumer 字体选择回调
      */
     public static void chooseFont(Window owner, String chooserTitle, Consumer<Font> fontChooseConsumer) {
-        MyFontDialog dialog = new MyFontDialog(owner, chooserTitle);
+        MyFontDialog dialog = new MyFontDialog(owner, chooserTitle, Dialog.DEFAULT_MODALITY_TYPE);
         dialog.setOkConsumer(fontChooseConsumer);
         Point dialogLocation = new Point(
                 owner.getLocation().x + ((owner.getWidth() / 2) - (dialog.getWidth() / 2)),

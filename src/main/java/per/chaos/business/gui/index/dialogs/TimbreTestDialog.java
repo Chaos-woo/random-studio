@@ -50,7 +50,7 @@ public class TimbreTestDialog extends JDialog {
     private AtomicReference<AudioPlayer> player = new AtomicReference<>(null);
 
     public TimbreTestDialog(Window owner, FileCardCtx fileCardCtx, String currentFileTimbre, final Consumer<TimbreSelectable> selectableCallback) {
-        super(owner);
+        super(owner, Dialog.DEFAULT_MODALITY_TYPE);
         initComponents();
         this.fileCardCtx = fileCardCtx;
         this.selectableCallback = selectableCallback;

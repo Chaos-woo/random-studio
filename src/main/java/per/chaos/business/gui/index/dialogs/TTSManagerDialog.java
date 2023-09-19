@@ -58,7 +58,7 @@ public class TTSManagerDialog extends JDialog {
     private final AtomicBoolean backgroundDownloading = new AtomicBoolean(Boolean.FALSE);
 
     public TTSManagerDialog(Window owner, FileCardCtx fileCardCtx) {
-        super(owner);
+        super(owner, Dialog.DEFAULT_MODALITY_TYPE);
         initComponents();
 
         this.fileCardCtx = fileCardCtx;

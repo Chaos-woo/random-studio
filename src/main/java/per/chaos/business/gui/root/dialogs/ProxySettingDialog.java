@@ -24,7 +24,7 @@ import per.chaos.infrastructure.apis.TTSMakerApi;
  */
 public class ProxySettingDialog extends JDialog {
     public ProxySettingDialog(Window owner) {
-        super(owner);
+        super(owner, Dialog.DEFAULT_MODALITY_TYPE);
 
         initComponents();
 
