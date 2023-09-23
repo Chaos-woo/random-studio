@@ -20,25 +20,35 @@ public class PromptDialog extends JDialog {
     public PromptDialog(Window owner,
                         String title,
                         String content,
-                        String confirmButtonTitle) {
+                        String confirmButtonTitle,
+                        boolean lineWrap) {
         super(owner, Dialog.DEFAULT_MODALITY_TYPE);
-        initDialog(title, content, confirmButtonTitle);
+        initDialog(title, content, confirmButtonTitle, lineWrap);
     }
 
     public PromptDialog(Window owner,
                         String content,
-                        String confirmButtonTitle) {
+                        String confirmButtonTitle,
+                        boolean lineWrap) {
         super(owner, Dialog.DEFAULT_MODALITY_TYPE);
-        initDialog("提示", content, confirmButtonTitle);
+        initDialog("提示", content, confirmButtonTitle, lineWrap);
     }
 
-    private void initDialog(String title, String content, String confirmButtonTitle) {
+    public PromptDialog(Window owner,
+                        String content,
+                        boolean lineWrap) {
+        super(owner, Dialog.DEFAULT_MODALITY_TYPE);
+        initDialog("提示", content, null, lineWrap);
+    }
+
+    private void initDialog(String title, String content, String confirmButtonTitle, boolean lineWrap) {
         initComponents();
 
         setTitle(title);
         contentTextArea.setText(content);
         // 将滚动条位置设置到开头
         contentTextArea.setCaretPosition(0);
+        contentTextArea.setLineWrap(lineWrap);
 
         okButton.setText(StringUtils.isBlank(confirmButtonTitle) ? "好的" : confirmButtonTitle);
     }
@@ -74,7 +84,6 @@ public class PromptDialog extends JDialog {
 
                 //======== contentScrollPanel ========
                 {
-                    contentScrollPanel.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
                     contentScrollPanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
                     contentScrollPanel.setAutoscrolls(true);
                     contentScrollPanel.setBorder(BorderFactory.createEmptyBorder());

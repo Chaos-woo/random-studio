@@ -19,6 +19,8 @@ import per.chaos.infrastructure.runtime.models.files.entity.FileCard;
 import per.chaos.infrastructure.runtime.models.tts.ctxs.MemoryTTSVoiceCache;
 import per.chaos.infrastructure.runtime.models.tts.entity.CreateTTSOrderApiDTO;
 import per.chaos.infrastructure.runtime.models.tts.entity.TTSVoiceGetApiDTO;
+import per.chaos.infrastructure.runtime.models.tts.enums.TTSMakerApiErrorEnum;
+import per.chaos.infrastructure.runtime.models.tts.exception.TTSApiException;
 import per.chaos.infrastructure.storage.models.sqlite.FileReferEntity;
 import per.chaos.infrastructure.utils.EventBusHolder;
 import per.chaos.infrastructure.utils.PathUtils;
@@ -65,6 +67,7 @@ public class TTSManageService {
         final TTSMakerApi apiClient = BeanContext.i().getReference(TTSMakerApi.class);
         final TTSVoiceGetApiDTO ret = apiClient.getTTSVoice();
         this.ttsVoiceCache.ttsVoiceMapping(ret.getTtsVoicesDetail());
+        log.info("刷新结束：{}", this.ttsVoiceCache.getIdTTSVoiceMapping());
 
         EventBusHolder.publish(new RefreshPreferenceCacheEvent());
     }
@@ -235,9 +238,14 @@ public class TTSManageService {
                         .execute()
                         .writeBody(targetFile);
                 downloadCb.setFileAbsolutePath(targetFile.getAbsolutePath());
+            } catch (TTSApiException e) {
+                log.error(ExceptionUtils.getStackTrace(e));
+                downloadCb.setDownloadResult(TimbreDownloadComplete.DownloadResult.FAIL);
+                downloadCb.setDownloadFailReason(e.getErrorEnum());
             } catch (Exception e) {
                 log.error(ExceptionUtils.getStackTrace(e));
                 downloadCb.setDownloadResult(TimbreDownloadComplete.DownloadResult.FAIL);
+                downloadCb.setDownloadFailReason(TTSMakerApiErrorEnum.UNKNOWN_ERROR);
             }
 
             if (Objects.nonNull(downloadCompleteCallback)) {
@@ -246,6 +254,9 @@ public class TTSManageService {
 
             if (!continueDownload.get()) {
                 // 不继续下载
+                TimbreAllDownloadComplete allCompleteCb = new TimbreAllDownloadComplete();
+                allCompleteCb.setDownloadInterrupted(true);
+                downloadAllCompleteCallback.accept(allCompleteCb);
                 break;
             }
 
@@ -258,6 +269,9 @@ public class TTSManageService {
 
             if (!continueDownload.get()) {
                 // 不继续下载
+                TimbreAllDownloadComplete allCompleteCb = new TimbreAllDownloadComplete();
+                allCompleteCb.setDownloadInterrupted(true);
+                downloadAllCompleteCallback.accept(allCompleteCb);
                 break;
             }
         }

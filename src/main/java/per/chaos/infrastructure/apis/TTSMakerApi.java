@@ -15,6 +15,8 @@ import per.chaos.app.preference.system.ProxyPreference;
 import per.chaos.configs.models.CustomProxy;
 import per.chaos.infrastructure.runtime.models.tts.entity.CreateTTSOrderApiDTO;
 import per.chaos.infrastructure.runtime.models.tts.entity.TTSVoiceGetApiDTO;
+import per.chaos.infrastructure.runtime.models.tts.enums.TTSMakerApiErrorEnum;
+import per.chaos.infrastructure.runtime.models.tts.exception.TTSApiException;
 
 import java.util.Objects;
 
@@ -81,7 +83,7 @@ public class TTSMakerApi {
      * audio_volume: float = 0 // optional, audio volume, range 0-10, 1: volume+10%, 8: volume+80%, 10: volume+100%, default 0
      * text_paragraph_pause_time: int = 0  // optional, auto insert audio paragraph pause time, range 500-5000, unit: millisecond, maximum 50 pauses can be inserted. If more than 50 pauses, all pauses will be canceled automatically. default 0
      */
-    public CreateTTSOrderApiDTO createTTS(String text, Long voiceId) {
+    public CreateTTSOrderApiDTO createTTS(String text, Long voiceId) throws TTSApiException {
         final ProxyPreference proxyPreference = BeanContext.i().getReference(ProxyPreference.class);
         CustomProxy proxy = proxyPreference.get();
 
@@ -99,12 +101,13 @@ public class TTSMakerApi {
                 .execute();
 
         if (Objects.isNull(response)) {
-            throw new RuntimeException("Create TTS HTTP response is NULL");
+            throw new TTSApiException(TTSMakerApiErrorEnum.UNKNOWN_ERROR);
         }
 
         CreateTTSOrderApiDTO ttsOrderDTO = JSON.parseObject(response.body(), CreateTTSOrderApiDTO.class);
         if (!"0".equals(ttsOrderDTO.getErrorCode())) {
-            throw new RuntimeException(ttsOrderDTO.getErrorCode());
+            TTSMakerApiErrorEnum apiErrorEnum = TTSMakerApiErrorEnum.byTTSMakerApi(ttsOrderDTO.getErrorCode());
+            throw new TTSApiException(apiErrorEnum);
         }
 
         return ttsOrderDTO;

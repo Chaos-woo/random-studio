@@ -2,6 +2,7 @@ package per.chaos.infrastructure.runtime.models.callback;
 
 import lombok.Data;
 import lombok.Getter;
+import per.chaos.infrastructure.runtime.models.tts.enums.TTSMakerApiErrorEnum;
 
 /**
  * 音声下载回调
@@ -22,6 +23,11 @@ public class TimbreDownloadComplete {
      * 下载结果
      */
     private DownloadResult downloadResult;
+
+    /**
+     * 失败原因
+     */
+    private TTSMakerApiErrorEnum downloadFailReason;
 
     /**
      * 下载结果

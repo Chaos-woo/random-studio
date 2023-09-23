@@ -4,7 +4,6 @@
 
 package per.chaos.business.gui.index.dialogs;
 
-import java.awt.event.*;
 import cn.hutool.core.io.FileUtil;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.google.common.eventbus.Subscribe;
@@ -28,6 +27,7 @@ import per.chaos.infrastructure.runtime.models.files.ctxs.FileCardCtx;
 import per.chaos.infrastructure.runtime.models.files.entity.FileCard;
 import per.chaos.infrastructure.runtime.models.tts.entity.TTSVoice;
 import per.chaos.infrastructure.runtime.models.tts.entity.TTSVoicesDetail;
+import per.chaos.infrastructure.runtime.models.tts.enums.TTSMakerApiErrorEnum;
 import per.chaos.infrastructure.runtime.models.tts.jtable.TTSCardButtonAction;
 import per.chaos.infrastructure.runtime.models.tts.jtable.TTSFileCardTableModel;
 import per.chaos.infrastructure.services.audio.AudioPlayer;
@@ -37,17 +37,15 @@ import per.chaos.infrastructure.utils.EventBusHolder;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.io.File;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * @author 78580
@@ -227,8 +225,13 @@ public class TTSManagerDialog extends JDialog {
                 this.fileCardCtx,
                 fileCard,
                 (downloadResult) -> {
-                    log.info("下载完成，{}", downloadResult.getDownloadResult());
                     if (TimbreDownloadComplete.DownloadResult.FAIL == downloadResult.getDownloadResult()) {
+                        PromptDialog dialog = new PromptDialog(
+                                this,
+                                downloadResult.getText() + " 下载失败，原因：" + downloadResult.getDownloadFailReason().getTipText(),
+                                true
+                        );
+                        dialog.setVisible(true);
                         return;
                     }
 
@@ -257,7 +260,7 @@ public class TTSManagerDialog extends JDialog {
     }
 
     /**
-     * 下载全部TTS文件
+     * 批量下载全部TTS文件
      *
      * @param ttsVoicesDetail
      */
@@ -283,18 +286,22 @@ public class TTSManagerDialog extends JDialog {
 
         backgroundDownloading.set(Boolean.TRUE);
         final AtomicInteger downloadProgress = new AtomicInteger(0);
+        final List<TimbreDownloadComplete> downloadRets = new ArrayList<>();
         ttsManageService.backgroundDownloadTTSFiles(
                 voiceId,
                 this.fileCardCtx,
                 (downloadResult) -> {
-                    log.info("下载完成，{}", downloadResult.getDownloadResult());
-
                     downloadProgress.incrementAndGet();
+                    // 界面展示文字刷新
                     this.downloadProgressBar.setValue(downloadProgress.get());
                     final String progressdisplayString = downloadProgress.get() + "/" + this.fileCardCtx.getCardSize();
                     this.downloadProgressBar.setString(progressdisplayString);
                     this.downloadProgressBar.setToolTipText("正在下载中..." + progressdisplayString);
+
+                    downloadRets.add(downloadResult);
+                    // 下载结果处理
                     if (TimbreDownloadComplete.DownloadResult.FAIL == downloadResult.getDownloadResult()) {
+                        refreshFileCardListModel();
                         return;
                     }
 
@@ -307,8 +314,6 @@ public class TTSManagerDialog extends JDialog {
                     refreshFileCardListModel();
                 },
                 (downloadAllComplete) -> {
-                    log.info("全部下载完成");
-
                     this.downloadProgressBar.setToolTipText("当前暂无下载任务");
                     this.downloadProgressBar.setString(" ");
                     this.downloadProgressBar.setValue(0);
@@ -319,6 +324,51 @@ public class TTSManagerDialog extends JDialog {
                     buttonDownload.setEnabled(true);
 
                     backgroundDownloading.set(Boolean.FALSE);
+
+                    final String statisticsStringFormat = "【统计信息###########】\n总共需要下载%s个文本音频，%s个文本音频下载成功，%s个文本音频下载失败";
+                    String downloadRetStringFormat = "";
+                    String downloadRetStringFormat1 = "【%s】\n相关文本音频已下载完成\n\n";
+                    String downloadRetStringFormat2 = "【%s】\n相关文本音频下载被中止\n\n";
+                    if (downloadAllComplete.isDownloadInterrupted()) {
+                        downloadRetStringFormat = downloadRetStringFormat + downloadRetStringFormat2;
+                    } else {
+                        downloadRetStringFormat = downloadRetStringFormat + downloadRetStringFormat1;
+                    }
+                    downloadRetStringFormat = downloadRetStringFormat + statisticsStringFormat;
+                    final long downloadSuccessCnt = downloadRets.stream()
+                            .filter(ret -> TimbreDownloadComplete.DownloadResult.SUCCESS == ret.getDownloadResult())
+                            .count();
+                    Map<TTSMakerApiErrorEnum, List<TimbreDownloadComplete>> failReasonGroup = downloadRets.stream()
+                            .filter(ret -> TimbreDownloadComplete.DownloadResult.FAIL == ret.getDownloadResult())
+                            .collect(Collectors.groupingBy(TimbreDownloadComplete::getDownloadFailReason));
+                    final long downloadFailCnt = failReasonGroup.values().stream().flatMap(List::stream).count();
+                    String promptContent = String.format(
+                            downloadRetStringFormat,
+                            this.fileCardCtx.getFileName(), this.fileCardCtx.getCardSize(), downloadSuccessCnt, downloadFailCnt
+                    );
+                    if (!failReasonGroup.isEmpty()) {
+                        StringBuilder sb = new StringBuilder(promptContent);
+                        sb.append("\n\n");
+                        int failGroupIndex = 1;
+                        for (Map.Entry<TTSMakerApiErrorEnum, List<TimbreDownloadComplete>> entry : failReasonGroup.entrySet()) {
+                            StringBuilder perFailGroupContent = new StringBuilder();
+                            perFailGroupContent.append("【失败原因")
+                                    .append(failGroupIndex)
+                                    .append("：")
+                                    .append(entry.getKey().getTipText())
+                                    .append("###########】\n");
+                            for (TimbreDownloadComplete ret : entry.getValue()) {
+                                perFailGroupContent.append(ret.getText())
+                                        .append("\n");
+                            }
+                            sb.append(perFailGroupContent.toString())
+                                    .append("\n");
+                            failGroupIndex++;
+                        }
+                        promptContent = sb.toString();
+                    }
+                    PromptDialog dialog = new PromptDialog(this, promptContent, false);
+                    dialog.setVisible(true);
                 },
                 () -> backgroundDownloading.get()
         );
@@ -365,7 +415,8 @@ public class TTSManagerDialog extends JDialog {
             PromptDialog dialog = new PromptDialog(
                     AppContext.i().getGuiContext().getRootFrame(),
                     "一键下载：" + fileRefer.getFileName() + "\n错误：当前未选择任何音声，一键下载功能停止，请先选择音声后再使用【一键下载】功能",
-                    "好的"
+                    "好的",
+                    true
             );
             dialog.setVisible(true);
             return;
