@@ -13,7 +13,7 @@ import net.miginfocom.swing.*;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jdesktop.swingx.*;
-import per.chaos.app.context.BeanContext;
+import per.chaos.app.context.BeanManager;
 import per.chaos.app.preference.system.ProxyPreference;
 import per.chaos.business.services.TTSManageService;
 import per.chaos.configs.models.CustomProxy;
@@ -28,7 +28,7 @@ public class ProxySettingDialog extends JDialog {
 
         initComponents();
 
-        final ProxyPreference proxyPreference = BeanContext.i().getReference(ProxyPreference.class);
+        final ProxyPreference proxyPreference = BeanManager.inst().getReference(ProxyPreference.class);
         CustomProxy proxy = proxyPreference.get();
         textFieldHost.setText(proxy.getHost());
         textFieldPort.setText(proxy.getPort().toString());
@@ -44,7 +44,7 @@ public class ProxySettingDialog extends JDialog {
         final String connectivitySuccessText = "<html><body><p><font color=\"green\">代理正常，请保存配置</font></p></body><html>";
         final String connectivityFailText = "<html><body><p><font color=\"red\">代理异常，请重新设置后再次校验</font></p></body><html>";
 
-        final TTSMakerApi ttsMakerApi = BeanContext.i().getReference(TTSMakerApi.class);
+        final TTSMakerApi ttsMakerApi = BeanManager.inst().getReference(TTSMakerApi.class);
         try {
             final String host = textFieldHost.getText();
             final String port = textFieldPort.getText();
@@ -63,7 +63,7 @@ public class ProxySettingDialog extends JDialog {
     private static final Pattern HOST_PATTERN = Pattern.compile("\\d+\\.\\d+\\.\\d+\\.\\d+");
 
     private void save(ActionEvent e) {
-        final ProxyPreference proxyPreference = BeanContext.i().getReference(ProxyPreference.class);
+        final ProxyPreference proxyPreference = BeanManager.inst().getReference(ProxyPreference.class);
         String host = textFieldHost.getText();
         String port = textFieldPort.getText();
 
@@ -75,7 +75,7 @@ public class ProxySettingDialog extends JDialog {
             }
             proxyPreference.update(new CustomProxy(host, Integer.valueOf(port)));
 
-            final TTSManageService ttsManageService = BeanContext.i().getReference(TTSManageService.class);
+            final TTSManageService ttsManageService = BeanManager.inst().getReference(TTSManageService.class);
             ttsManageService.refreshMemoryTTSVoiceCache();
             super.dispose();
         } catch (Exception ex) {

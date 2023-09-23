@@ -1,7 +1,7 @@
 package per.chaos.app.ioc;
 
 import lombok.extern.slf4j.Slf4j;
-import per.chaos.app.context.BeanContext;
+import per.chaos.app.context.BeanManager;
 import per.chaos.infrastructure.utils.Reflections;
 
 import java.lang.annotation.Annotation;
@@ -10,15 +10,15 @@ import java.util.Set;
 
 @Slf4j
 public class BeanConfigurator {
-    private final BeanContext beanContext;
+    private final BeanManager beanManager;
 
-    public BeanConfigurator(final BeanContext beanContext) {
-        this.beanContext = beanContext;
+    public BeanConfigurator(final BeanManager beanManager) {
+        this.beanManager = beanManager;
     }
 
     public <T> Bean<T> createBean(final Class<T> beanClass) {
         try {
-            return this.beanContext.getBean(beanClass);
+            return this.beanManager.getBean(beanClass);
         } catch (final Exception e) {
             log.trace("Not found bean [beanClass={}], so to create it", beanClass);
         }
@@ -33,8 +33,8 @@ public class BeanConfigurator {
 
         log.debug("Adding a bean [name={}, class={}] to the bean manager", name, beanClass.getName());
 
-        final Bean<T> ret = new Bean<>(this.beanContext, beanClass, stereotypes, name);
-        this.beanContext.addBean(ret);
+        final Bean<T> ret = new Bean<>(this.beanManager, beanClass, stereotypes, name);
+        this.beanManager.addBean(ret);
 
         return ret;
     }

@@ -3,6 +3,7 @@ package per.chaos.app.context;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.ibatis.session.SqlSession;
+import per.chaos.app.context.system.DbManager;
 import per.chaos.app.ioc.Bean;
 import per.chaos.app.ioc.BeanConfigurator;
 import per.chaos.app.ioc.BeanReference;
@@ -24,8 +25,8 @@ import java.util.function.Function;
  * 【该类应该是主方法最开始被调用初始化的】
  */
 @Slf4j
-public class BeanContext {
-    private static final BeanContext INSTANCE = new BeanContext();
+public class BeanManager {
+    private static final BeanManager INSTANCE = new BeanManager();
     /**
      * Bean信息
      */
@@ -39,13 +40,13 @@ public class BeanContext {
      */
     private final BeanConfigurator beanConfigurator;
 
-    private BeanContext() {
+    private BeanManager() {
         this.beans = new HashSet<>();
         this.singletonCtx = new SingletonContext();
         this.beanConfigurator = new BeanConfigurator(this);
     }
 
-    public static BeanContext i() {
+    public static BeanManager inst() {
         return INSTANCE;
     }
 
@@ -137,7 +138,7 @@ public class BeanContext {
      * @param callback    使用获取到的mapper回调方法
      */
     public <T> void executeMapper(final Class<T> mapperClass, Consumer<T> callback) {
-        SqlSession sqlSession = AppContext.i().getDbManagerContext().getSqlSessionWithAutoCommit();
+        SqlSession sqlSession = DbManager.inst().getSqlSessionWithAutoCommit();
         try (sqlSession) {
             T mapper = sqlSession.getMapper(mapperClass);
             callback.accept(mapper);
@@ -153,7 +154,7 @@ public class BeanContext {
      * @param callback    使用获取到的mapper回调方法
      */
     public <T, R> R callMapper(final Class<T> mapperClass, Function<T, R> callback) {
-        SqlSession sqlSession = AppContext.i().getDbManagerContext().getSqlSessionWithAutoCommit();
+        SqlSession sqlSession = DbManager.inst().getSqlSessionWithAutoCommit();
         try (sqlSession) {
             T mapper = sqlSession.getMapper(mapperClass);
             return callback.apply(mapper);
@@ -170,7 +171,7 @@ public class BeanContext {
      * @return
      */
     public <T> T getMapperWithoutAutoCommit(final Class<T> mapperClass) {
-        return AppContext.i().getDbManagerContext().getSqlSessionWithoutAutoCommit().getMapper(mapperClass);
+        return DbManager.inst().getSqlSessionWithoutAutoCommit().getMapper(mapperClass);
     }
 
     /**

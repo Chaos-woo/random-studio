@@ -10,21 +10,21 @@ import java.sql.SQLException;
 /**
  * 数据库连接上下文
  */
-public class DbManagerContext {
-    private static final DbManagerContext INSTANCE = new DbManagerContext();
+public class DbManager {
+    private static final DbManager INSTANCE = new DbManager();
 
-    private DbManagerContext() {
+    private DbManager() {
     }
 
-    public static DbManagerContext i() {
+    public static DbManager inst() {
         return INSTANCE;
     }
 
     /**
      * 数据库链接上下文初始化
      */
-    public DbManagerContext init() {
-        MbpManager.i().init();
+    public DbManager init() {
+        MbpManager.inst().init();
         return this;
     }
 
@@ -33,7 +33,7 @@ public class DbManagerContext {
      */
     public SqlSession getSqlSessionWithAutoCommit() {
         try {
-            return MbpManager.i().getSqlSessionWithAutoCommit();
+            return MbpManager.inst().getSqlSessionWithAutoCommit();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -44,7 +44,7 @@ public class DbManagerContext {
      */
     public SqlSession getSqlSessionWithoutAutoCommit() {
         try {
-            return MbpManager.i().getSqlSessionWithoutAutoCommit();
+            return MbpManager.inst().getSqlSessionWithoutAutoCommit();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

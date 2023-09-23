@@ -7,12 +7,12 @@ import per.chaos.app.models.entity.Project;
 /**
  * 项目信息上下文
  */
-public class ProjectContext {
-    private static final ProjectContext INSTANCE = new ProjectContext();
+public class ProjectManager {
+    private static final ProjectManager INSTANCE = new ProjectManager();
 
-    private ProjectContext() {}
+    private ProjectManager() {}
 
-    public static ProjectContext i() {
+    public static ProjectManager inst() {
         return INSTANCE;
     }
 
@@ -25,7 +25,7 @@ public class ProjectContext {
     /**
      * 项目上下文初始化
      */
-    public ProjectContext init() {
+    public ProjectManager init() {
         Props props = new Props("main.properties");
         this.project = new Project();
         this.project.setVersion(props.getStr("application.version"));

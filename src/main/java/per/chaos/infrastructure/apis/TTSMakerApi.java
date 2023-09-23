@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import per.chaos.app.configs.EHCacheManager;
 import per.chaos.app.configs.cache.models.TTSCache;
-import per.chaos.app.context.BeanContext;
+import per.chaos.app.context.BeanManager;
 import per.chaos.app.ioc.BeanReference;
 import per.chaos.app.preference.system.ProxyPreference;
 import per.chaos.configs.models.CustomProxy;
@@ -60,7 +60,7 @@ public class TTSMakerApi {
             return JSON.parseObject(ttsCache, TTSVoiceGetApiDTO.class);
         }
 
-        final ProxyPreference proxyPreference = BeanContext.i().getReference(ProxyPreference.class);
+        final ProxyPreference proxyPreference = BeanManager.inst().getReference(ProxyPreference.class);
         CustomProxy proxy = proxyPreference.get();
 
         final String uri = "https://api.ttsmaker.com/v1/get-voice-list?token=" + FREE_TOKEN;
@@ -84,7 +84,7 @@ public class TTSMakerApi {
      * text_paragraph_pause_time: int = 0  // optional, auto insert audio paragraph pause time, range 500-5000, unit: millisecond, maximum 50 pauses can be inserted. If more than 50 pauses, all pauses will be canceled automatically. default 0
      */
     public CreateTTSOrderApiDTO createTTS(String text, Long voiceId) throws TTSApiException {
-        final ProxyPreference proxyPreference = BeanContext.i().getReference(ProxyPreference.class);
+        final ProxyPreference proxyPreference = BeanManager.inst().getReference(ProxyPreference.class);
         CustomProxy proxy = proxyPreference.get();
 
         final String uri = "https://api.ttsmaker.com/v1/create-tts-order";

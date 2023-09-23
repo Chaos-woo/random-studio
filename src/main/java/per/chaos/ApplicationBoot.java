@@ -8,8 +8,11 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import per.chaos.app.context.AppContext;
-import per.chaos.app.context.BeanContext;
+import per.chaos.app.context.ApplicationManager;
+import per.chaos.app.context.BeanManager;
+import per.chaos.app.context.ctxs.GuiManager;
+import per.chaos.app.context.system.BusinessInitializer;
+import per.chaos.app.context.system.PreferenceManager;
 import per.chaos.app.models.enums.ThemeEnum;
 import per.chaos.app.upgrade.executor.AppUpgrade;
 import per.chaos.business.RootFrame;
@@ -23,9 +26,9 @@ import java.net.URL;
 import java.util.Objects;
 
 @Slf4j
-public class Application {
+public class ApplicationBoot {
     public static void main(String[] args) {
-        URL resource = Application.class.getResource("");
+        URL resource = ApplicationBoot.class.getResource("");
         if (Objects.nonNull(resource) && "jar".equals(resource.getProtocol())) {
             // jar包环境运行设置日志级别为ERROR
             Level level = Level.ERROR;
@@ -36,16 +39,19 @@ public class Application {
         }
 
         // 单例Bean初始化
-        BeanContext.i().init("per.chaos");
+        BeanManager.inst().init("per.chaos");
 
         // 应用上下文初始化
-        AppContext.i().init();
+        ApplicationManager.inst().init();
 
         // 数据库程序升级
         AppUpgrade.upgrade();
 
+        // 业务初始化
+        BusinessInitializer.init();
+
         // 应用主题初始化
-        ThemeEnum themePref = AppContext.i().getUserPreferenceCtx().getPreferenceCache().getTheme();
+        ThemeEnum themePref = PreferenceManager.inst().getPreferenceCache().getTheme();
         FlatLaf flatLafTheme;
         switch (themePref) {
             case LIGHT:
@@ -86,7 +92,7 @@ public class Application {
                 EventBusHolder.publish(new RootWindowResizeEvent(width, height));
             });
 
-            AppContext.i().getGuiContext().setRootFrame(frame);
+            GuiManager.inst().setRootFrame(frame);
 
             frame.pack();
             frame.setLocationRelativeTo(null);

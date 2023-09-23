@@ -12,8 +12,8 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import per.chaos.app.context.AppContext;
-import per.chaos.app.context.BeanContext;
+import per.chaos.app.context.BeanManager;
+import per.chaos.app.context.ctxs.GuiManager;
 import per.chaos.business.RootFrame;
 import per.chaos.business.gui.index.dialogs.TTSManagerDialog;
 import per.chaos.business.gui.index.renderer.RawFileReferCellPanel;
@@ -33,7 +33,6 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,7 +70,7 @@ public class IndexPanel extends JPanel {
                 (sourceJList, targetJList, transferableData) -> {
                     // 处理传输的数据
                     final List<RawFileRefer> rawFileRefers = transferableData;
-                    final FileReferService fileReferService = BeanContext.i().getReference(FileReferService.class);
+                    final FileReferService fileReferService = BeanManager.inst().getReference(FileReferService.class);
                     try {
                         final List<String> fileAbsolutePaths = rawFileRefers.stream()
                                 .map(fileRefer -> fileRefer.getFileRefer().getAbsolutePath())
@@ -123,7 +122,7 @@ public class IndexPanel extends JPanel {
                 .map(File::getAbsolutePath)
                 .collect(Collectors.toList());
 
-        final FileReferService fileReferService = BeanContext.i().getReference(FileReferService.class);
+        final FileReferService fileReferService = BeanManager.inst().getReference(FileReferService.class);
         fileReferService.batchImportFileRefer(absolutePaths);
         repaintNewFileModels();
     }
@@ -161,7 +160,7 @@ public class IndexPanel extends JPanel {
      */
     private DefaultListModel<RawFileRefer> listFilesModels(FileListTypeEnum listTypeEnum) {
         DefaultListModel<RawFileRefer> listModels = new DefaultListModel<>();
-        final FileReferService fileReferService = BeanContext.i().getReference(FileReferService.class);
+        final FileReferService fileReferService = BeanManager.inst().getReference(FileReferService.class);
         List<RawFileRefer> models = fileReferService.listRawFileReferByType(listTypeEnum);
         for (RawFileRefer model : models) {
             listModels.addElement(model);
@@ -185,7 +184,7 @@ public class IndexPanel extends JPanel {
      * @param listTypeEnum      文件引用所属列表类型
      */
     private void openFileWithScrollMode(RawFileRefer selectedFileRefer, FileListTypeEnum listTypeEnum) {
-        AppContext.i().getGuiContext().getRootFrame().jumpToScrollModePanel(
+        GuiManager.inst().getRootFrame().jumpToScrollModePanel(
                 selectedFileRefer.getFileRefer().getAbsolutePath(), listTypeEnum
         );
     }
@@ -197,7 +196,7 @@ public class IndexPanel extends JPanel {
      * @param listTypeEnum      文件引用所属列表类型
      */
     private void removeFileFromFileList(RawFileRefer selectedFileRefer, FileListTypeEnum listTypeEnum) {
-        final FileReferService fileReferService = BeanContext.i().getReference(FileReferService.class);
+        final FileReferService fileReferService = BeanManager.inst().getReference(FileReferService.class);
         fileReferService.removeRawFileRefer(selectedFileRefer.getFileRefer().getAbsolutePath(), listTypeEnum);
 
         repaintNewFileModels();
@@ -246,7 +245,7 @@ public class IndexPanel extends JPanel {
     private void moveFileBetweenAnyList(RawFileRefer selectedFileRefer,
                                         FileListTypeEnum sourceTypeEnum, FileListTypeEnum targetTypeEnum) {
 
-        final FileReferService fileReferService = BeanContext.i().getReference(FileReferService.class);
+        final FileReferService fileReferService = BeanManager.inst().getReference(FileReferService.class);
         fileReferService.transferRawFileRefer(selectedFileRefer.getFileRefer().getAbsolutePath(),
                 sourceTypeEnum, targetTypeEnum
         );
@@ -297,17 +296,17 @@ public class IndexPanel extends JPanel {
 
     private void latestFilesTTSManage(ActionEvent e) {
         final RawFileRefer selectedItem = GuiUtils.getJListSelectedItem(latestFiles, RawFileRefer.class);
-        final FileReferService fileReferService = BeanContext.i().getReference(FileReferService.class);
+        final FileReferService fileReferService = BeanManager.inst().getReference(FileReferService.class);
         final FileCardCtx fileCardCtx = fileReferService.findRandomCardFileCtx(selectedItem.getFileRefer().getAbsolutePath());
-        TTSManagerDialog dialog = new TTSManagerDialog(AppContext.i().getGuiContext().getRootFrame(), fileCardCtx);
+        TTSManagerDialog dialog = new TTSManagerDialog(GuiManager.inst().getRootFrame(), fileCardCtx);
         dialog.setVisible(true);
     }
 
     private void fastQueryFilesTTSManage(ActionEvent e) {
         final RawFileRefer selectedItem = GuiUtils.getJListSelectedItem(fastQueryFiles, RawFileRefer.class);
-        final FileReferService fileReferService = BeanContext.i().getReference(FileReferService.class);
+        final FileReferService fileReferService = BeanManager.inst().getReference(FileReferService.class);
         final FileCardCtx fileCardCtx = fileReferService.findRandomCardFileCtx(selectedItem.getFileRefer().getAbsolutePath());
-        TTSManagerDialog dialog = new TTSManagerDialog(AppContext.i().getGuiContext().getRootFrame(), fileCardCtx);
+        TTSManagerDialog dialog = new TTSManagerDialog(GuiManager.inst().getRootFrame(), fileCardCtx);
         dialog.setVisible(true);
     }
 

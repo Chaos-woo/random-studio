@@ -1,6 +1,6 @@
 package per.chaos.infrastructure.utils.gui;
 
-import per.chaos.app.context.AppContext;
+import per.chaos.app.context.ctxs.GuiManager;
 import per.chaos.business.RootFrame;
 import per.chaos.business.gui.common.dialogs.MyFontDialog;
 
@@ -39,7 +39,7 @@ public class GuiUtils {
      * @return 被选择的文件
      */
     public static List<File> chooseFile(boolean multiSelection, int fileSelectionMode) {
-        RootFrame rootFrame = AppContext.i().getGuiContext().getRootFrame();
+        RootFrame rootFrame = GuiManager.inst().getRootFrame();
         return chooseFile(rootFrame, multiSelection, fileSelectionMode, null);
     }
 
@@ -52,7 +52,7 @@ public class GuiUtils {
      * @return 被选择的文件
      */
     public static List<File> chooseFile(boolean multiSelection, int fileSelectionMode, FileFilter fileFilter) {
-        RootFrame rootFrame = AppContext.i().getGuiContext().getRootFrame();
+        RootFrame rootFrame = GuiManager.inst().getRootFrame();
         return chooseFile(rootFrame, multiSelection, fileSelectionMode, fileFilter);
     }
 

@@ -205,7 +205,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>per.chaos.Application</mainClass>
+              <mainClass>per.chaos.ApplicationBoot</mainClass>
             </manifest>
           </archive>
           <descriptorRefs>

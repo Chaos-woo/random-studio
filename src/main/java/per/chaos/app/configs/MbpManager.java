@@ -42,7 +42,7 @@ public class MbpManager {
 
     private MbpManager() {}
 
-    public static MbpManager i() {
+    public static MbpManager inst() {
         return INSTANCE;
     }
 

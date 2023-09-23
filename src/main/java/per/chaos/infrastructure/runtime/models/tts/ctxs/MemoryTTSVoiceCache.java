@@ -1,7 +1,7 @@
 package per.chaos.infrastructure.runtime.models.tts.ctxs;
 
 import lombok.Getter;
-import per.chaos.app.context.BeanContext;
+import per.chaos.app.context.BeanManager;
 import per.chaos.business.services.LocalLanguageService;
 import per.chaos.infrastructure.runtime.models.tts.entity.TTSVoice;
 import per.chaos.infrastructure.runtime.models.tts.entity.TTSVoicesDetail;
@@ -38,7 +38,7 @@ public class MemoryTTSVoiceCache {
         Map<String, List<TTSVoicesDetail>> byLanguage = ttsVoicesDetails.stream()
                 .collect(Collectors.groupingBy(TTSVoicesDetail::getLanguage));
 
-        final LocalLanguageService localLanguageService = BeanContext.i().getReference(LocalLanguageService.class);
+        final LocalLanguageService localLanguageService = BeanManager.inst().getReference(LocalLanguageService.class);
         for (Map.Entry<String, List<TTSVoicesDetail>> entry : byLanguage.entrySet()) {
             String language = entry.getKey();
             List<TTSVoicesDetail> voicesDetails = entry.getValue();

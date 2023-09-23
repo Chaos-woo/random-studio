@@ -10,8 +10,8 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import per.chaos.Application;
-import per.chaos.app.context.BeanContext;
+import per.chaos.ApplicationBoot;
+import per.chaos.app.context.BeanManager;
 import per.chaos.business.gui.index.panels.IndexPanel;
 import per.chaos.business.gui.root.dialogs.*;
 import per.chaos.business.gui.scroll_random.panels.RandomScrollModePanel;
@@ -54,7 +54,7 @@ public class RootFrame extends JFrame implements DropTargetListener {
 
         setTitle("Random Studio - " + AppFormatter.getAppVersion());
 
-        final FileReferService fileReferService = BeanContext.i().getReference(FileReferService.class);
+        final FileReferService fileReferService = BeanManager.inst().getReference(FileReferService.class);
         fileReferService.refreshMemoryFileReferCtx();
 
         this.indexPanel = new IndexPanel(this);
@@ -62,7 +62,7 @@ public class RootFrame extends JFrame implements DropTargetListener {
 
         this.dropTarget = new DropTarget(this, this);
 
-        URL icon = Application.class.getResource("/icons/logo.png");
+        URL icon = ApplicationBoot.class.getResource("/icons/logo.png");
         if (Objects.nonNull(icon)) {
             ImageIcon imageIcon = new ImageIcon(icon);
             setIconImage(imageIcon.getImage());
@@ -86,7 +86,7 @@ public class RootFrame extends JFrame implements DropTargetListener {
      * @param typeEnum       文件引用所属列表类型
      */
     public void jumpToScrollModePanel(String absolutionPath, FileListTypeEnum typeEnum) {
-        final FileReferService fileReferService = BeanContext.i().getReference(FileReferService.class);
+        final FileReferService fileReferService = BeanManager.inst().getReference(FileReferService.class);
         FileCardCtx fileCardCtx = fileReferService.findRandomCardFileCtx(absolutionPath);
 
         if (Objects.isNull(fileCardCtx)) {
@@ -112,7 +112,7 @@ public class RootFrame extends JFrame implements DropTargetListener {
             List<String> fileAbsolutePaths = selectFiles.stream()
                     .map(File::getAbsolutePath)
                     .collect(Collectors.toList());
-            final FileReferService fileReferService = BeanContext.i().getReference(FileReferService.class);
+            final FileReferService fileReferService = BeanManager.inst().getReference(FileReferService.class);
             fileReferService.batchImportFileRefer(fileAbsolutePaths);
             this.indexPanel.repaintNewFileModels();
         }
@@ -131,7 +131,7 @@ public class RootFrame extends JFrame implements DropTargetListener {
             List<String> fileAbsolutePaths = selectFiles.stream()
                     .map(File::getAbsolutePath)
                     .collect(Collectors.toList());
-            final FileReferService fileReferService = BeanContext.i().getReference(FileReferService.class);
+            final FileReferService fileReferService = BeanManager.inst().getReference(FileReferService.class);
             fileReferService.batchImportFileRefer(fileAbsolutePaths);
             this.indexPanel.repaintNewFileModels();
         }

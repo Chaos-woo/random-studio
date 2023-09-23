@@ -4,15 +4,15 @@
 
 package per.chaos.business.gui.scroll_random.panels;
 
-import java.awt.event.*;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
 import com.google.common.eventbus.Subscribe;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.StringUtils;
 import org.jdesktop.swingx.HorizontalLayout;
-import per.chaos.app.context.AppContext;
-import per.chaos.app.context.BeanContext;
+import per.chaos.app.context.BeanManager;
+import per.chaos.app.context.ctxs.GuiManager;
+import per.chaos.app.context.system.PreferenceManager;
 import per.chaos.business.services.TTSManageService;
 import per.chaos.configs.models.PreferenceCache;
 import per.chaos.infrastructure.runtime.models.events.RootWindowResizeEvent;
@@ -28,6 +28,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ContainerAdapter;
+import java.awt.event.ContainerEvent;
 import java.io.File;
 import java.util.Objects;
 
@@ -51,7 +53,7 @@ public class RandomScrollModePanel extends JPanel {
 
         this.resumableThread = new ResumableThreadManager(() -> {
             try {
-                PreferenceCache preferenceCache = AppContext.i().getUserPreferenceCtx().getPreferenceCache();
+                PreferenceCache preferenceCache = PreferenceManager.inst().getPreferenceCache();
                 Thread.sleep(preferenceCache.getScrollModeTransIntervalMs());
                 this.randomIndex = (int) (Math.random() * this.fileCardCtx.getRemainCards().size());
                 FileCard fileCard = this.fileCardCtx.getRemainCards().get(this.randomIndex);
@@ -67,7 +69,7 @@ public class RandomScrollModePanel extends JPanel {
 
     private void initFileCardTTSAudio() {
         final Long rawFileReferId = this.fileCardCtx.getRawFileRefer().getFileRefer().getId();
-        final TTSManageService ttsManageService = BeanContext.i().getReference(TTSManageService.class);
+        final TTSManageService ttsManageService = BeanManager.inst().getReference(TTSManageService.class);
         for (FileCard fileCard : this.fileCardCtx.getRemainCards()) {
             String text = fileCard.getText();
             File ttsAudioFile = ttsManageService.getTTSAudioFile(rawFileReferId, text);
@@ -202,7 +204,7 @@ public class RandomScrollModePanel extends JPanel {
      */
     private void stop(ActionEvent e) {
         this.resumableThread.stop();
-        AppContext.i().getGuiContext().getRootFrame().jumpToIndexPanel();
+        GuiManager.inst().getRootFrame().jumpToIndexPanel();
     }
 
     /**
@@ -214,7 +216,7 @@ public class RandomScrollModePanel extends JPanel {
     private void changeLabelMainContentStyle(boolean scrolling, String promptText) {
         labelMainContentVal.setText("");
         if (scrolling) {
-            PreferenceCache preferenceCache = AppContext.i().getUserPreferenceCtx().getPreferenceCache();
+            PreferenceCache preferenceCache = PreferenceManager.inst().getPreferenceCache();
             labelMainContentVal.setFont(new Font(preferenceCache.getScrollModeFontFamily(), Font.BOLD, preferenceCache.getScrollModeFontSize()));
         } else {
             labelMainContentVal.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 24));
@@ -238,13 +240,14 @@ public class RandomScrollModePanel extends JPanel {
      * 初始化组件的展示文案
      */
     private void initComponentTitle() {
-        resizeOpenedFileLabel(AppContext.i().getGuiContext().getRootFrame().getWidth());
+        resizeOpenedFileLabel(GuiManager.inst().getRootFrame().getWidth());
         changeLabelCardPoolState();
         changeLabelMainContentStyle(false, "请点击『开始』吧~");
     }
 
     /**
      * 播放当前文字行TTS音频
+     *
      * @param e
      */
     private void playAudio(ActionEvent e) {

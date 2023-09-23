@@ -4,7 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import per.chaos.app.context.BeanContext;
+import per.chaos.app.context.BeanManager;
 import per.chaos.app.ioc.BeanReference;
 import per.chaos.infrastructure.mappers.FileReferMapper;
 import per.chaos.infrastructure.runtime.models.files.ctxs.FileCardCtx;
@@ -40,7 +40,7 @@ public class FileReferService {
      * 分类获取文件引用信息
      */
     private Map<FileListTypeEnum, List<RawFileRefer>> listAllFileReferByType() {
-        return BeanContext.i().callMapper(FileReferMapper.class, (mapper) -> {
+        return BeanManager.inst().callMapper(FileReferMapper.class, (mapper) -> {
             List<FileReferEntity> fileReferEntityList = mapper.selectList(null);
             return fileReferEntityList.stream()
                     .map(fileRefer -> {
@@ -90,7 +90,7 @@ public class FileReferService {
         Long fileReferId = this.fileReferCache.removeRawFileRefer(absolutePath, typeEnum);
 
         if (Objects.nonNull(fileReferId)) {
-            BeanContext.i().executeMapper(FileReferMapper.class, (mapper) -> mapper.deleteById(fileReferId));
+            BeanManager.inst().executeMapper(FileReferMapper.class, (mapper) -> mapper.deleteById(fileReferId));
         }
 
         refreshMemoryFileReferCtx();
@@ -126,7 +126,7 @@ public class FileReferService {
         LambdaUpdateWrapper<FileReferEntity> lambdaWrapper = new UpdateWrapper<FileReferEntity>().lambda();
         lambdaWrapper.set(FileReferEntity::getFileListTypeEnum, targetTypeEnum.getType())
                 .in(FileReferEntity::getPathHash, fileReferHashPaths);
-        BeanContext.i().executeMapper(FileReferMapper.class,
+        BeanManager.inst().executeMapper(FileReferMapper.class,
                 (mapper) -> mapper.update(null, lambdaWrapper)
         );
 
@@ -160,7 +160,7 @@ public class FileReferService {
             return;
         }
 
-        BeanContext.i().executeMapper(FileReferMapper.class, (mapper) -> mapper.insertBatchSomeColumn(entities));
+        BeanManager.inst().executeMapper(FileReferMapper.class, (mapper) -> mapper.insertBatchSomeColumn(entities));
 
         // 刷新数据缓存
         refreshMemoryFileReferCtx();
@@ -180,7 +180,7 @@ public class FileReferService {
         }
 
         for (final FileReferEntity entity : entities) {
-            BeanContext.i().executeMapper(FileReferMapper.class, (mapper) -> mapper.updateById(entity));
+            BeanManager.inst().executeMapper(FileReferMapper.class, (mapper) -> mapper.updateById(entity));
         }
 
         // 刷新数据缓存

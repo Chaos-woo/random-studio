@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jdesktop.swingx.HorizontalLayout;
 import org.jdesktop.swingx.VerticalLayout;
 import org.jdesktop.swingx.combobox.ListComboBoxModel;
-import per.chaos.app.context.BeanContext;
+import per.chaos.app.context.BeanManager;
 import per.chaos.business.gui.index.renderer.TTSLanguageCellPanel;
 import per.chaos.business.gui.index.renderer.TTSVoiceDetailCellPanel;
 import per.chaos.business.services.TTSManageService;
@@ -58,7 +58,7 @@ public class TimbreTestDialog extends JDialog {
         setTitle("TTS管理 - 音声更换 - （" + this.fileCardCtx.getFileName() + "）");
         labelCurrentTimbre.setText(currentFileTimbre);
 
-        final TTSManageService ttsManageService = BeanContext.i().getReference(TTSManageService.class);
+        final TTSManageService ttsManageService = BeanManager.inst().getReference(TTSManageService.class);
 
         comboBoxLanguageList.setRenderer(new TTSLanguageCellPanel());
         comboBoxVoiceList.setRenderer(new TTSVoiceDetailCellPanel());
@@ -74,7 +74,7 @@ public class TimbreTestDialog extends JDialog {
      * 监听语言列表发生更改
      */
     private void languageComboBoxChangeLisener(String language) {
-        final TTSManageService ttsManageService = BeanContext.i().getReference(TTSManageService.class);
+        final TTSManageService ttsManageService = BeanManager.inst().getReference(TTSManageService.class);
         TTSVoice ttsVoice = ttsManageService.getTtsVoiceCache().findTTSVoice(language);
         if (Objects.nonNull(ttsVoice)) {
             ListComboBoxModel<TTSVoicesDetail> voiceListComboBoxModel = new ListComboBoxModel<>(ttsVoice.getVoicesDetail());

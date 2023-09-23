@@ -12,8 +12,8 @@ import javax.swing.*;
 /**
  * 与GUI相关的上下文管理
  */
-public class GuiContext {
-    private static final GuiContext INSTANCE = new GuiContext();
+public class GuiManager {
+    private static final GuiManager INSTANCE = new GuiManager();
 
     /**
      * 根窗口
@@ -22,15 +22,14 @@ public class GuiContext {
     @Setter
     private RootFrame rootFrame;
 
-    private GuiContext() {
+    private GuiManager() {
     }
 
-    public static GuiContext i() {
+    public static GuiManager inst() {
         return INSTANCE;
     }
 
-    public GuiContext init() {
-
+    public GuiManager init() {
         return this;
     }
 

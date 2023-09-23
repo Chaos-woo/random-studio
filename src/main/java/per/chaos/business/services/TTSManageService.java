@@ -7,8 +7,8 @@ import cn.hutool.http.HttpRequest;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import per.chaos.app.context.AppContext;
-import per.chaos.app.context.BeanContext;
+import per.chaos.app.context.ApplicationManager;
+import per.chaos.app.context.BeanManager;
 import per.chaos.app.ioc.BeanReference;
 import per.chaos.infrastructure.apis.TTSMakerApi;
 import per.chaos.infrastructure.runtime.models.callback.TimbreAllDownloadComplete;
@@ -64,7 +64,7 @@ public class TTSManageService {
      * 实际执行刷新音声列表上下文缓存
      */
     private void doRefreshMemoryTTSVoiceCache() {
-        final TTSMakerApi apiClient = BeanContext.i().getReference(TTSMakerApi.class);
+        final TTSMakerApi apiClient = BeanManager.inst().getReference(TTSMakerApi.class);
         final TTSVoiceGetApiDTO ret = apiClient.getTTSVoice();
         this.ttsVoiceCache.ttsVoiceMapping(ret.getTtsVoicesDetail());
         log.info("刷新结束：{}", this.ttsVoiceCache.getIdTTSVoiceMapping());
@@ -77,7 +77,7 @@ public class TTSManageService {
      */
     public String getFileReferTTSAbsolutePath(Long fileReferDatabaseId) {
         return PathUtils.joinAbsolutePathByFileSeparator(
-                AppContext.i().getProjectRootAbsolutePath(),
+                ApplicationManager.inst().getProjectRootAbsolutePath(),
                 TTS_FOLDER,
                 fileReferDatabaseId.toString()
         );
@@ -91,7 +91,7 @@ public class TTSManageService {
      */
     public File getTTSAudioFile(Long fileReferDatabaseId, String text) {
         final String absolutePath = PathUtils.joinAbsolutePathByFileSeparator(
-                AppContext.i().getProjectRootAbsolutePath(),
+                ApplicationManager.inst().getProjectRootAbsolutePath(),
                 TTS_FOLDER,
                 fileReferDatabaseId.toString(),
                 text + MP3_FILE_SUFFIX
@@ -112,7 +112,7 @@ public class TTSManageService {
      */
     public File getTTSAudioFileWithAutoCreate(Long fileReferDatabaseId, String text) {
         final String absolutePath = PathUtils.joinAbsolutePathByFileSeparator(
-                AppContext.i().getProjectRootAbsolutePath(),
+                ApplicationManager.inst().getProjectRootAbsolutePath(),
                 TTS_FOLDER,
                 fileReferDatabaseId.toString(),
                 text + MP3_FILE_SUFFIX
@@ -198,7 +198,7 @@ public class TTSManageService {
                                  final Consumer<TimbreAllDownloadComplete> downloadAllCompleteCallback,
                                  final Supplier<Boolean> continueDownload) {
         final String parentFolderAbsolutePath = PathUtils.joinAbsolutePathByFileSeparator(
-                AppContext.i().getProjectRootAbsolutePath(),
+                ApplicationManager.inst().getProjectRootAbsolutePath(),
                 TTS_FOLDER,
                 parentFolderName
         );
@@ -223,7 +223,7 @@ public class TTSManageService {
             // do nothing
         }
 
-        final TTSMakerApi ttsMakerApi = BeanContext.i().getReference(TTSMakerApi.class);
+        final TTSMakerApi ttsMakerApi = BeanManager.inst().getReference(TTSMakerApi.class);
         for (String text : textList) {
             TimbreDownloadComplete downloadCb = new TimbreDownloadComplete();
             downloadCb.setText(text);

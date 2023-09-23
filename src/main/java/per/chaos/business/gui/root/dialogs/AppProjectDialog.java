@@ -5,7 +5,7 @@
 package per.chaos.business.gui.root.dialogs;
 
 import net.miginfocom.swing.MigLayout;
-import per.chaos.app.context.AppContext;
+import per.chaos.app.context.ApplicationManager;
 import per.chaos.app.models.entity.Project;
 import per.chaos.infrastructure.utils.formmater.AppFormatter;
 
@@ -21,7 +21,6 @@ public class AppProjectDialog extends JDialog {
         super(owner);
         initComponents();
 
-        final Project project = AppContext.i().getProjectContext().getProject();
         labelProjectName.setText("Random Studio");
         labelProjectVersion.setText(AppFormatter.getAppVersion());
         labelProjectProfile.setText("伪随机。");

@@ -3,7 +3,7 @@ package per.chaos.app.upgrade.executor;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import lombok.extern.slf4j.Slf4j;
-import per.chaos.app.context.BeanContext;
+import per.chaos.app.context.BeanManager;
 import per.chaos.app.upgrade.executor.version_upgrade.RVer101;
 import per.chaos.app.upgrade.executor.version_upgrade.RVer102;
 import per.chaos.app.upgrade.executor.version_upgrade.RVer105;
@@ -43,7 +43,7 @@ public class AppUpgrade {
         LambdaUpdateWrapper<DataVersionEntity> lambdaWrapper = new UpdateWrapper<DataVersionEntity>().lambda();
         lambdaWrapper.set(DataVersionEntity::getDataVersion, newBaseUpgradeVersion)
                 .eq(DataVersionEntity::getId, 1L);
-        BeanContext.i().executeMapper(DataVersionMapper.class,
+        BeanManager.inst().executeMapper(DataVersionMapper.class,
                 (mapper) -> {
                     mapper.update(null, lambdaWrapper);
                     AppUpgrade.BASE_DATA_VERSION = newBaseUpgradeVersion;

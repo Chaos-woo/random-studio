@@ -2,8 +2,8 @@ package per.chaos.app.context.system;
 
 import com.google.common.eventbus.Subscribe;
 import lombok.Getter;
-import per.chaos.app.context.AppContext;
-import per.chaos.app.context.BeanContext;
+import per.chaos.app.context.BeanManager;
+import per.chaos.app.context.ctxs.GuiManager;
 import per.chaos.app.models.enums.ThemeEnum;
 import per.chaos.app.preference.business.random.preference.ScrollModeFontFamilyPreference;
 import per.chaos.app.preference.business.random.preference.ScrollModeFontSizePreference;
@@ -17,13 +17,13 @@ import per.chaos.infrastructure.utils.EventBusHolder;
  * 用户首选项设置上下文
  */
 @Getter
-public class UserPreferenceCtx {
-    private static final UserPreferenceCtx INSTANCE = new UserPreferenceCtx();
+public class PreferenceManager {
+    private static final PreferenceManager INSTANCE = new PreferenceManager();
 
-    private UserPreferenceCtx() {
+    private PreferenceManager() {
     }
 
-    public static UserPreferenceCtx i() {
+    public static PreferenceManager inst() {
         return INSTANCE;
     }
 
@@ -35,12 +35,12 @@ public class UserPreferenceCtx {
     /**
      * 首选项配置缓存初始化
      */
-    public UserPreferenceCtx init() {
+    public PreferenceManager init() {
         this.preferenceCache = new PreferenceCache();
-        final ScrollModeTransIntervalPreference scrollModeTransIntervalPreference = BeanContext.i().getReference(ScrollModeTransIntervalPreference.class);
-        final ScrollModeFontSizePreference scrollModeFontSizePreference = BeanContext.i().getReference(ScrollModeFontSizePreference.class);
-        final ScrollModeFontFamilyPreference scrollModeFontFamilyPreference = BeanContext.i().getReference(ScrollModeFontFamilyPreference.class);
-        final AppThemePreference appThemePreference = BeanContext.i().getReference(AppThemePreference.class);
+        final ScrollModeTransIntervalPreference scrollModeTransIntervalPreference = BeanManager.inst().getReference(ScrollModeTransIntervalPreference.class);
+        final ScrollModeFontSizePreference scrollModeFontSizePreference = BeanManager.inst().getReference(ScrollModeFontSizePreference.class);
+        final ScrollModeFontFamilyPreference scrollModeFontFamilyPreference = BeanManager.inst().getReference(ScrollModeFontFamilyPreference.class);
+        final AppThemePreference appThemePreference = BeanManager.inst().getReference(AppThemePreference.class);
 
         this.preferenceCache.setScrollModeTransIntervalMs(scrollModeTransIntervalPreference.get());
         this.preferenceCache.setScrollModeFontSize(scrollModeFontSizePreference.get());
@@ -59,10 +59,10 @@ public class UserPreferenceCtx {
     public void onUpdateCache(RefreshPreferenceCacheEvent event) {
         ThemeEnum oldThemeEnum = preferenceCache.getTheme();
 
-        final ScrollModeTransIntervalPreference scrollModeTransIntervalPreference = BeanContext.i().getReference(ScrollModeTransIntervalPreference.class);
-        final ScrollModeFontSizePreference scrollModeFontSizePreference = BeanContext.i().getReference(ScrollModeFontSizePreference.class);
-        final ScrollModeFontFamilyPreference scrollModeFontFamilyPreference = BeanContext.i().getReference(ScrollModeFontFamilyPreference.class);
-        final AppThemePreference appThemePreference = BeanContext.i().getReference(AppThemePreference.class);
+        final ScrollModeTransIntervalPreference scrollModeTransIntervalPreference = BeanManager.inst().getReference(ScrollModeTransIntervalPreference.class);
+        final ScrollModeFontSizePreference scrollModeFontSizePreference = BeanManager.inst().getReference(ScrollModeFontSizePreference.class);
+        final ScrollModeFontFamilyPreference scrollModeFontFamilyPreference = BeanManager.inst().getReference(ScrollModeFontFamilyPreference.class);
+        final AppThemePreference appThemePreference = BeanManager.inst().getReference(AppThemePreference.class);
         ThemeEnum newThemeEnum = appThemePreference.get();
 
         this.preferenceCache.setScrollModeTransIntervalMs(scrollModeTransIntervalPreference.get());
@@ -71,7 +71,7 @@ public class UserPreferenceCtx {
         this.preferenceCache.setTheme(newThemeEnum);
 
         if (newThemeEnum != oldThemeEnum) {
-            AppContext.i().getGuiContext().updateTheme(newThemeEnum);
+            GuiManager.inst().updateTheme(newThemeEnum);
         }
     }
 }

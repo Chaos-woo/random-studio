@@ -1,8 +1,7 @@
 package per.chaos.app.upgrade.executor.version_upgrade;
 
 import lombok.extern.slf4j.Slf4j;
-import per.chaos.app.context.AppContext;
-import per.chaos.app.context.system.DbManagerContext;
+import per.chaos.app.context.system.DbManager;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -33,9 +32,9 @@ public class RVer105 {
         @SuppressWarnings("all") final String fieldCheckSql = "PRAGMA table_info(ct_file_refer);";
         @SuppressWarnings("all") final String alterSql = "ALTER TABLE 'ct_file_refer' ADD 'timbre' text DEFAULT NULL;";
 
-        DbManagerContext dbManagerContext = AppContext.i().getDbManagerContext();
+        DbManager dbManager = DbManager.inst();
         try {
-            dbManagerContext.transaction((connection -> {
+            dbManager.transaction((connection -> {
                 // 表结构是否存在timbre新字段
                 boolean existTimbreField = false;
                 try {

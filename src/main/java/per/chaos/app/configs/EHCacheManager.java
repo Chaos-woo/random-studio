@@ -43,6 +43,13 @@ public class EHCacheManager {
             .build(true);
 
     /**
+     * 简单初始化
+     */
+    public static void init() {
+        persistentCacheManager.getCache("init-nonAny", String.class, String.class);
+    }
+
+    /**
      * 获取TTS缓存中的内容
      *
      * @param key 指定key

@@ -11,8 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jdesktop.swingx.HorizontalLayout;
 import org.jdesktop.swingx.VerticalLayout;
-import per.chaos.app.context.AppContext;
-import per.chaos.app.context.BeanContext;
+import per.chaos.app.context.BeanManager;
+import per.chaos.app.context.ctxs.GuiManager;
 import per.chaos.business.gui.common.dialogs.PromptDialog;
 import per.chaos.business.gui.common.dialogs.SecondaryConfirmDialog;
 import per.chaos.business.gui.index.renderer.tts_action.TTSCardActionTableCellEditor;
@@ -67,7 +67,7 @@ public class TTSManagerDialog extends JDialog {
         this.fileCardCtx = fileCardCtx;
 
         setTitle("TTS管理 （" + this.fileCardCtx.getFileName() + "）");
-        final TTSManageService ttsManageService = BeanContext.i().getReference(TTSManageService.class);
+        final TTSManageService ttsManageService = BeanManager.inst().getReference(TTSManageService.class);
 
         refreshFileCardListModel();
 
@@ -90,7 +90,7 @@ public class TTSManagerDialog extends JDialog {
 
             @Override
             public void delete(FileCard fc, final AtomicReference<AudioPlayer> player) {
-                final TTSManageService ttsManageService = BeanContext.i().getReference(TTSManageService.class);
+                final TTSManageService ttsManageService = BeanManager.inst().getReference(TTSManageService.class);
                 final File ttsAudioFile = ttsManageService.getTTSAudioFile(fileCardCtx.getRawFileRefer().getFileRefer().getId(), fc.getText());
                 FileUtil.del(ttsAudioFile);
                 player.set(null);
@@ -134,7 +134,7 @@ public class TTSManagerDialog extends JDialog {
     private void changeCurrentTimbreLabel() {
         String voiceId = this.fileCardCtx.getRawFileRefer().getFileRefer().getTimbre();
         if (StringUtils.isNotBlank(voiceId)) {
-            final TTSManageService ttsManageService = BeanContext.i().getReference(TTSManageService.class);
+            final TTSManageService ttsManageService = BeanManager.inst().getReference(TTSManageService.class);
             TTSVoice ttsVoice = ttsManageService.getTtsVoiceCache().getIdTTSVoiceMapping().getOrDefault(Long.valueOf(voiceId), null);
             if (Objects.nonNull(ttsVoice)) {
                 TTSVoicesDetail voiceDetail = ttsVoice.findByVoiceId(Long.valueOf(voiceId));
@@ -186,7 +186,7 @@ public class TTSManagerDialog extends JDialog {
      */
     private List<FileCard> listFileCards() {
         List<FileCard> fileCards = this.fileCardCtx.getOriginalCards();
-        final TTSManageService ttsManageService = BeanContext.i().getReference(TTSManageService.class);
+        final TTSManageService ttsManageService = BeanManager.inst().getReference(TTSManageService.class);
         Long fileReferDatabaseId = this.fileCardCtx.getRawFileRefer().getFileRefer().getId();
         for (FileCard model : fileCards) {
             File ttsAudioFile = ttsManageService.getTTSAudioFile(fileReferDatabaseId, model.getText());
@@ -205,7 +205,7 @@ public class TTSManagerDialog extends JDialog {
         }
 
         final Long voiceId = Long.valueOf(fileRefer.getTimbre());
-        final TTSManageService ttsManageService = BeanContext.i().getReference(TTSManageService.class);
+        final TTSManageService ttsManageService = BeanManager.inst().getReference(TTSManageService.class);
         if (backgroundDownloading.get()) {
             backgroundDownloading.set(Boolean.FALSE);
             try {
@@ -265,7 +265,7 @@ public class TTSManagerDialog extends JDialog {
      * @param ttsVoicesDetail
      */
     private void downloadAllTTSFilesByVoiceId(final Long voiceId) {
-        final TTSManageService ttsManageService = BeanContext.i().getReference(TTSManageService.class);
+        final TTSManageService ttsManageService = BeanManager.inst().getReference(TTSManageService.class);
         if (backgroundDownloading.get()) {
             backgroundDownloading.set(Boolean.FALSE);
             try {
@@ -380,7 +380,7 @@ public class TTSManagerDialog extends JDialog {
      * @param e
      */
     private void deleteAllTTSFile() {
-        final TTSManageService ttsManageService = BeanContext.i().getReference(TTSManageService.class);
+        final TTSManageService ttsManageService = BeanManager.inst().getReference(TTSManageService.class);
         final String fileReferTTSFileRootFolder = ttsManageService.getFileReferTTSAbsolutePath(this.fileCardCtx.getRawFileRefer().getFileRefer().getId());
         FileUtil.del(fileReferTTSFileRootFolder);
         refreshFileCardListModel();
@@ -388,7 +388,7 @@ public class TTSManagerDialog extends JDialog {
 
     private void deleteAll(ActionEvent e) {
         SecondaryConfirmDialog confirmDialog = new SecondaryConfirmDialog(
-                AppContext.i().getGuiContext().getRootFrame(),
+                GuiManager.inst().getRootFrame(),
                 "删除所有TTS文件",
                 "确认删除所有TTS文件？",
                 "是的",
@@ -413,7 +413,7 @@ public class TTSManagerDialog extends JDialog {
         FileReferEntity fileRefer = this.fileCardCtx.getRawFileRefer().getFileRefer();
         if (StringUtils.isBlank(fileRefer.getTimbre())) {
             PromptDialog dialog = new PromptDialog(
-                    AppContext.i().getGuiContext().getRootFrame(),
+                    GuiManager.inst().getRootFrame(),
                     "一键下载：" + fileRefer.getFileName() + "\n错误：当前未选择任何音声，一键下载功能停止，请先选择音声后再使用【一键下载】功能",
                     "好的",
                     true
@@ -429,7 +429,7 @@ public class TTSManagerDialog extends JDialog {
         if (backgroundDownloading.get()) {
             final String specialTextTip = "<html><body><p><font color=\"red\">注意，当前有正在下载的任务，若确认下载将会终止下载中的任务！</font></p></body><html>";
             SecondaryConfirmDialog confirmDialog = new SecondaryConfirmDialog(
-                    AppContext.i().getGuiContext().getRootFrame(),
+                    GuiManager.inst().getRootFrame(),
                     "退出确认",
                     specialTextTip,
                     "是的",
@@ -460,8 +460,8 @@ public class TTSManagerDialog extends JDialog {
      */
     private void timbreTest(ActionEvent e) {
         final Consumer<TimbreSelectable> timbreTestCallback = (timbreSelectable) -> {
-            final TTSManageService ttsManageService = BeanContext.i().getReference(TTSManageService.class);
-            final FileReferService fileReferService = BeanContext.i().getReference(FileReferService.class);
+            final TTSManageService ttsManageService = BeanManager.inst().getReference(TTSManageService.class);
+            final FileReferService fileReferService = BeanManager.inst().getReference(FileReferService.class);
             final TTSVoicesDetail ttsVoicesDetail = timbreSelectable.getTtsVoicesDetail();
 
             final Consumer<Boolean> secondaryConfirmCallback = (ret) -> {
@@ -510,7 +510,7 @@ public class TTSManagerDialog extends JDialog {
             }
 
             SecondaryConfirmDialog confirmDialog = new SecondaryConfirmDialog(
-                    AppContext.i().getGuiContext().getRootFrame(),
+                    GuiManager.inst().getRootFrame(),
                     "音声更换确认",
                     String.format(confirmContentFormat, currentTimbreText, newTimbreText, specialTextTip),
                     "是的",
@@ -521,7 +521,7 @@ public class TTSManagerDialog extends JDialog {
         };
 
         TimbreTestDialog dialog = new TimbreTestDialog(
-                AppContext.i().getGuiContext().getRootFrame(),
+                GuiManager.inst().getRootFrame(),
                 this.fileCardCtx,
                 labelCurrentTimbre.getText(),
                 timbreTestCallback
