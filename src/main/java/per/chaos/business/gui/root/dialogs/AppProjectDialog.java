@@ -22,9 +22,9 @@ public class AppProjectDialog extends JDialog {
         initComponents();
 
         final Project project = AppContext.i().getProjectContext().getProject();
-        labelProjectName.setText(project.getName());
+        labelProjectName.setText("Random Studio");
         labelProjectVersion.setText(AppFormatter.getAppVersion());
-        labelProjectProfile.setText(project.getDescription());
+        labelProjectProfile.setText("伪随机。");
         
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     }
