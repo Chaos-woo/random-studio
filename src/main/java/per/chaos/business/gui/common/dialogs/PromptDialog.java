@@ -22,10 +22,23 @@ public class PromptDialog extends JDialog {
                         String content,
                         String confirmButtonTitle) {
         super(owner, Dialog.DEFAULT_MODALITY_TYPE);
+        initDialog(title, content, confirmButtonTitle);
+    }
+
+    public PromptDialog(Window owner,
+                        String content,
+                        String confirmButtonTitle) {
+        super(owner, Dialog.DEFAULT_MODALITY_TYPE);
+        initDialog("提示", content, confirmButtonTitle);
+    }
+
+    private void initDialog(String title, String content, String confirmButtonTitle) {
         initComponents();
 
         setTitle(title);
-        confirmContent.setText("<html>" + content + "</html>");
+        contentTextArea.setText(content);
+        // 将滚动条位置设置到开头
+        contentTextArea.setCaretPosition(0);
 
         okButton.setText(StringUtils.isBlank(confirmButtonTitle) ? "好的" : confirmButtonTitle);
     }
@@ -38,7 +51,8 @@ public class PromptDialog extends JDialog {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         dialogPane = new JPanel();
         contentPanel = new JPanel();
-        confirmContent = new JLabel();
+        contentScrollPanel = new JScrollPane();
+        contentTextArea = new JTextArea();
         buttonBar = new JPanel();
         okButton = new JButton();
 
@@ -58,10 +72,24 @@ public class PromptDialog extends JDialog {
             {
                 contentPanel.setLayout(new BorderLayout());
 
-                //---- confirmContent ----
-                confirmContent.setText("text");
-                confirmContent.setBorder(new EmptyBorder(10, 10, 10, 10));
-                contentPanel.add(confirmContent, BorderLayout.NORTH);
+                //======== contentScrollPanel ========
+                {
+                    contentScrollPanel.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+                    contentScrollPanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+                    contentScrollPanel.setAutoscrolls(true);
+                    contentScrollPanel.setBorder(BorderFactory.createEmptyBorder());
+
+                    //---- contentTextArea ----
+                    contentTextArea.setLineWrap(true);
+                    contentTextArea.setWrapStyleWord(true);
+                    contentTextArea.setEditable(false);
+                    contentTextArea.setFocusable(false);
+                    contentTextArea.setRows(7);
+                    contentTextArea.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 14));
+                    contentTextArea.setBorder(BorderFactory.createEmptyBorder());
+                    contentScrollPanel.setViewportView(contentTextArea);
+                }
+                contentPanel.add(contentScrollPanel, BorderLayout.PAGE_START);
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
 
@@ -90,7 +118,8 @@ public class PromptDialog extends JDialog {
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
     private JPanel dialogPane;
     private JPanel contentPanel;
-    private JLabel confirmContent;
+    private JScrollPane contentScrollPanel;
+    private JTextArea contentTextArea;
     private JPanel buttonBar;
     private JButton okButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on

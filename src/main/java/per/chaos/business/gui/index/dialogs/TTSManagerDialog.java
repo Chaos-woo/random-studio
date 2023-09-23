@@ -364,8 +364,7 @@ public class TTSManagerDialog extends JDialog {
         if (StringUtils.isBlank(fileRefer.getTimbre())) {
             PromptDialog dialog = new PromptDialog(
                     AppContext.i().getGuiContext().getRootFrame(),
-                    "提示",
-                    "[ " + fileRefer.getFileName() + " ] 当前未选择任何音声，请先选择音声后再使用【一键下载】功能",
+                    "一键下载：" + fileRefer.getFileName() + "\n错误：当前未选择任何音声，一键下载功能停止，请先选择音声后再使用【一键下载】功能",
                     "好的"
             );
             dialog.setVisible(true);

@@ -13,12 +13,24 @@ new FormModel {
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 					name: "contentPanel"
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "confirmContent"
-						"text": "text"
-						"border": new javax.swing.border.EmptyBorder( 10, 10, 10, 10 )
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "contentScrollPanel"
+						"horizontalScrollBarPolicy": 31
+						"verticalScrollBarPolicy": 22
+						"autoscrolls": true
+						"border": new javax.swing.border.EmptyBorder( 0, 0, 0, 0 )
+						add( new FormComponent( "javax.swing.JTextArea" ) {
+							name: "contentTextArea"
+							"lineWrap": true
+							"wrapStyleWord": true
+							"editable": false
+							"focusable": false
+							"rows": 7
+							"font": new java.awt.Font( "Microsoft YaHei UI", 0, 14 )
+							"border": new javax.swing.border.EmptyBorder( 0, 0, 0, 0 )
+						} )
 					}, new FormLayoutConstraints( class java.lang.String ) {
-						"value": "North"
+						"value": "First"
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "Center"
