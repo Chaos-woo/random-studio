@@ -15,6 +15,8 @@ import per.chaos.app.preference.system.ProxyPreference;
 import per.chaos.configs.models.CustomProxy;
 import per.chaos.infrastructure.runtime.models.tts.entity.CreateTTSOrderApiDTO;
 import per.chaos.infrastructure.runtime.models.tts.entity.TTSVoiceGetApiDTO;
+import per.chaos.infrastructure.runtime.models.tts.entity.TokenStatus;
+import per.chaos.infrastructure.runtime.models.tts.entity.TokenStatusDTO;
 import per.chaos.infrastructure.runtime.models.tts.enums.TTSMakerApiErrorEnum;
 import per.chaos.infrastructure.runtime.models.tts.exception.TTSApiException;
 
@@ -26,7 +28,7 @@ public class TTSMakerApi {
     /**
      * 免费token
      */
-    private static final String FREE_TOKEN = "ttsmaker_demo_token";
+    public static final String FREE_TOKEN = "ttsmaker_demo_token";
 
     /**
      *
@@ -111,5 +113,28 @@ public class TTSMakerApi {
         }
 
         return ttsOrderDTO;
+    }
+
+    /**
+     * 获取token的状态数据
+     */
+    public TokenStatusDTO getTokenStatus(String token) {
+        final ProxyPreference proxyPreference = BeanManager.inst().getReference(ProxyPreference.class);
+        CustomProxy proxy = proxyPreference.get();
+
+        final String uri = "https://api.ttsmaker.com/v1/get-token-status?token=" + token;
+        try {
+            String body = HttpRequest.get(uri)
+                    .header(Header.USER_AGENT, DEFAULT_USER_AGENT)
+                    .setHttpProxy(proxy.getHost(), proxy.getPort())
+                    .setConnectionTimeout(3_000)
+                    .setReadTimeout(5_000)
+                    .execute()
+                    .body();
+            System.out.println(body);
+            return JSON.parseObject(body, TokenStatusDTO.class);
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
     }
 }

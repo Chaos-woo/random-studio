@@ -24,7 +24,7 @@ public class CreateTTSOrderApiDTO {
     private String status;
 
     @JSONField(name = "token_status")
-    private TokenStatus tokenStatus;
+    private TokenStatusWithVoiceDetail tokenStatus;
 
     @JSONField(name = "tts_order_characters")
     private Long ttsOrderCharacters;

@@ -26,6 +26,7 @@ public class AppHelpDoc {
                 .newDescription("TTS即Text-to-Speech，文字转换语音。主要由三方网站根据提供的文本转换为可播放的音频文件")
                 .newDescription("TTS管理：即管理单个文件中『文字行』的音频文件")
                 .newDescription("通过TTSMaker网站API生成音频文件，需要通过代理科学上网，需要配置对应的访问代理")
+                .newDescription("访问TTSMaker网站API需要对应的访问凭证（即TOKEN）")
                 .newDescription("TTSMaker网站API生成音频文件当前限制为1次/秒，所以下载过程中若再添加新的下载任务，将会停止当前的下载任务")
                 .newDescription("TTS管理面板中下载好的音频文件，可以在随机模式中对应文字进行播放");
     }

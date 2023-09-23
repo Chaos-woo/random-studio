@@ -12,6 +12,7 @@ import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import per.chaos.ApplicationBoot;
 import per.chaos.app.context.BeanManager;
+import per.chaos.business.gui.common.dialogs.PromptDialog;
 import per.chaos.business.gui.index.panels.IndexPanel;
 import per.chaos.business.gui.root.dialogs.*;
 import per.chaos.business.gui.scroll_random.panels.RandomScrollModePanel;
@@ -210,15 +211,37 @@ public class RootFrame extends JFrame implements DropTargetListener {
         dialog.setVisible(true);
     }
 
+    private void checkTokenStatus(ActionEvent e) {
+        TTSMakerTOkenStatusDialog dialog = new TTSMakerTOkenStatusDialog(this);
+        dialog.setVisible(true);
+    }
+
+    private void ttsMakerSite(ActionEvent e) {
+        final String siteBrief = "TTSMaker is a free text-to-speech tool that provides speech synthesis services and supports multiple languages, including English, French, German, Spanish, Arabic, Chinese, Japanese, Korean, Vietnamese, etc., as well as various voice styles. You can use it to read text and e-books aloud, or download the audio files for commercial use (it's completely free). As an excellent free TTS tool, TTSMaker can easily convert text to speech online.\n" +
+                "\n" +
+                "网站: https://ttsmaker.com";
+        PromptDialog dialog = new PromptDialog(
+                this,
+                "TTSMaker介绍",
+                siteBrief,
+                "了解",
+                true
+                );
+        dialog.setVisible(true);
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         menuBar0 = new JMenuBar();
         menuFile = new JMenu();
         menuItemImportFile = new JMenuItem();
         menuItemBatchImportFiles = new JMenuItem();
+        menuTTSMaker = new JMenu();
+        menuItemTokenStatus = new JMenuItem();
+        menuItemTTSMakerSite = new JMenuItem();
         menuAbout = new JMenu();
         menuItemPref = new JMenuItem();
-        menuItem1 = new JMenuItem();
+        menuItemProxy = new JMenuItem();
         menuItemInfo = new JMenuItem();
         menuItemHelp = new JMenuItem();
         menuItemUpdateLog = new JMenuItem();
@@ -257,19 +280,35 @@ public class RootFrame extends JFrame implements DropTargetListener {
             }
             menuBar0.add(menuFile);
 
+            //======== menuTTSMaker ========
+            {
+                menuTTSMaker.setText("TTSMaker");
+
+                //---- menuItemTokenStatus ----
+                menuItemTokenStatus.setText("TTSMaker\u8bbf\u95ee\u51ed\u8bc1");
+                menuItemTokenStatus.addActionListener(e -> checkTokenStatus(e));
+                menuTTSMaker.add(menuItemTokenStatus);
+
+                //---- menuItemTTSMakerSite ----
+                menuItemTTSMakerSite.setText("TTSMaker\u4ecb\u7ecd");
+                menuItemTTSMakerSite.addActionListener(e -> ttsMakerSite(e));
+                menuTTSMaker.add(menuItemTTSMakerSite);
+            }
+            menuBar0.add(menuTTSMaker);
+
             //======== menuAbout ========
             {
-                menuAbout.setText("\u5173\u4e8e");
+                menuAbout.setText("\u8bbe\u7f6e/\u5e2e\u52a9");
 
                 //---- menuItemPref ----
                 menuItemPref.setText("\u9996\u9009\u9879");
                 menuItemPref.addActionListener(e -> showUserPreferenceDialog(e));
                 menuAbout.add(menuItemPref);
 
-                //---- menuItem1 ----
-                menuItem1.setText("\u4ee3\u7406\u8bbe\u7f6e");
-                menuItem1.addActionListener(e -> menuItemProxy(e));
-                menuAbout.add(menuItem1);
+                //---- menuItemProxy ----
+                menuItemProxy.setText("\u4ee3\u7406\u8bbe\u7f6e");
+                menuItemProxy.addActionListener(e -> menuItemProxy(e));
+                menuAbout.add(menuItemProxy);
                 menuAbout.addSeparator();
 
                 //---- menuItemInfo ----
@@ -300,9 +339,12 @@ public class RootFrame extends JFrame implements DropTargetListener {
     private JMenu menuFile;
     private JMenuItem menuItemImportFile;
     private JMenuItem menuItemBatchImportFiles;
+    private JMenu menuTTSMaker;
+    private JMenuItem menuItemTokenStatus;
+    private JMenuItem menuItemTTSMakerSite;
     private JMenu menuAbout;
     private JMenuItem menuItemPref;
-    private JMenuItem menuItem1;
+    private JMenuItem menuItemProxy;
     private JMenuItem menuItemInfo;
     private JMenuItem menuItemHelp;
     private JMenuItem menuItemUpdateLog;

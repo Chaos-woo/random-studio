@@ -6,18 +6,22 @@ import lombok.Data;
 
 @Data
 public class TokenStatus {
+
+    @JSONField(name = "order_characters")
+    private Long orderCharacters;
+
     @JSONField(name = "current_cycle_characters_available")
-    private Long currentCycleCharactersAvailable;
+    private Integer currentCycleCharactersAvailable;
 
     @JSONField(name = "current_cycle_characters_used")
-    private Long currentCycleCharactersUsed;
-
-    @JSONField(name = "current_cycle_max_characters")
-    private Long currentCycleMaxCharacters;
+    private Integer currentCycleCharactersUsed;
 
     @JSONField(name = "history_characters_used")
-    private Long historyCharactersUsed;
-    
+    private Integer historyCharactersUsed;
+
+    @JSONField(name = "current_cycle_max_characters")
+    private Integer maxCycleCharacters;
+
     @JSONField(name = "remaining_days_to_reset_quota")
-    private Double remainingDaysToResetQuota;
+    private Double remainDaysToResetTime;
 }
