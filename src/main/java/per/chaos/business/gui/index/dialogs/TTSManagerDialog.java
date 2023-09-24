@@ -201,6 +201,13 @@ public class TTSManagerDialog extends JDialog {
     private void downloadSingleTTSFiles(FileCard fileCard) {
         FileReferEntity fileRefer = this.fileCardCtx.getRawFileRefer().getFileRefer();
         if (StringUtils.isBlank(fileRefer.getTimbre())) {
+            PromptDialog dialog = new PromptDialog(
+                    GuiManager.inst().getRootFrame(),
+                    "TTS音频下载：" + fileCard.getText() + "\n\n错误：当前未选择任何音声，并未开始任何TTS音频下载任务，请先选择音声后再使用此功能",
+                    "好的",
+                    true
+            );
+            dialog.setVisible(true);
             return;
         }
 
