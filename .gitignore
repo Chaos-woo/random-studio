@@ -43,4 +43,6 @@ build/
 
 ### log ###
 .log
-.log.gz
+.log.gz!/random-studio.db
+!/app.log
+!/rclibCacheData/
