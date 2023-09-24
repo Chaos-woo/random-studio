@@ -6,7 +6,7 @@ package per.chaos.business.gui.root.renderer;
 
 import org.jdesktop.swingx.HorizontalLayout;
 import org.jdesktop.swingx.VerticalLayout;
-import per.chaos.app.models.entry.UpgradeVersionLog;
+import per.chaos.app.models.entity.UpgradeVersionLog;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

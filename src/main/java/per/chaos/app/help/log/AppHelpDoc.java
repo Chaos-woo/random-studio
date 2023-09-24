@@ -1,7 +1,7 @@
 package per.chaos.app.help.log;
 
 import lombok.Getter;
-import per.chaos.app.models.entry.HelpDoc;
+import per.chaos.app.models.entity.HelpDoc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,17 +18,28 @@ public class AppHelpDoc {
         helpDocs.add(moveFileHelpDoc());
         helpDocs.add(randomScrollModeHelpDoc());
         helpDocs.add(userPreferenceHelpDoc());
+        helpDocs.add(ttsHelpDoc());
+    }
+
+    private static HelpDoc ttsHelpDoc() {
+        return HelpDoc.doc("什么是TTS？")
+                .newDescription("TTS即Text-to-Speech，文字转换语音。主要由三方网站根据提供的文本转换为可播放的音频文件")
+                .newDescription("TTS管理：即管理单个文件中『文字行』的音频文件")
+                .newDescription("通过TTSMaker网站API生成音频文件，需要通过代理科学上网，需要配置对应的访问代理")
+                .newDescription("访问TTSMaker网站API需要对应的访问凭证（即TOKEN）")
+                .newDescription("TTSMaker网站API生成音频文件当前限制为1次/秒，所以下载过程中若再添加新的下载任务，将会停止当前的下载任务")
+                .newDescription("TTS管理面板中下载好的音频文件，可以在随机模式中对应文字进行播放");
     }
 
     private static HelpDoc userPreferenceHelpDoc() {
-        return HelpDoc.doc("用户首选项是什么?")
+        return HelpDoc.doc("用户首选项是什么？")
                 .newDescription("软件首页『关于』-『首选项』可以打开软件支持的自定义配置")
                 .newDescription("首选项中包含随机滚动模式的多个可自定义内容，到随机滚动模式中试一试吧~")
                 .newDescription("首选项中包含软件主题,当前支持『明亮FlatLight』和『暗黑FlatDarcula』两种主题");
     }
 
     private static HelpDoc randomScrollModeHelpDoc() {
-        return HelpDoc.doc("滚动随机模式是什么?")
+        return HelpDoc.doc("滚动随机模式是什么？")
                 .newDescription("软件首页『最近打开的文件』和『快速查找区文件』任意文件右键，选择『以随机滚动模式打开』")
                 .newDescription("随机滚动模式将读取选择的文件中的多个文字行进行滚动，直至暂停展示某个文字行，达到随机的目的")
                 .newDescription("该模式页面顶部的『当前卡池状态X/Y』表示剩余文字行总数和文件中的文字行总数")

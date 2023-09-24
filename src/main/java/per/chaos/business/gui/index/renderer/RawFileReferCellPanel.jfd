@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "8.1.0.0.283" Java: "17.0.7" encoding: "UTF-8"
+JFDML JFormDesigner: "8.1.1.0.298" Java: "17.0.8" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -26,13 +26,13 @@ new FormModel {
 				name: "fileTypePanel"
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "labelFileSuffix"
-					"font": new java.awt.Font( "楷体", 0, 13 )
-					"foreground": sfield java.awt.Color white
+					"font": new com.jformdesigner.model.SwingDerivedFont( "楷体", 1, -2, false )
 					"text": "suffix"
+					"foreground": new java.awt.Color( 255, 255, 255, 255 )
 				} )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "labelFileExistTip"
-					"font": new java.awt.Font( "楷体", 0, 13 )
+					"font": new java.awt.Font( "Source Code Pro", 0, 13 )
 					"foreground": sfield java.awt.Color white
 					"text": "tip"
 				} )

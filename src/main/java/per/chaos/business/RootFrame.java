@@ -10,19 +10,18 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import per.chaos.ApplicationBoot;
 import per.chaos.app.context.BeanManager;
+import per.chaos.business.gui.common.dialogs.PromptDialog;
 import per.chaos.business.gui.index.panels.IndexPanel;
-import per.chaos.business.gui.root.dialogs.AppHelpDocDialog;
-import per.chaos.business.gui.root.dialogs.AppProjectDialog;
-import per.chaos.business.gui.root.dialogs.AppUpgradeLogDialog;
-import per.chaos.business.gui.root.dialogs.UserPreferenceDialog;
+import per.chaos.business.gui.root.dialogs.*;
 import per.chaos.business.gui.scroll_random.panels.RandomScrollModePanel;
 import per.chaos.business.services.FileReferService;
 import per.chaos.infrastructure.runtime.models.events.DnDSystemFilesEvent;
 import per.chaos.infrastructure.runtime.models.files.ctxs.FileCardCtx;
 import per.chaos.infrastructure.runtime.models.files.enums.FileListTypeEnum;
 import per.chaos.infrastructure.runtime.models.files.enums.SystemFileTypeEnum;
-import per.chaos.infrastructure.utils.EventBus;
+import per.chaos.infrastructure.utils.EventBusHolder;
 import per.chaos.infrastructure.utils.formmater.AppFormatter;
 import per.chaos.infrastructure.utils.gui.GuiUtils;
 
@@ -34,6 +33,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.dnd.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.net.URL;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -55,14 +55,19 @@ public class RootFrame extends JFrame implements DropTargetListener {
 
         setTitle("Random Studio - " + AppFormatter.getAppVersion());
 
-        final FileReferService fileReferService = BeanManager.instance().getReference(FileReferService.class);
+        final FileReferService fileReferService = BeanManager.inst().getReference(FileReferService.class);
         fileReferService.refreshMemoryFileReferCtx();
 
         this.indexPanel = new IndexPanel(this);
         getContentPane().add(this.indexPanel);
 
         this.dropTarget = new DropTarget(this, this);
-//        setTransferHandler();
+
+        URL icon = ApplicationBoot.class.getResource("/icons/logo.png");
+        if (Objects.nonNull(icon)) {
+            ImageIcon imageIcon = new ImageIcon(icon);
+            setIconImage(imageIcon.getImage());
+        }
     }
 
     /**
@@ -82,7 +87,7 @@ public class RootFrame extends JFrame implements DropTargetListener {
      * @param typeEnum       文件引用所属列表类型
      */
     public void jumpToScrollModePanel(String absolutionPath, FileListTypeEnum typeEnum) {
-        final FileReferService fileReferService = BeanManager.instance().getReference(FileReferService.class);
+        final FileReferService fileReferService = BeanManager.inst().getReference(FileReferService.class);
         FileCardCtx fileCardCtx = fileReferService.findRandomCardFileCtx(absolutionPath);
 
         if (Objects.isNull(fileCardCtx)) {
@@ -108,7 +113,7 @@ public class RootFrame extends JFrame implements DropTargetListener {
             List<String> fileAbsolutePaths = selectFiles.stream()
                     .map(File::getAbsolutePath)
                     .collect(Collectors.toList());
-            final FileReferService fileReferService = BeanManager.instance().getReference(FileReferService.class);
+            final FileReferService fileReferService = BeanManager.inst().getReference(FileReferService.class);
             fileReferService.batchImportFileRefer(fileAbsolutePaths);
             this.indexPanel.repaintNewFileModels();
         }
@@ -127,7 +132,7 @@ public class RootFrame extends JFrame implements DropTargetListener {
             List<String> fileAbsolutePaths = selectFiles.stream()
                     .map(File::getAbsolutePath)
                     .collect(Collectors.toList());
-            final FileReferService fileReferService = BeanManager.instance().getReference(FileReferService.class);
+            final FileReferService fileReferService = BeanManager.inst().getReference(FileReferService.class);
             fileReferService.batchImportFileRefer(fileAbsolutePaths);
             this.indexPanel.repaintNewFileModels();
         }
@@ -188,17 +193,41 @@ public class RootFrame extends JFrame implements DropTargetListener {
                         .filter(file -> supportFileSuffix.contains(FileUtil.getSuffix(file)))
                         .collect(Collectors.toList());
                 if (CollectionUtil.isNotEmpty(files)) {
-                    EventBus.publish(new DnDSystemFilesEvent(files));
+                    EventBusHolder.publish(new DnDSystemFilesEvent(files));
                 }
             } else {
                 dtde.rejectDrop();
             }
         } catch (Exception e) {
-            log.info("{}", ExceptionUtils.getStackTrace(e));
+            log.error("{}", ExceptionUtils.getStackTrace(e));
             dtde.rejectDrop();
         } finally {
             dtde.dropComplete(true);
         }
+    }
+
+    private void menuItemProxy(ActionEvent e) {
+        ProxySettingDialog dialog = new ProxySettingDialog(this);
+        dialog.setVisible(true);
+    }
+
+    private void checkTokenStatus(ActionEvent e) {
+        TTSMakerTOkenStatusDialog dialog = new TTSMakerTOkenStatusDialog(this);
+        dialog.setVisible(true);
+    }
+
+    private void ttsMakerSite(ActionEvent e) {
+        final String siteBrief = "TTSMaker is a free text-to-speech tool that provides speech synthesis services and supports multiple languages, including English, French, German, Spanish, Arabic, Chinese, Japanese, Korean, Vietnamese, etc., as well as various voice styles. You can use it to read text and e-books aloud, or download the audio files for commercial use (it's completely free). As an excellent free TTS tool, TTSMaker can easily convert text to speech online.\n" +
+                "\n" +
+                "网站: https://ttsmaker.com";
+        PromptDialog dialog = new PromptDialog(
+                this,
+                "TTSMaker介绍",
+                siteBrief,
+                "了解",
+                true
+                );
+        dialog.setVisible(true);
     }
 
     private void initComponents() {
@@ -207,17 +236,21 @@ public class RootFrame extends JFrame implements DropTargetListener {
         menuFile = new JMenu();
         menuItemImportFile = new JMenuItem();
         menuItemBatchImportFiles = new JMenuItem();
+        menuTTSMaker = new JMenu();
+        menuItemTokenStatus = new JMenuItem();
+        menuItemTTSMakerSite = new JMenuItem();
         menuAbout = new JMenu();
         menuItemPref = new JMenuItem();
+        menuItemProxy = new JMenuItem();
         menuItemInfo = new JMenuItem();
         menuItemHelp = new JMenuItem();
         menuItemUpdateLog = new JMenuItem();
 
         //======== this ========
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new Dimension(900, 520));
+        setMinimumSize(new Dimension(940, 520));
         setBackground(Color.white);
-        setPreferredSize(new Dimension(900, 520));
+        setPreferredSize(new Dimension(940, 520));
         var contentPane = getContentPane();
         contentPane.setLayout(new MigLayout(
             "fill,insets 0,hidemode 3,align center center",
@@ -247,18 +280,39 @@ public class RootFrame extends JFrame implements DropTargetListener {
             }
             menuBar0.add(menuFile);
 
+            //======== menuTTSMaker ========
+            {
+                menuTTSMaker.setText("TTSMaker");
+
+                //---- menuItemTokenStatus ----
+                menuItemTokenStatus.setText("TTSMaker\u8bbf\u95ee\u51ed\u8bc1");
+                menuItemTokenStatus.addActionListener(e -> checkTokenStatus(e));
+                menuTTSMaker.add(menuItemTokenStatus);
+
+                //---- menuItemTTSMakerSite ----
+                menuItemTTSMakerSite.setText("TTSMaker\u4ecb\u7ecd");
+                menuItemTTSMakerSite.addActionListener(e -> ttsMakerSite(e));
+                menuTTSMaker.add(menuItemTTSMakerSite);
+            }
+            menuBar0.add(menuTTSMaker);
+
             //======== menuAbout ========
             {
-                menuAbout.setText("\u5173\u4e8e");
+                menuAbout.setText("\u8bbe\u7f6e/\u5e2e\u52a9");
 
                 //---- menuItemPref ----
                 menuItemPref.setText("\u9996\u9009\u9879");
                 menuItemPref.addActionListener(e -> showUserPreferenceDialog(e));
                 menuAbout.add(menuItemPref);
+
+                //---- menuItemProxy ----
+                menuItemProxy.setText("\u4ee3\u7406\u8bbe\u7f6e");
+                menuItemProxy.addActionListener(e -> menuItemProxy(e));
+                menuAbout.add(menuItemProxy);
                 menuAbout.addSeparator();
 
                 //---- menuItemInfo ----
-                menuItemInfo.setText("\u7b80\u4ecb");
+                menuItemInfo.setText("\u8f6f\u4ef6\u4fe1\u606f");
                 menuItemInfo.addActionListener(e -> showAppProjectDialog(e));
                 menuAbout.add(menuItemInfo);
 
@@ -285,8 +339,12 @@ public class RootFrame extends JFrame implements DropTargetListener {
     private JMenu menuFile;
     private JMenuItem menuItemImportFile;
     private JMenuItem menuItemBatchImportFiles;
+    private JMenu menuTTSMaker;
+    private JMenuItem menuItemTokenStatus;
+    private JMenuItem menuItemTTSMakerSite;
     private JMenu menuAbout;
     private JMenuItem menuItemPref;
+    private JMenuItem menuItemProxy;
     private JMenuItem menuItemInfo;
     private JMenuItem menuItemHelp;
     private JMenuItem menuItemUpdateLog;

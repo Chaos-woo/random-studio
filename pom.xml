@@ -4,7 +4,7 @@
 
   <groupId>per.chaos</groupId>
   <artifactId>random-studio</artifactId>
-  <version>1.0.4</version>
+  <version>1.0.5</version>
   <packaging>jar</packaging>
 
   <name>random studio</name>
@@ -138,6 +138,27 @@
       <version>2.5.2</version>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/com.formdev/flatlaf-extras -->
+    <dependency>
+      <groupId>com.formdev</groupId>
+      <artifactId>flatlaf-extras</artifactId>
+      <version>3.1.1</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/javazoom/jlayer -->
+    <dependency>
+      <groupId>javazoom</groupId>
+      <artifactId>jlayer</artifactId>
+      <version>1.0.1</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.ehcache/ehcache -->
+    <dependency>
+      <groupId>org.ehcache</groupId>
+      <artifactId>ehcache</artifactId>
+      <version>3.10.8</version>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -148,6 +169,9 @@
         <includes>
           <include>**/*.properties</include>
           <include>**/*.xml</include>
+          <include>**/*.svg</include>
+          <include>**/*.png</include>
+          <include>**/*.txt</include>
         </includes>
       </resource>
     </resources>
@@ -181,7 +205,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>per.chaos.Application</mainClass>
+              <mainClass>per.chaos.ApplicationBoot</mainClass>
             </manifest>
           </archive>
           <descriptorRefs>

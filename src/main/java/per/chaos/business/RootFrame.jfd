@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "8.1.0.0.283" Java: "17.0.7" encoding: "UTF-8"
+JFDML JFormDesigner: "8.1.1.0.298" Java: "17.0.8" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -11,9 +11,9 @@ new FormModel {
 			name: "this"
 			"$locationPolicy": 1
 			"defaultCloseOperation": 3
-			"minimumSize": new java.awt.Dimension( 900, 520 )
+			"minimumSize": new java.awt.Dimension( 940, 520 )
 			"background": sfield java.awt.Color white
-			"preferredSize": new java.awt.Dimension( 900, 520 )
+			"preferredSize": new java.awt.Dimension( 940, 520 )
 			menuBar: new FormContainer( "javax.swing.JMenuBar", new FormLayoutManager( class javax.swing.JMenuBar ) ) {
 				name: "menuBar0"
 				"maximumSize": new java.awt.Dimension( 90, 26 )
@@ -33,19 +33,38 @@ new FormModel {
 					} )
 				} )
 				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+					name: "menuTTSMaker"
+					"text": "TTSMaker"
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "menuItemTokenStatus"
+						"text": "TTSMaker访问凭证"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "checkTokenStatus", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "menuItemTTSMakerSite"
+						"text": "TTSMaker介绍"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "ttsMakerSite", true ) )
+					} )
+				} )
+				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
 					name: "menuAbout"
-					"text": "关于"
+					"text": "设置/帮助"
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "menuItemPref"
 						"text": "首选项"
 						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "showUserPreferenceDialog", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "menuItemProxy"
+						"text": "代理设置"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "menuItemProxy", true ) )
 					} )
 					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
 						name: "separator2"
 					} )
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "menuItemInfo"
-						"text": "简介"
+						"text": "软件信息"
 						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "showAppProjectDialog", true ) )
 					} )
 					add( new FormComponent( "javax.swing.JMenuItem" ) {

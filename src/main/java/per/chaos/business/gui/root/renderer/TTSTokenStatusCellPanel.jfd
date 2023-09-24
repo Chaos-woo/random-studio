@@ -1,0 +1,72 @@
+JFDML JFormDesigner: "8.1.1.0.298" Java: "17.0.8" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.swingx.VerticalLayout ) {
+			"gap": 10
+		} ) {
+			name: "this"
+			"minimumSize": new java.awt.Dimension( 250, 30 )
+			"border": new javax.swing.border.EmptyBorder( 10, 10, 10, 10 )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.swingx.HorizontalLayout ) {
+				"gap": 5
+			} ) {
+				name: "panelToken"
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "labelTokenTip"
+					"text": "访问凭证："
+					"font": new com.jformdesigner.model.SwingDerivedFont( null, 1, 0, false )
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "labelToken"
+					"text": "text"
+				} )
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.swingx.HorizontalLayout ) {
+				"gap": 5
+			} ) {
+				name: "panelChars"
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label1"
+					"border": new javax.swing.border.EmptyBorder( 0, 20, 0, 0 )
+					"text": "-"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "labelRemainCharsTip"
+					"text": "可创建TTS剩余字符："
+					"font": new com.jformdesigner.model.SwingDerivedFont( null, 1, 0, false )
+				} )
+				add( new FormComponent( "javax.swing.JProgressBar" ) {
+					name: "progressBarRemainChars"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "labelRemainCharsPercent"
+					"text": "text"
+				} )
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.swingx.HorizontalLayout ) {
+				"gap": 5
+			} ) {
+				name: "panelOther"
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label2"
+					"text": "-"
+					"border": new javax.swing.border.EmptyBorder( 0, 20, 0, 0 )
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "labelNextRefreshTip"
+					"text": "距离下次刷新："
+					"font": new com.jformdesigner.model.SwingDerivedFont( null, 1, 0, false )
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "labelNextRefresh"
+					"text": "text"
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 400, 86 )
+		} )
+	}
+}

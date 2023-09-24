@@ -1,6 +1,6 @@
 package per.chaos.infrastructure.utils.gui;
 
-import per.chaos.app.context.AppContext;
+import per.chaos.app.context.ctxs.GuiManager;
 import per.chaos.business.RootFrame;
 import per.chaos.business.gui.common.dialogs.MyFontDialog;
 
@@ -8,6 +8,7 @@ import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -38,7 +39,7 @@ public class GuiUtils {
      * @return 被选择的文件
      */
     public static List<File> chooseFile(boolean multiSelection, int fileSelectionMode) {
-        RootFrame rootFrame = AppContext.instance().getGuiContext().getRootFrame();
+        RootFrame rootFrame = GuiManager.inst().getRootFrame();
         return chooseFile(rootFrame, multiSelection, fileSelectionMode, null);
     }
 
@@ -51,7 +52,7 @@ public class GuiUtils {
      * @return 被选择的文件
      */
     public static List<File> chooseFile(boolean multiSelection, int fileSelectionMode, FileFilter fileFilter) {
-        RootFrame rootFrame = AppContext.instance().getGuiContext().getRootFrame();
+        RootFrame rootFrame = GuiManager.inst().getRootFrame();
         return chooseFile(rootFrame, multiSelection, fileSelectionMode, fileFilter);
     }
 
@@ -106,7 +107,7 @@ public class GuiUtils {
      * @param fontChooseConsumer 字体选择回调
      */
     public static void chooseFont(Window owner, String chooserTitle, Consumer<Font> fontChooseConsumer) {
-        MyFontDialog dialog = new MyFontDialog(owner, chooserTitle);
+        MyFontDialog dialog = new MyFontDialog(owner, chooserTitle, Dialog.DEFAULT_MODALITY_TYPE);
         dialog.setOkConsumer(fontChooseConsumer);
         Point dialogLocation = new Point(
                 owner.getLocation().x + ((owner.getWidth() / 2) - (dialog.getWidth() / 2)),
@@ -115,5 +116,29 @@ public class GuiUtils {
         dialog.setLocation(dialogLocation);
         dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         dialog.setVisible(true);
+    }
+
+    /**
+     * 根据字体获取文字宽度
+     *
+     * @param font 字体
+     * @param text 文字
+     */
+    public static int getStringWidthByFont(Font font, String text) {
+        FontMetrics fontMetrics = Toolkit.getDefaultToolkit().getFontMetrics(font);
+        return SwingUtilities.computeStringWidth(fontMetrics, text);
+    }
+
+    /**
+     * 使用系统文件管理器打开指定路径文件/文件夹
+     */
+    public static void openInExplorer(File file) {
+        if (Desktop.isDesktopSupported()) {
+            try {
+                Desktop.getDesktop().open(file);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
     }
 }

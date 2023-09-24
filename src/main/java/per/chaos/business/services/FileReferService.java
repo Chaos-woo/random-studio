@@ -8,9 +8,9 @@ import per.chaos.app.context.BeanManager;
 import per.chaos.app.ioc.BeanReference;
 import per.chaos.infrastructure.mappers.FileReferMapper;
 import per.chaos.infrastructure.runtime.models.files.ctxs.FileCardCtx;
-import per.chaos.infrastructure.runtime.models.files.ctxs.MemoryFileReferCtx;
-import per.chaos.infrastructure.runtime.models.files.entry.FilePathHash;
-import per.chaos.infrastructure.runtime.models.files.entry.RawFileRefer;
+import per.chaos.infrastructure.runtime.models.files.ctxs.MemoryFileReferCache;
+import per.chaos.infrastructure.runtime.models.files.entity.FilePathHash;
+import per.chaos.infrastructure.runtime.models.files.entity.RawFileRefer;
 import per.chaos.infrastructure.runtime.models.files.enums.FileListTypeEnum;
 import per.chaos.infrastructure.runtime.models.files.enums.SystemFileTypeEnum;
 import per.chaos.infrastructure.storage.models.sqlite.FileReferEntity;
@@ -24,23 +24,23 @@ import java.util.stream.Collectors;
 @BeanReference
 public class FileReferService {
     /**
-     * 内存文件引用列表上下文
+     * 文件引用列表上下文缓存
      */
-    private final MemoryFileReferCtx mFileReferCtx = new MemoryFileReferCtx();
+    private final MemoryFileReferCache fileReferCache = new MemoryFileReferCache();
 
     /**
      * 刷新内存中的所有文件引用数据
      */
     public void refreshMemoryFileReferCtx() {
         Map<FileListTypeEnum, List<RawFileRefer>> fileReferMapping = listAllFileReferByType();
-        this.mFileReferCtx.fileReferMapping(fileReferMapping);
+        this.fileReferCache.fileReferMapping(fileReferMapping);
     }
 
     /**
      * 分类获取文件引用信息
      */
     private Map<FileListTypeEnum, List<RawFileRefer>> listAllFileReferByType() {
-        return BeanManager.instance().callMapper(FileReferMapper.class, (mapper) -> {
+        return BeanManager.inst().callMapper(FileReferMapper.class, (mapper) -> {
             List<FileReferEntity> fileReferEntityList = mapper.selectList(null);
             return fileReferEntityList.stream()
                     .map(fileRefer -> {
@@ -66,7 +66,7 @@ public class FileReferService {
      * @param typeEnum 文件列表类型
      */
     public List<RawFileRefer> listRawFileReferByType(FileListTypeEnum typeEnum) {
-        return this.mFileReferCtx.listRawFileReferByType(typeEnum).stream()
+        return this.fileReferCache.listRawFileReferByType(typeEnum).stream()
                 .sorted(Comparator.comparing(rawFileRefer -> rawFileRefer.getFileRefer().getId()))
                 .collect(Collectors.toList());
     }
@@ -77,7 +77,7 @@ public class FileReferService {
      * @param absolutePath 源文件路径
      */
     public FileCardCtx findRandomCardFileCtx(String absolutePath) {
-        return this.mFileReferCtx.findRandomCardFileContext(absolutePath);
+        return this.fileReferCache.findRandomCardFileContext(absolutePath);
     }
 
     /**
@@ -87,10 +87,12 @@ public class FileReferService {
      * @param typeEnum     文件列表类型
      */
     public void removeRawFileRefer(String absolutePath, FileListTypeEnum typeEnum) {
-        Long fileReferId = this.mFileReferCtx.removeRawFileRefer(absolutePath, typeEnum);
+        Long fileReferId = this.fileReferCache.removeRawFileRefer(absolutePath, typeEnum);
 
         if (Objects.nonNull(fileReferId)) {
-            BeanManager.instance().executeMapper(FileReferMapper.class, (mapper) -> mapper.deleteById(fileReferId));
+            BeanManager.inst().executeMapper(FileReferMapper.class, (mapper) -> mapper.deleteById(fileReferId));
+            final TTSManageService ttsManageService = BeanManager.inst().getReference(TTSManageService.class);
+            ttsManageService.deleteAllTTSVoiceFiles(fileReferId);
         }
 
         refreshMemoryFileReferCtx();
@@ -119,14 +121,14 @@ public class FileReferService {
     public void batchTransferRawFileRefer(List<String> absolutePaths,
                                           FileListTypeEnum sourceTypeEnum, FileListTypeEnum targetTypeEnum) {
 
-        final List<RawFileRefer> rawFileRefers = this.mFileReferCtx.transferRawFileRefer(absolutePaths, sourceTypeEnum, targetTypeEnum);
+        final List<RawFileRefer> rawFileRefers = this.fileReferCache.transferRawFileRefer(absolutePaths, sourceTypeEnum, targetTypeEnum);
         final List<String> fileReferHashPaths = rawFileRefers.stream()
                 .map(rawFileRefer -> rawFileRefer.getFileRefer().getPathHash())
                 .collect(Collectors.toList());
         LambdaUpdateWrapper<FileReferEntity> lambdaWrapper = new UpdateWrapper<FileReferEntity>().lambda();
         lambdaWrapper.set(FileReferEntity::getFileListTypeEnum, targetTypeEnum.getType())
                 .in(FileReferEntity::getPathHash, fileReferHashPaths);
-        BeanManager.instance().executeMapper(FileReferMapper.class,
+        BeanManager.inst().executeMapper(FileReferMapper.class,
                 (mapper) -> mapper.update(null, lambdaWrapper)
         );
 
@@ -153,14 +155,35 @@ public class FileReferService {
                     entity.setUpdateTime(now);
                     return entity;
                 })
-                .filter(entity -> !this.mFileReferCtx.existFileRefer(new FilePathHash(entity.getAbsolutePath())))
+                .filter(entity -> !this.fileReferCache.existFileRefer(new FilePathHash(entity.getAbsolutePath())))
                 .collect(Collectors.toList());
 
         if (CollectionUtil.isEmpty(entities)) {
             return;
         }
 
-        BeanManager.instance().executeMapper(FileReferMapper.class, (mapper) -> mapper.insertBatchSomeColumn(entities));
+        BeanManager.inst().executeMapper(FileReferMapper.class, (mapper) -> mapper.insertBatchSomeColumn(entities));
+
+        // 刷新数据缓存
+        refreshMemoryFileReferCtx();
+    }
+
+    /**
+     * 批量更新文件引用数据
+     */
+    public void batchUpdateFileRefer(List<FileReferEntity> fileReferEntities) {
+        Date now = new Date();
+        List<FileReferEntity> entities = fileReferEntities.stream()
+                .peek(fileReferEntity -> fileReferEntity.setUpdateTime(now))
+                .collect(Collectors.toList());
+
+        if (CollectionUtil.isEmpty(entities)) {
+            return;
+        }
+
+        for (final FileReferEntity entity : entities) {
+            BeanManager.inst().executeMapper(FileReferMapper.class, (mapper) -> mapper.updateById(entity));
+        }
 
         // 刷新数据缓存
         refreshMemoryFileReferCtx();

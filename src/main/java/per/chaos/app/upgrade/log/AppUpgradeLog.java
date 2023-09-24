@@ -1,9 +1,10 @@
 package per.chaos.app.upgrade.log;
 
 import lombok.Getter;
-import per.chaos.app.models.entry.UpgradeVersionLog;
+import per.chaos.app.models.entity.UpgradeVersionLog;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -19,11 +20,20 @@ public class AppUpgradeLog {
         upgradeLogs.add(rVer1p02UpgradeLog());
         upgradeLogs.add(rVer1p03UpgradeLog());
         upgradeLogs.add(rVer1p04UpgradeLog());
+        upgradeLogs.add(rVer1p05UpgradeLog());
+
+        Collections.reverse(upgradeLogs);
+    }
+
+    private static UpgradeVersionLog rVer1p05UpgradeLog() {
+        return UpgradeVersionLog.log("R.V.1.0.5", "支持TTS管理")
+                .featureLog("本次更新后可以为文本中的词句添加并播放音频啦~")
+                .importantFeatureLog("新增TTS管理面板，支持音频文件的管理");
     }
 
     private static UpgradeVersionLog rVer1p04UpgradeLog() {
         return UpgradeVersionLog.log("R.V.1.0.4", "随机滚动模式样式优化")
-                .featureLog("主页文件列表样式优化,可以直观看到系统文件是否存在啦~")
+                .featureLog("主页文件列表样式优化，可以直观看到系统文件是否存在啦~")
                 .importantFeatureLog("新增应用更新日志，有重要更新可以在『关于』-『更新日志』中查看喔！")
                 .importantFeatureLog("新增应用帮助手册，软件的重要功能可以在『关于』-『帮助手册』中查看喔！")
                 .importantFeatureLog("新增随机滚动模式字体样式用户首选项设置。");

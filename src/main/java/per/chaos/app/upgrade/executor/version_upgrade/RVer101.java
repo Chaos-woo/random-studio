@@ -1,9 +1,8 @@
 package per.chaos.app.upgrade.executor.version_upgrade;
 
 import lombok.extern.slf4j.Slf4j;
-import per.chaos.app.context.AppContext;
 import per.chaos.app.context.BeanManager;
-import per.chaos.app.context.system.DbManagerContext;
+import per.chaos.app.context.system.DbManager;
 import per.chaos.app.upgrade.executor.AppUpgrade;
 import per.chaos.infrastructure.mappers.DataVersionMapper;
 import per.chaos.infrastructure.storage.models.sqlite.DataVersionEntity;
@@ -28,7 +27,7 @@ public class RVer101 {
         try {
             performCreateTableCtDataVersion();
             performInitDataVersion();
-            log.info("{}至{}数据升级完成", fromVersion, toVersion);
+            log.info("数据版本存储完成");
         } catch (Exception e) {
             log.warn("执行{}至{}升级失败", fromVersion, toVersion);
             throw new RuntimeException(e);
@@ -36,7 +35,7 @@ public class RVer101 {
     }
 
     private static void performInitDataVersion() {
-        BeanManager.instance().executeMapper(DataVersionMapper.class, (mapper) -> {
+        BeanManager.inst().executeMapper(DataVersionMapper.class, (mapper) -> {
             DataVersionEntity dataVersionEntity = mapper.selectById(1);
             if (Objects.isNull(dataVersionEntity)) {
                 dataVersionEntity = new DataVersionEntity();
@@ -61,9 +60,9 @@ public class RVer101 {
                 "\"update_time\" datetime NOT NULL," +
                 "PRIMARY KEY (\"id\"));";
 
-        DbManagerContext dbManagerContext = AppContext.instance().getDbManagerContext();
+        DbManager dbManager = DbManager.inst();
         try {
-            dbManagerContext.transaction((connection -> {
+            dbManager.transaction((connection -> {
                 try {
                     PreparedStatement statement = connection.prepareStatement(sql);
                     statement.execute();

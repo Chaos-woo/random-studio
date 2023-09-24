@@ -5,7 +5,7 @@
 package per.chaos.business.gui.root.renderer;
 
 import org.jdesktop.swingx.VerticalLayout;
-import per.chaos.app.models.entry.HelpDoc;
+import per.chaos.app.models.entity.HelpDoc;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

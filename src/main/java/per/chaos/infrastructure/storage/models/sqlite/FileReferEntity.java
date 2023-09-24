@@ -43,4 +43,10 @@ public class FileReferEntity extends BaseEntity {
      */
     @TableField(value = "sys_file_type")
     private SystemFileTypeEnum systemFileTypeEnum;
+
+    /**
+     * 文件音频音色
+     */
+    @TableField(value = "timbre")
+    private String timbre;
 }

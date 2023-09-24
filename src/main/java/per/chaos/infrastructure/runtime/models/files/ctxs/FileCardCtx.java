@@ -4,7 +4,8 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ObjUtil;
 import lombok.Getter;
 import lombok.Setter;
-import per.chaos.infrastructure.runtime.models.files.entry.FileCard;
+import per.chaos.infrastructure.runtime.models.files.entity.FileCard;
+import per.chaos.infrastructure.runtime.models.files.entity.RawFileRefer;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -12,19 +13,24 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-// 文件内容卡片上下文
+/**
+ * 文件内容卡片上下文
+ */
+
 public class FileCardCtx {
-    @Getter
     @Setter
+    @Getter
     private File fileHandler;
 
-    @Getter
     @Setter
+    @Getter
     private String fileName;
 
-    @Getter
     @Setter
+    @Getter
     private String fileAbsolutePath;
+    
+    private final List<FileCard> originalCards;
 
     @Getter
     private final List<FileCard> remainCards;
@@ -32,13 +38,28 @@ public class FileCardCtx {
     @Getter
     private final List<FileCard> usedCards;
 
-    @Getter
     @Setter
+    @Getter
     private long fileSize;
 
-    public FileCardCtx() {
-        this.remainCards = new ArrayList<>();
-        this.usedCards = new ArrayList<>();
+    @Getter
+    private final RawFileRefer rawFileRefer;
+
+    public FileCardCtx(RawFileRefer rawFileRefer) {
+        this.rawFileRefer = rawFileRefer;
+        originalCards = new ArrayList<>();
+        remainCards = new ArrayList<>();
+        usedCards = new ArrayList<>();
+    }
+
+    public void initOriginalCards(List<FileCard> originalCards) {
+        this.originalCards.clear();
+        this.originalCards.addAll(originalCards);
+        resetAllCards();
+    }
+
+    public List<FileCard> getOriginalCards() {
+        return ObjUtil.cloneByStream(originalCards);
     }
 
     public void dropCard(int index) {
@@ -48,19 +69,26 @@ public class FileCardCtx {
     }
 
     public void resetAllCards() {
-        remainCards.addAll(usedCards);
+        remainCards.clear();
         usedCards.clear();
-        Collections.shuffle(remainCards, new Random());
+        
+        remainCards.addAll(ObjUtil.cloneByStream(originalCards));
     }
 
-    public FileCardCtx copy() {
-        resetAllCards();
+    public int getCardSize() {
+        return originalCards.size();
+    }
 
-        FileCardCtx context = new FileCardCtx();
-        context.setFileHandler(FileUtil.file(this.fileAbsolutePath));
-        context.setFileName(this.fileName);
-        context.setFileAbsolutePath(this.fileAbsolutePath);
-        context.getRemainCards().addAll(ObjUtil.cloneByStream(this.remainCards));
-        return context;
+    public FileCardCtx originalCopy() {
+        FileCardCtx ctx = new FileCardCtx(rawFileRefer);
+        ctx.setFileHandler(FileUtil.file(fileAbsolutePath));
+        ctx.setFileName(fileName);
+        ctx.setFileAbsolutePath(fileAbsolutePath);
+        ctx.initOriginalCards(ObjUtil.cloneByStream(originalCards));
+        return ctx;
+    }
+    
+    public void shuffleRemainCards() {
+        Collections.shuffle(remainCards, new Random());
     }
 }

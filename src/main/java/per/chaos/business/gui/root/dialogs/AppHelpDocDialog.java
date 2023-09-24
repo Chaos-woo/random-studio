@@ -5,7 +5,7 @@
 package per.chaos.business.gui.root.dialogs;
 
 import per.chaos.app.help.log.AppHelpDoc;
-import per.chaos.app.models.entry.HelpDoc;
+import per.chaos.app.models.entity.HelpDoc;
 import per.chaos.business.gui.root.renderer.AppHelpDocCellPanel;
 
 import javax.swing.*;
