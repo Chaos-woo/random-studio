@@ -432,6 +432,7 @@ public class IndexPanel extends JPanel {
 
             //---- latestPopupMenuItemMove2FastUsed ----
             latestPopupMenuItemMove2FastUsed.setText("\u79fb\u5230 \"\u5feb\u901f\u67e5\u627e\u533a\u6587\u4ef6...\"");
+            latestPopupMenuItemMove2FastUsed.setIcon(new FlatSVGIcon("icons/right_arrow.svg"));
             latestPopupMenuItemMove2FastUsed.addActionListener(e -> latestPopupMenuItemMove2FastQuery(e));
             popupMenuLatestFile.add(latestPopupMenuItemMove2FastUsed);
 
@@ -443,6 +444,7 @@ public class IndexPanel extends JPanel {
 
             //---- menuItemLatestFileOpenByExplore ----
             menuItemLatestFileOpenByExplore.setText("\u5728\u6587\u4ef6\u7ba1\u7406\u5668\u4e2d\u6253\u5f00");
+            menuItemLatestFileOpenByExplore.setIcon(new FlatSVGIcon("icons/folder.svg"));
             menuItemLatestFileOpenByExplore.addActionListener(e -> latestFileOpenByExplore(e));
             popupMenuLatestFile.add(menuItemLatestFileOpenByExplore);
         }
@@ -465,6 +467,7 @@ public class IndexPanel extends JPanel {
 
             //---- fastUsedPopupMenuItemMove2Latest ----
             fastUsedPopupMenuItemMove2Latest.setText("\u79fb\u5230 \"\u6700\u8fd1\u6253\u5f00\u7684\u6587\u4ef6...\"");
+            fastUsedPopupMenuItemMove2Latest.setIcon(new FlatSVGIcon("icons/left_arrow.svg"));
             fastUsedPopupMenuItemMove2Latest.addActionListener(e -> fastQueryPopupMenuItemMove2Latest(e));
             popupMenuFastQueryFile.add(fastUsedPopupMenuItemMove2Latest);
 
@@ -476,6 +479,7 @@ public class IndexPanel extends JPanel {
 
             //---- menuItemFastQueryFileOpenByExplore ----
             menuItemFastQueryFileOpenByExplore.setText("\u5728\u6587\u4ef6\u7ba1\u7406\u5668\u4e2d\u6253\u5f00");
+            menuItemFastQueryFileOpenByExplore.setIcon(new FlatSVGIcon("icons/folder.svg"));
             menuItemFastQueryFileOpenByExplore.addActionListener(e -> fastQueryFileOpenByExplore(e));
             popupMenuFastQueryFile.add(menuItemFastQueryFileOpenByExplore);
         }
@@ -485,6 +489,7 @@ public class IndexPanel extends JPanel {
 
             //---- menuItem1 ----
             menuItem1.setText("\u79fb\u9664");
+            menuItem1.setIcon(new FlatSVGIcon("icons/remove.svg"));
             menuItem1.addActionListener(e -> menuItemRemoveLatestFileNonExist(e));
             popupMenuLatestNonExistFile.add(menuItem1);
         }
@@ -494,6 +499,7 @@ public class IndexPanel extends JPanel {
 
             //---- menuItem2 ----
             menuItem2.setText("\u79fb\u9664");
+            menuItem2.setIcon(new FlatSVGIcon("icons/remove.svg"));
             menuItem2.addActionListener(e -> menuItemRemoveFastQueryFileNonExist(e));
             popupMenuFastQueryNonExistFile.add(menuItem2);
         }
