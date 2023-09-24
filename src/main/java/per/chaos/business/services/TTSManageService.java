@@ -280,4 +280,19 @@ public class TTSManageService {
             downloadAllCompleteCallback.accept(new TimbreAllDownloadComplete());
         }
     }
+
+    /**
+     * 删除文件引用文件夹下对应的所有TTS文件
+     *
+     * @param fileReferDbId 文件引用数据库唯一id
+     */
+    public void deleteAllTTSVoiceFiles(Long fileReferDbId) {
+        final String parentFolderAbsolutePath = PathUtils.joinAbsolutePathByFileSeparator(
+                ApplicationManager.inst().getProjectRootAbsolutePath(),
+                TTS_FOLDER,
+                fileReferDbId.toString()
+        );
+
+        FileUtil.del(parentFolderAbsolutePath);
+    }
 }

@@ -91,6 +91,8 @@ public class FileReferService {
 
         if (Objects.nonNull(fileReferId)) {
             BeanManager.inst().executeMapper(FileReferMapper.class, (mapper) -> mapper.deleteById(fileReferId));
+            final TTSManageService ttsManageService = BeanManager.inst().getReference(TTSManageService.class);
+            ttsManageService.deleteAllTTSVoiceFiles(fileReferId);
         }
 
         refreshMemoryFileReferCtx();
