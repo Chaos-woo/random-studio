@@ -126,13 +126,13 @@ public class RawFileReferCellPanel extends JPanel implements ListCellRenderer<Ra
             fileTypePanel.setLayout(new HorizontalLayout(5));
 
             //---- labelFileSuffix ----
-            labelFileSuffix.setFont(new Font("\u6977\u4f53", Font.PLAIN, 13));
+            labelFileSuffix.setFont(new Font("\u6977\u4f53", labelFileSuffix.getFont().getStyle() | Font.BOLD, labelFileSuffix.getFont().getSize() - 2));
             labelFileSuffix.setText("suffix");
             labelFileSuffix.setForeground(Color.white);
             fileTypePanel.add(labelFileSuffix);
 
             //---- labelFileExistTip ----
-            labelFileExistTip.setFont(new Font("\u6977\u4f53", Font.PLAIN, 13));
+            labelFileExistTip.setFont(new Font("Source Code Pro", Font.PLAIN, 13));
             labelFileExistTip.setForeground(Color.white);
             labelFileExistTip.setText("tip");
             fileTypePanel.add(labelFileExistTip);
