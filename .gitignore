@@ -46,3 +46,4 @@ build/
 .log.gz!/random-studio.db
 !/app.log
 !/rclibCacheData/
+!/logs/
