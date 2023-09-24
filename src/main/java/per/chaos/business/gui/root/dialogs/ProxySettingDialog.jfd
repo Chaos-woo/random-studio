@@ -34,7 +34,7 @@ new FormModel {
 						name: "panel1"
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "labelHost"
-							"text": "主机："
+							"text": "主机（默认为本地）："
 						} )
 						add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.swingx.HorizontalLayout ) {
 							"gap": 5
@@ -58,7 +58,7 @@ new FormModel {
 						} )
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "labelPort"
-							"text": "端口："
+							"text": "端口（使用HTTP代理端口）："
 						} )
 						add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.swingx.HorizontalLayout ) {
 							"gap": 5
@@ -135,7 +135,7 @@ new FormModel {
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 455, 235 )
+			"size": new java.awt.Dimension( 506, 315 )
 		} )
 	}
 }

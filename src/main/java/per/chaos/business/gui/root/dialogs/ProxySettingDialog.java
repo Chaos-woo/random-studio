@@ -147,7 +147,7 @@ public class ProxySettingDialog extends JDialog {
                     panel1.setLayout(new VerticalLayout(5));
 
                     //---- labelHost ----
-                    labelHost.setText("\u4e3b\u673a\uff1a");
+                    labelHost.setText("\u4e3b\u673a\uff08\u9ed8\u8ba4\u4e3a\u672c\u5730\uff09\uff1a");
                     panel1.add(labelHost);
 
                     //======== panel2 ========
@@ -172,7 +172,7 @@ public class ProxySettingDialog extends JDialog {
                     panel1.add(panel2);
 
                     //---- labelPort ----
-                    labelPort.setText("\u7aef\u53e3\uff1a");
+                    labelPort.setText("\u7aef\u53e3\uff08\u4f7f\u7528HTTP\u4ee3\u7406\u7aef\u53e3\uff09\uff1a");
                     panel1.add(labelPort);
 
                     //======== panel3 ========

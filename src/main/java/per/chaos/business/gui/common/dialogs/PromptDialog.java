@@ -94,7 +94,7 @@ public class PromptDialog extends JDialog {
                     contentTextArea.setEditable(false);
                     contentTextArea.setFocusable(false);
                     contentTextArea.setRows(7);
-                    contentTextArea.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 14));
+                    contentTextArea.setFont(new Font("Source Code Pro", Font.PLAIN, 15));
                     contentTextArea.setBorder(BorderFactory.createEmptyBorder());
                     contentScrollPanel.setViewportView(contentTextArea);
                 }
@@ -110,7 +110,7 @@ public class PromptDialog extends JDialog {
                 ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0, 0.0};
 
                 //---- okButton ----
-                okButton.setText("OK");
+                okButton.setText("\u597d\u7684");
                 okButton.addActionListener(e -> ok(e));
                 buttonBar.add(okButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
