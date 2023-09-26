@@ -52,10 +52,6 @@ public class TTSManageService {
     @Getter
     private final MemoryTTSVoiceCache ttsVoiceCache = new MemoryTTSVoiceCache();
 
-    public TTSManageService() {
-        refreshMemoryTTSVoiceCache();
-    }
-
     public void refreshMemoryTTSVoiceCache() {
         ThreadUtil.execute(this::doRefreshMemoryTTSVoiceCache);
     }

@@ -15,5 +15,6 @@ public class BusinessInitializer {
 
     private static void initTTSMakerVoiceList() {
         final TTSManageService ttsManageService = BeanManager.inst().getReference(TTSManageService.class);
+        ttsManageService.refreshMemoryTTSVoiceCache();
     }
 }

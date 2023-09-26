@@ -15,6 +15,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
@@ -200,16 +201,25 @@ public class BeanManager {
                 return ret;
             }
 
+            Exception ex = null;
             try {
                 ret = bean.create();
             } catch (InstantiationException e) {
+                ex = e;
                 throw new RuntimeException("Can't create reference for bean [" + bean + "]");
             } catch (IllegalAccessException e) {
+                ex = e;
                 throw new RuntimeException("Can't create reference for bean [" + bean + "]");
             } catch (NoSuchMethodException e) {
+                ex = e;
                 throw new RuntimeException("Can't create reference for bean [" + bean + "]");
             } catch (InvocationTargetException e) {
+                ex = e;
                 throw new RuntimeException("Can't create reference for bean [" + bean + "]");
+            } finally {
+                if (Objects.nonNull(ex)) {
+                    log.error("{}", ExceptionUtils.getStackTrace(ex));
+                }
             }
 
             if (null != ret) {

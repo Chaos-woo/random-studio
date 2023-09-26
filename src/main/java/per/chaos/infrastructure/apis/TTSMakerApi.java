@@ -131,7 +131,6 @@ public class TTSMakerApi {
                     .setReadTimeout(5_000)
                     .execute()
                     .body();
-            System.out.println(body);
             return JSON.parseObject(body, TokenStatusDTO.class);
         } catch (Exception e) {
             throw new RuntimeException();

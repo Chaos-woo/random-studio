@@ -4,6 +4,7 @@
 
 package per.chaos.business.gui.index.dialogs;
 
+import cn.hutool.core.collection.CollectionUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.jdesktop.swingx.HorizontalLayout;
 import org.jdesktop.swingx.VerticalLayout;
@@ -64,10 +65,12 @@ public class TimbreTestDialog extends JDialog {
         comboBoxVoiceList.setRenderer(new TTSVoiceDetailCellPanel());
 
         List<TTSVoice> ttsVoiceList = ttsManageService.getTtsVoiceCache().getTtsVoiceList();
-        ListComboBoxModel<TTSVoice> languageComboBoxModel = new ListComboBoxModel<>(ttsVoiceList);
-        ListComboBoxModel<TTSVoicesDetail> voiceListComboBoxModel = new ListComboBoxModel<>(ttsVoiceList.get(0).getVoicesDetail());
-        comboBoxLanguageList.setModel(languageComboBoxModel);
-        comboBoxVoiceList.setModel(voiceListComboBoxModel);
+        if (CollectionUtil.isNotEmpty(ttsVoiceList)) {
+            ListComboBoxModel<TTSVoice> languageComboBoxModel = new ListComboBoxModel<>(ttsVoiceList);
+            ListComboBoxModel<TTSVoicesDetail> voiceListComboBoxModel = new ListComboBoxModel<>(ttsVoiceList.get(0).getVoicesDetail());
+            comboBoxLanguageList.setModel(languageComboBoxModel);
+            comboBoxVoiceList.setModel(voiceListComboBoxModel);
+        }
     }
 
     /**
