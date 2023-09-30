@@ -19,8 +19,8 @@ import java.awt.*;
  * @author 78580
  */
 @SuppressWarnings("all")
-public class TTSMakerTOkenStatusDialog extends JDialog {
-    public TTSMakerTOkenStatusDialog(Window owner) {
+public class TTSMakerTokenStatusDialog extends JDialog {
+    public TTSMakerTokenStatusDialog(Window owner) {
         super(owner, Dialog.DEFAULT_MODALITY_TYPE);
         initComponents();
 

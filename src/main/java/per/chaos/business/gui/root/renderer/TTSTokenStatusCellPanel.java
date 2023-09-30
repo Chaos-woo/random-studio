@@ -27,7 +27,8 @@ public class TTSTokenStatusCellPanel extends JPanel implements ListCellRenderer<
     public Component getListCellRendererComponent(JList<? extends TokenStatusDTO> list, TokenStatusDTO tokenStatusDTO, int index, boolean isSelected, boolean cellHasFocus) {
         String token = tokenStatusDTO.getToken();
         if (TTSMakerApi.FREE_TOKEN.equals(token)) {
-            token = token + "（免费）";
+            // 当前仅使用免费的token，所以直接写死
+            token = token + "（免费，当前使用）";
         }
         labelToken.setText(token);
 

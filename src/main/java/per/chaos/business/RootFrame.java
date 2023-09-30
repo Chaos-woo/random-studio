@@ -212,7 +212,7 @@ public class RootFrame extends JFrame implements DropTargetListener {
     }
 
     private void checkTokenStatus(ActionEvent e) {
-        TTSMakerTOkenStatusDialog dialog = new TTSMakerTOkenStatusDialog(this);
+        TTSMakerTokenStatusDialog dialog = new TTSMakerTokenStatusDialog(this);
         dialog.setVisible(true);
     }
 
