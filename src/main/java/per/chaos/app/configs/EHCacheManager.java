@@ -8,7 +8,7 @@ import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.config.units.EntryUnit;
 import org.ehcache.config.units.MemoryUnit;
 import per.chaos.app.configs.cache.models.TTSCache;
-import per.chaos.infrastructure.utils.PathUtils;
+import per.chaos.infra.utils.PathUtils;
 
 import java.io.File;
 

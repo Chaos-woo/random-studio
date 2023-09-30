@@ -7,8 +7,8 @@ import per.chaos.app.context.BeanManager;
 import per.chaos.app.upgrade.executor.version_upgrade.RVer101;
 import per.chaos.app.upgrade.executor.version_upgrade.RVer102;
 import per.chaos.app.upgrade.executor.version_upgrade.RVer105;
-import per.chaos.infrastructure.mappers.DataVersionMapper;
-import per.chaos.infrastructure.storage.models.sqlite.DataVersionEntity;
+import per.chaos.infra.mappers.DataVersionMapper;
+import per.chaos.infra.storage.models.sqlite.DataVersionEntity;
 
 @Slf4j
 public class AppUpgrade {

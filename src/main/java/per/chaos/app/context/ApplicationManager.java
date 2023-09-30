@@ -6,7 +6,7 @@ import per.chaos.app.context.ctxs.GuiManager;
 import per.chaos.app.context.system.DbManager;
 import per.chaos.app.context.system.PreferenceManager;
 import per.chaos.app.context.system.ProjectManager;
-import per.chaos.infrastructure.utils.PathUtils;
+import per.chaos.infra.utils.PathUtils;
 
 /**
  * 应用上下文管理器

@@ -5,9 +5,7 @@
 package per.chaos.business.gui.root.dialogs;
 
 import net.miginfocom.swing.MigLayout;
-import per.chaos.app.context.ApplicationManager;
-import per.chaos.app.models.entity.Project;
-import per.chaos.infrastructure.utils.formmater.AppFormatter;
+import per.chaos.infra.utils.formmater.AppFormatter;
 
 import javax.swing.*;
 import java.awt.*;

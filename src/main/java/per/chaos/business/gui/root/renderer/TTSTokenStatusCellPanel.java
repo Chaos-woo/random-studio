@@ -7,9 +7,9 @@ package per.chaos.business.gui.root.renderer;
 import javax.swing.border.*;
 import org.jdesktop.swingx.*;
 import org.jdesktop.swingx.VerticalLayout;
-import per.chaos.infrastructure.apis.TTSMakerApi;
-import per.chaos.infrastructure.runtime.models.tts.entity.TokenStatus;
-import per.chaos.infrastructure.runtime.models.tts.entity.TokenStatusDTO;
+import per.chaos.infra.apis.TTSMakerApi;
+import per.chaos.infra.runtime.models.tts.entity.TokenStatus;
+import per.chaos.infra.runtime.models.tts.entity.TokenStatusDTO;
 
 import javax.swing.*;
 import java.awt.*;

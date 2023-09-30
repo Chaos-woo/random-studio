@@ -4,8 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import per.chaos.app.context.BeanManager;
 import per.chaos.app.context.system.DbManager;
 import per.chaos.app.upgrade.executor.AppUpgrade;
-import per.chaos.infrastructure.mappers.DataVersionMapper;
-import per.chaos.infrastructure.storage.models.sqlite.DataVersionEntity;
+import per.chaos.infra.mappers.DataVersionMapper;
+import per.chaos.infra.storage.models.sqlite.DataVersionEntity;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

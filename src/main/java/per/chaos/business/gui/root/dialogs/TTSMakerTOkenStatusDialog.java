@@ -8,9 +8,8 @@ import java.awt.event.*;
 import cn.hutool.core.thread.ThreadUtil;
 import per.chaos.app.context.BeanManager;
 import per.chaos.business.gui.root.renderer.TTSTokenStatusCellPanel;
-import per.chaos.infrastructure.apis.TTSMakerApi;
-import per.chaos.infrastructure.runtime.models.tts.entity.TokenStatus;
-import per.chaos.infrastructure.runtime.models.tts.entity.TokenStatusDTO;
+import per.chaos.infra.apis.TTSMakerApi;
+import per.chaos.infra.runtime.models.tts.entity.TokenStatusDTO;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

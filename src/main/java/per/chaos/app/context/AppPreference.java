@@ -1,6 +1,6 @@
 package per.chaos.app.context;
 
-import per.chaos.infrastructure.utils.prefs.SystemPreference;
+import per.chaos.infra.utils.prefs.SystemPreference;
 
 import java.util.prefs.Preferences;
 

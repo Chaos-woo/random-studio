@@ -8,7 +8,7 @@ import per.chaos.app.ioc.Bean;
 import per.chaos.app.ioc.BeanConfigurator;
 import per.chaos.app.ioc.BeanReference;
 import per.chaos.app.ioc.ClassScanner;
-import per.chaos.infrastructure.utils.Reflections;
+import per.chaos.infra.utils.Reflections;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;

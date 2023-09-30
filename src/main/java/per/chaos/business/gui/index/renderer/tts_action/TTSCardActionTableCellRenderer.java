@@ -5,7 +5,7 @@
 package per.chaos.business.gui.index.renderer.tts_action;
 
 import lombok.extern.slf4j.Slf4j;
-import per.chaos.infrastructure.runtime.models.files.entity.FileCard;
+import per.chaos.infra.runtime.models.files.entity.FileCard;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;

@@ -14,9 +14,9 @@ import per.chaos.app.preference.business.random.preference.ScrollModeFontFamilyP
 import per.chaos.app.preference.business.random.preference.ScrollModeFontSizePreference;
 import per.chaos.app.preference.business.random.preference.ScrollModeTransIntervalPreference;
 import per.chaos.app.preference.system.AppThemePreference;
-import per.chaos.infrastructure.runtime.models.events.RefreshPreferenceCacheEvent;
-import per.chaos.infrastructure.utils.EventBusHolder;
-import per.chaos.infrastructure.utils.gui.GuiUtils;
+import per.chaos.infra.runtime.models.events.RefreshPreferenceCacheEvent;
+import per.chaos.infra.utils.EventBusHolder;
+import per.chaos.infra.utils.gui.GuiUtils;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;

@@ -17,7 +17,7 @@ import per.chaos.app.context.BeanManager;
 import per.chaos.app.preference.system.ProxyPreference;
 import per.chaos.business.services.TTSManageService;
 import per.chaos.configs.models.CustomProxy;
-import per.chaos.infrastructure.apis.TTSMakerApi;
+import per.chaos.infra.apis.TTSMakerApi;
 
 /**
  * @author 78580

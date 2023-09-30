@@ -5,7 +5,7 @@
 package per.chaos.business.gui.index.renderer;
 
 import org.jdesktop.swingx.HorizontalLayout;
-import per.chaos.infrastructure.runtime.models.tts.entity.TTSVoicesDetail;
+import per.chaos.infra.runtime.models.tts.entity.TTSVoicesDetail;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

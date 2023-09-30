@@ -1,7 +1,7 @@
 package per.chaos.business.gui.index.renderer.tts_action;
 
-import per.chaos.infrastructure.runtime.models.files.entity.FileCard;
-import per.chaos.infrastructure.runtime.models.tts.jtable.TTSCardButtonAction;
+import per.chaos.infra.runtime.models.files.entity.FileCard;
+import per.chaos.infra.runtime.models.tts.jtable.TTSCardButtonAction;
 
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;

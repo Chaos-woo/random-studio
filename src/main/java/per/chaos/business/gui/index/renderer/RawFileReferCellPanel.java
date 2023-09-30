@@ -8,9 +8,9 @@ import cn.hutool.core.io.FileUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.jdesktop.swingx.HorizontalLayout;
 import per.chaos.business.gui.index.panels.IndexPanel;
-import per.chaos.infrastructure.runtime.models.files.entity.RawFileRefer;
-import per.chaos.infrastructure.storage.models.sqlite.FileReferEntity;
-import per.chaos.infrastructure.utils.gui.GuiUtils;
+import per.chaos.infra.runtime.models.files.entity.RawFileRefer;
+import per.chaos.infra.storage.models.sqlite.FileReferEntity;
+import per.chaos.infra.utils.gui.GuiUtils;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

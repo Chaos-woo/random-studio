@@ -16,8 +16,8 @@ import per.chaos.app.context.system.PreferenceManager;
 import per.chaos.app.models.enums.ThemeEnum;
 import per.chaos.app.upgrade.executor.AppUpgrade;
 import per.chaos.business.RootFrame;
-import per.chaos.infrastructure.runtime.models.events.RootWindowResizeEvent;
-import per.chaos.infrastructure.utils.EventBusHolder;
+import per.chaos.infra.runtime.models.events.RootWindowResizeEvent;
+import per.chaos.infra.utils.EventBusHolder;
 
 import javax.swing.*;
 import java.awt.event.ComponentAdapter;

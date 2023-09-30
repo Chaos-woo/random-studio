@@ -2,7 +2,7 @@ package per.chaos.app.ioc;
 
 import lombok.extern.slf4j.Slf4j;
 import per.chaos.app.context.BeanManager;
-import per.chaos.infrastructure.utils.Reflections;
+import per.chaos.infra.utils.Reflections;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
