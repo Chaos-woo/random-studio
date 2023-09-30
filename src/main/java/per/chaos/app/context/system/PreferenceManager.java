@@ -9,7 +9,7 @@ import per.chaos.app.preference.business.random.preference.ScrollModeFontFamilyP
 import per.chaos.app.preference.business.random.preference.ScrollModeFontSizePreference;
 import per.chaos.app.preference.business.random.preference.ScrollModeTransIntervalPreference;
 import per.chaos.app.preference.system.AppThemePreference;
-import per.chaos.configs.models.PreferenceCache;
+import per.chaos.app.configs.PreferenceCache;
 import per.chaos.infra.runtime.models.events.RefreshPreferenceCacheEvent;
 import per.chaos.infra.utils.EventBusHolder;
 

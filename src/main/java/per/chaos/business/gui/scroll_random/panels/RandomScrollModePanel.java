@@ -14,7 +14,7 @@ import per.chaos.app.context.BeanManager;
 import per.chaos.app.context.ctxs.GuiManager;
 import per.chaos.app.context.system.PreferenceManager;
 import per.chaos.business.services.TTSManageService;
-import per.chaos.configs.models.PreferenceCache;
+import per.chaos.app.configs.PreferenceCache;
 import per.chaos.infra.runtime.models.events.RootWindowResizeEvent;
 import per.chaos.infra.runtime.models.files.ctxs.FileCardCtx;
 import per.chaos.infra.runtime.models.files.entity.FileCard;

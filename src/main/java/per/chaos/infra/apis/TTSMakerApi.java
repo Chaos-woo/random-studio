@@ -12,7 +12,7 @@ import per.chaos.app.configs.cache.models.TTSCache;
 import per.chaos.app.context.BeanManager;
 import per.chaos.app.ioc.BeanReference;
 import per.chaos.app.preference.system.ProxyPreference;
-import per.chaos.configs.models.CustomProxy;
+import per.chaos.app.configs.CustomProxy;
 import per.chaos.infra.runtime.models.tts.entity.CreateTTSOrderApiDTO;
 import per.chaos.infra.runtime.models.tts.entity.TTSVoiceGetApiDTO;
 import per.chaos.infra.runtime.models.tts.entity.TokenStatusDTO;

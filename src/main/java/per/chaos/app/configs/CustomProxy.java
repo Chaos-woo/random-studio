@@ -1,4 +1,4 @@
-package per.chaos.configs.models;
+package per.chaos.app.configs;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
