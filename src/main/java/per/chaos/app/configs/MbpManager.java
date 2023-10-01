@@ -73,7 +73,7 @@ public class MbpManager {
             configuration.setDefaultEnumTypeHandler(MybatisEnumTypeHandler.class);
             // 扫描mapper接口所在包
             // 扫描接口时同时会映射出力方法对应的SQL处理器，所以如果要设置SQL注入等全局配置，需要在这之前设置
-            configuration.addMappers("per.chaos.infrastructure.mappers");
+            configuration.addMappers("per.chaos.infra.mappers");
             // 配置日志实现
             configuration.setLogImpl(Slf4jImpl.class);
 

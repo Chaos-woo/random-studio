@@ -4,7 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import per.chaos.app.context.AppPreference;
 import per.chaos.app.ioc.BeanReference;
 import per.chaos.app.preference.IPreference;
-import per.chaos.app.configs.CustomProxy;
+import per.chaos.app.configs.models.CustomProxy;
 
 import java.util.Objects;
 

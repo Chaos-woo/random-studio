@@ -1,4 +1,4 @@
-package per.chaos.app.configs;
+package per.chaos.app.configs.models;
 
 import lombok.Getter;
 import lombok.Setter;
