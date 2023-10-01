@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import per.chaos.infra.runtime.models.files.enums.FileListTypeEnum;
 import per.chaos.infra.runtime.models.files.enums.SystemFileTypeEnum;
+import per.chaos.infra.storage.models.sqlite.base.BaseEntity;
 
 /**
  * 文件引用实体

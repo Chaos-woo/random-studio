@@ -1,4 +1,4 @@
-package per.chaos.infra.storage.models.sqlite;
+package per.chaos.infra.storage.models.sqlite.base;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
