@@ -11,8 +11,17 @@ import java.util.List;
  * 应用更新日志
  */
 public class AppUpgradeLog {
+    /**
+     * 升级日志
+     */
     @Getter
     private static final List<UpgradeVersionLog> upgradeLogs = new ArrayList<>();
+
+    /**
+     * 当前版本格式化器
+     */
+    @Getter
+    private static final String currentVersionFormatter = "Beta.Version.%s";
 
     static {
         upgradeLogs.add(rVer1p00UpgradeLog());
@@ -21,8 +30,14 @@ public class AppUpgradeLog {
         upgradeLogs.add(rVer1p03UpgradeLog());
         upgradeLogs.add(rVer1p04UpgradeLog());
         upgradeLogs.add(rVer1p05UpgradeLog());
+//        upgradeLogs.add(rVer1p10UpgradeLog());
 
         Collections.reverse(upgradeLogs);
+    }
+
+    private static UpgradeVersionLog rVer1p10UpgradeLog() {
+        return UpgradeVersionLog.log("R.V.1.1.0", "版本？")
+                .featureLog("No anymore");
     }
 
     private static UpgradeVersionLog rVer1p05UpgradeLog() {
