@@ -1,4 +1,4 @@
-package per.chaos.business.gui.common.dialogs;//
+package per.chaos.business.gui.common.dialogs.font;//
 // Source code recreated from a .class file by IntelliJ IDEA
 // (powered by FernFlower decompiler)
 //

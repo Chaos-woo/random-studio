@@ -1,6 +1,5 @@
 package per.chaos;
 
-import com.alibaba.fastjson2.JSON;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
@@ -16,7 +15,7 @@ import per.chaos.app.context.system.BusinessInitializer;
 import per.chaos.app.context.system.PreferenceManager;
 import per.chaos.app.models.enums.ThemeEnum;
 import per.chaos.app.upgrade.executor.AppUpgrade;
-import per.chaos.business.RootFrame;
+import per.chaos.business.gui.root.RootFrame;
 import per.chaos.infra.runtime.models.events.RootWindowResizeEvent;
 import per.chaos.infra.utils.EventBusHolder;
 

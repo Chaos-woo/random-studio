@@ -5,7 +5,7 @@ import com.formdev.flatlaf.FlatLightLaf;
 import lombok.Getter;
 import lombok.Setter;
 import per.chaos.app.models.enums.ThemeEnum;
-import per.chaos.business.RootFrame;
+import per.chaos.business.gui.root.RootFrame;
 
 import javax.swing.*;
 

@@ -2,7 +2,7 @@
  * Created by JFormDesigner on Sun Jul 02 12:39:39 CST 2023
  */
 
-package per.chaos.business.gui.root.dialogs;
+package per.chaos.business.gui.root.project;
 
 import lombok.extern.slf4j.Slf4j;
 import net.miginfocom.swing.MigLayout;

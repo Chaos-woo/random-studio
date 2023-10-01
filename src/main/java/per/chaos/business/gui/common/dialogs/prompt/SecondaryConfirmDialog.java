@@ -2,7 +2,7 @@
  * Created by JFormDesigner on Sun Aug 27 11:51:10 GMT+08:00 2023
  */
 
-package per.chaos.business.gui.common.dialogs;
+package per.chaos.business.gui.common.dialogs.prompt;
 
 import cn.hutool.core.thread.ThreadUtil;
 import org.apache.commons.lang3.StringUtils;

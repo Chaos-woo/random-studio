@@ -2,7 +2,7 @@
  * Created by JFormDesigner on Sun Sep 10 19:36:58 CST 2023
  */
 
-package per.chaos.business.gui.root.dialogs;
+package per.chaos.business.gui.root.project;
 
 import java.awt.*;
 import java.awt.event.*;

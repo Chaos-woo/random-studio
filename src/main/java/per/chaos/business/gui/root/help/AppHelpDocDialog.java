@@ -2,31 +2,31 @@
  * Created by JFormDesigner on Mon Jul 31 02:26:58 CST 2023
  */
 
-package per.chaos.business.gui.root.dialogs;
+package per.chaos.business.gui.root.help;
 
-import per.chaos.app.models.entity.UpgradeVersionLog;
-import per.chaos.app.upgrade.log.AppUpgradeLog;
-import per.chaos.business.gui.root.renderer.AppUpgradeLogCellPanel;
+import per.chaos.app.help.log.AppHelpDoc;
+import per.chaos.app.models.entity.HelpDoc;
+import per.chaos.business.gui.root.help.renderer.AppHelpDocCellPanel;
 
-import java.awt.*;
 import javax.swing.*;
-import javax.swing.border.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
 
 /**
  * @author 78580
  */
 @SuppressWarnings("unchecked")
-public class AppUpgradeLogDialog extends JDialog {
-    public AppUpgradeLogDialog(Window owner) {
+public class AppHelpDocDialog extends JDialog {
+    public AppHelpDocDialog(Window owner) {
         super(owner);
         initComponents();
 
-        DefaultListModel<UpgradeVersionLog> listModels = new DefaultListModel<>();
-        for (UpgradeVersionLog upgradeLog : AppUpgradeLog.getUpgradeLogs()) {
-            listModels.addElement(upgradeLog);
+        DefaultListModel<HelpDoc> listModels = new DefaultListModel<>();
+        for (HelpDoc helpDoc : AppHelpDoc.getHelpDocs()) {
+            listModels.addElement(helpDoc);
         }
         upgradeLogs.setModel(listModels);
-        upgradeLogs.setCellRenderer(new AppUpgradeLogCellPanel());
+        upgradeLogs.setCellRenderer(new AppHelpDocCellPanel());
     }
 
     private void initComponents() {
@@ -37,8 +37,8 @@ public class AppUpgradeLogDialog extends JDialog {
         upgradeLogs = new JList();
 
         //======== this ========
-        setTitle("\u66f4\u65b0\u65e5\u5fd7");
-        setMinimumSize(new Dimension(600, 500));
+        setTitle("\u5e2e\u52a9\u624b\u518c");
+        setMinimumSize(new Dimension(750, 500));
         setResizable(false);
         var contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());

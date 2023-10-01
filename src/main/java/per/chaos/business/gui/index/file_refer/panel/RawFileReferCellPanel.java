@@ -2,12 +2,12 @@
  * Created by JFormDesigner on Sun Jul 30 15:10:44 CST 2023
  */
 
-package per.chaos.business.gui.index.renderer;
+package per.chaos.business.gui.index.file_refer.panel;
 
 import cn.hutool.core.io.FileUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.jdesktop.swingx.HorizontalLayout;
-import per.chaos.business.gui.index.panels.IndexPanel;
+import per.chaos.business.gui.index.IndexPanel;
 import per.chaos.infra.runtime.models.files.entity.RawFileRefer;
 import per.chaos.infra.storage.models.sqlite.FileReferEntity;
 import per.chaos.infra.utils.gui.GuiUtils;

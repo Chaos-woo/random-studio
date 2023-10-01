@@ -2,7 +2,7 @@
  * Created by JFormDesigner on Mon Jul 31 02:11:46 CST 2023
  */
 
-package per.chaos.business.gui.root.renderer;
+package per.chaos.business.gui.root.upgrade.renderer;
 
 import org.jdesktop.swingx.HorizontalLayout;
 import org.jdesktop.swingx.VerticalLayout;

@@ -1,8 +1,8 @@
 package per.chaos.infra.utils.gui;
 
 import per.chaos.app.context.ctxs.GuiManager;
-import per.chaos.business.RootFrame;
-import per.chaos.business.gui.common.dialogs.MyFontDialog;
+import per.chaos.business.gui.root.RootFrame;
+import per.chaos.business.gui.common.dialogs.font.MyFontDialog;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;

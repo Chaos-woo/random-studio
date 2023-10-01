@@ -2,7 +2,7 @@
  * Created by JFormDesigner on Fri Jun 30 22:46:32 CST 2023
  */
 
-package per.chaos.business;
+package per.chaos.business.gui.root;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
@@ -12,9 +12,14 @@ import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import per.chaos.ApplicationBoot;
 import per.chaos.app.context.BeanManager;
-import per.chaos.business.gui.common.dialogs.PromptDialog;
-import per.chaos.business.gui.index.panels.IndexPanel;
-import per.chaos.business.gui.root.dialogs.*;
+import per.chaos.business.gui.common.dialogs.prompt.PromptDialog;
+import per.chaos.business.gui.index.IndexPanel;
+import per.chaos.business.gui.root.help.AppHelpDocDialog;
+import per.chaos.business.gui.root.project.AppProjectDialog;
+import per.chaos.business.gui.root.project.ProxySettingDialog;
+import per.chaos.business.gui.root.project.UserPreferenceDialog;
+import per.chaos.business.gui.root.tts.TTSMakerTokenStatusDialog;
+import per.chaos.business.gui.root.upgrade.AppUpgradeLogDialog;
 import per.chaos.business.gui.scroll_random.panels.RandomScrollModePanel;
 import per.chaos.business.services.FileReferService;
 import per.chaos.infra.runtime.models.events.DnDSystemFilesEvent;
