@@ -37,7 +37,7 @@ public class AppUpgradeLog {
 
     private static UpgradeVersionLog rVer1p10UpgradeLog() {
         return UpgradeVersionLog.log("R.V.1.1.0", "版本？")
-                .featureLog("No anymore");
+                .featureLog("增加【代理设置】-【代理开关】，关闭时TTSMaker-API不使用代理");
     }
 
     private static UpgradeVersionLog rVer1p05UpgradeLog() {

@@ -10,7 +10,7 @@ new FormModel {
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
-				"preferredSize": new java.awt.Dimension( 500, 310 )
+				"preferredSize": new java.awt.Dimension( 500, 330 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 					"$layoutConstraints": "fillx,hidemode 3"
 					"$columnConstraints": "[fill]"
@@ -28,10 +28,27 @@ new FormModel {
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 					name: "contentPanel"
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.swingx.HorizontalLayout ) {
+						"gap": 5
+					} ) {
+						name: "proxySwitchPanel"
+						"preferredSize": new java.awt.Dimension( 80, 30 )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label1"
+							"text": "代理开关："
+						} )
+						add( new FormComponent( "javax.swing.JToggleButton" ) {
+							name: "toggleButtonProxySwitch"
+							"text": "text"
+							addEvent( new FormEvent( "java.awt.event.ItemListener", "itemStateChanged", "toggleButtonProxySwitchItemStateChanged", true ) )
+						} )
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "North"
+					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.swingx.VerticalLayout ) {
 						"gap": 5
 					} ) {
-						name: "panel1"
+						name: "proxySettingPanel"
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "labelHost"
 							"text": "主机（默认为本地）："

@@ -287,15 +287,15 @@ public class RootFrame extends JFrame implements DropTargetListener {
 
             //======== menuTTSMaker ========
             {
-                menuTTSMaker.setText("TTSMaker");
+                menuTTSMaker.setText("TTS-Maker");
 
                 //---- menuItemTokenStatus ----
-                menuItemTokenStatus.setText("TTSMaker\u8bbf\u95ee\u51ed\u8bc1");
+                menuItemTokenStatus.setText("TTS-Maker\u8bbf\u95ee\u51ed\u8bc1");
                 menuItemTokenStatus.addActionListener(e -> checkTokenStatus(e));
                 menuTTSMaker.add(menuItemTokenStatus);
 
                 //---- menuItemTTSMakerSite ----
-                menuItemTTSMakerSite.setText("TTSMaker\u4ecb\u7ecd");
+                menuItemTTSMakerSite.setText("TTS-Maker\u4ecb\u7ecd");
                 menuItemTTSMakerSite.addActionListener(e -> ttsMakerSite(e));
                 menuTTSMaker.add(menuItemTTSMakerSite);
             }

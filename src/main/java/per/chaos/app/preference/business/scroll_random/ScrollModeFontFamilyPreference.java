@@ -1,4 +1,4 @@
-package per.chaos.app.preference.business.random.preference;
+package per.chaos.app.preference.business.scroll_random;
 
 import org.apache.commons.lang3.StringUtils;
 import per.chaos.app.context.AppPreference;

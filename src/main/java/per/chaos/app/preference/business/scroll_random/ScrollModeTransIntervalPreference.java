@@ -1,4 +1,4 @@
-package per.chaos.app.preference.business.random.preference;
+package per.chaos.app.preference.business.scroll_random;
 
 import per.chaos.app.context.AppPreference;
 import per.chaos.app.ioc.BeanReference;

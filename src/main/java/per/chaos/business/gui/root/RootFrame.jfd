@@ -34,15 +34,15 @@ new FormModel {
 				} )
 				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
 					name: "menuTTSMaker"
-					"text": "TTSMaker"
+					"text": "TTS-Maker"
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "menuItemTokenStatus"
-						"text": "TTSMaker访问凭证"
+						"text": "TTS-Maker访问凭证"
 						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "checkTokenStatus", true ) )
 					} )
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "menuItemTTSMakerSite"
-						"text": "TTSMaker介绍"
+						"text": "TTS-Maker介绍"
 						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "ttsMakerSite", true ) )
 					} )
 				} )

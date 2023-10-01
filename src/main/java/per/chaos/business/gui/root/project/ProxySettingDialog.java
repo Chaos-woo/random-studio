@@ -9,15 +9,18 @@ import java.awt.event.*;
 import java.util.regex.Pattern;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.event.*;
 import net.miginfocom.swing.*;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jdesktop.swingx.*;
 import per.chaos.app.context.BeanManager;
 import per.chaos.app.preference.system.ProxyPreference;
+import per.chaos.app.preference.system.ProxySwitchPreference;
 import per.chaos.business.services.TTSManageService;
 import per.chaos.app.configs.models.CustomProxy;
 import per.chaos.infra.apis.TTSMakerApi;
+import per.chaos.infra.runtime.models.enums.SwitchEnum;
 
 /**
  * @author 78580
@@ -35,6 +38,29 @@ public class ProxySettingDialog extends JDialog {
 
         labelDefaultHost.setText(ProxyPreference.DEFAULT_PROXY_HOST);
         labelDefaultPort.setText(ProxyPreference.DEFAULT_PROXY_PORT.toString());
+
+        final ProxySwitchPreference proxySwitchPreference = BeanManager.inst().getReference(ProxySwitchPreference.class);
+        if (SwitchEnum.ON == proxySwitchPreference.getRuntime()) {
+            toggleButtonProxySwitch.setText("已开启");
+            toggleButtonProxySwitch.setSelected(true);
+            setHostPortEditable(true);
+        } else {
+            toggleButtonProxySwitch.setText("已关闭");
+            toggleButtonProxySwitch.setSelected(false);
+            setHostPortEditable(false);
+        }
+    }
+
+    /**
+     * 设置host和端口是否可编辑
+     */
+    private void setHostPortEditable(boolean editable) {
+        textFieldHost.setEditable(editable);
+        textFieldHost.setEnabled(editable);
+        textFieldPort.setEditable(editable);
+        textFieldPort.setEnabled(editable);
+
+        buttonConnectivityCheck.setEnabled(editable);
     }
 
     /**
@@ -69,14 +95,26 @@ public class ProxySettingDialog extends JDialog {
 
         final String saveFailText = "<html><body><p><font color=\"red\">请保存正确的主机地址及端口</font></p></body><html>";
         try {
-            if (!HOST_PATTERN.matcher(host).matches()) {
-                labelConnectivityCheckRet.setText(saveFailText);
-                return;
+            boolean toggleButtonProxySwitchSelected = toggleButtonProxySwitch.isSelected();
+            SwitchEnum proxySwitchEnum;
+            if (toggleButtonProxySwitchSelected) {
+                proxySwitchEnum = SwitchEnum.ON;
+            } else {
+                proxySwitchEnum = SwitchEnum.OFF;
             }
-            proxyPreference.update(new CustomProxy(host, Integer.valueOf(port)));
+            final ProxySwitchPreference proxySwitchPreference = BeanManager.inst().getReference(ProxySwitchPreference.class);
+            proxySwitchPreference.update(proxySwitchEnum);
 
-            final TTSManageService ttsManageService = BeanManager.inst().getReference(TTSManageService.class);
-            ttsManageService.refreshMemoryTTSVoiceCache();
+            if (toggleButtonProxySwitchSelected) {
+                if (!HOST_PATTERN.matcher(host).matches()) {
+                    labelConnectivityCheckRet.setText(saveFailText);
+                    return;
+                }
+                proxyPreference.update(new CustomProxy(host, Integer.valueOf(port)));
+
+                final TTSManageService ttsManageService = BeanManager.inst().getReference(TTSManageService.class);
+                ttsManageService.refreshMemoryTTSVoiceCache();
+            }
             super.dispose();
         } catch (Exception ex) {
             labelConnectivityCheckRet.setText(saveFailText);
@@ -87,13 +125,26 @@ public class ProxySettingDialog extends JDialog {
         super.dispose();
     }
 
+    private void toggleButtonProxySwitchItemStateChanged(ItemEvent e) {
+        if (e.getStateChange() == ItemEvent.SELECTED) {
+            toggleButtonProxySwitch.setText("已开启");
+            setHostPortEditable(true);
+        } else {
+            toggleButtonProxySwitch.setText("已关闭");
+            setHostPortEditable(false);
+        }
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         dialogPane = new JPanel();
         headerPanel = new JPanel();
         examplePic = new JLabel();
         contentPanel = new JPanel();
-        panel1 = new JPanel();
+        proxySwitchPanel = new JPanel();
+        label1 = new JLabel();
+        toggleButtonProxySwitch = new JToggleButton();
+        proxySettingPanel = new JPanel();
         labelHost = new JLabel();
         panel2 = new JPanel();
         textFieldHost = new JTextField();
@@ -120,7 +171,7 @@ public class ProxySettingDialog extends JDialog {
         //======== dialogPane ========
         {
             dialogPane.setBorder(new EmptyBorder(12, 12, 12, 12));
-            dialogPane.setPreferredSize(new Dimension(500, 310));
+            dialogPane.setPreferredSize(new Dimension(500, 330));
             dialogPane.setLayout(new BorderLayout());
 
             //======== headerPanel ========
@@ -142,13 +193,29 @@ public class ProxySettingDialog extends JDialog {
             {
                 contentPanel.setLayout(new BorderLayout());
 
-                //======== panel1 ========
+                //======== proxySwitchPanel ========
                 {
-                    panel1.setLayout(new VerticalLayout(5));
+                    proxySwitchPanel.setPreferredSize(new Dimension(80, 30));
+                    proxySwitchPanel.setLayout(new HorizontalLayout(5));
+
+                    //---- label1 ----
+                    label1.setText("\u4ee3\u7406\u5f00\u5173\uff1a");
+                    proxySwitchPanel.add(label1);
+
+                    //---- toggleButtonProxySwitch ----
+                    toggleButtonProxySwitch.setText("text");
+                    toggleButtonProxySwitch.addItemListener(e -> toggleButtonProxySwitchItemStateChanged(e));
+                    proxySwitchPanel.add(toggleButtonProxySwitch);
+                }
+                contentPanel.add(proxySwitchPanel, BorderLayout.NORTH);
+
+                //======== proxySettingPanel ========
+                {
+                    proxySettingPanel.setLayout(new VerticalLayout(5));
 
                     //---- labelHost ----
                     labelHost.setText("\u4e3b\u673a\uff08\u9ed8\u8ba4\u4e3a\u672c\u5730\uff09\uff1a");
-                    panel1.add(labelHost);
+                    proxySettingPanel.add(labelHost);
 
                     //======== panel2 ========
                     {
@@ -169,11 +236,11 @@ public class ProxySettingDialog extends JDialog {
                         labelDefaultHost.setForeground(new Color(0xcccccc));
                         panel2.add(labelDefaultHost);
                     }
-                    panel1.add(panel2);
+                    proxySettingPanel.add(panel2);
 
                     //---- labelPort ----
                     labelPort.setText("\u7aef\u53e3\uff08\u4f7f\u7528HTTP\u4ee3\u7406\u7aef\u53e3\uff09\uff1a");
-                    panel1.add(labelPort);
+                    proxySettingPanel.add(labelPort);
 
                     //======== panel3 ========
                     {
@@ -194,7 +261,7 @@ public class ProxySettingDialog extends JDialog {
                         labelDefaultPort.setForeground(new Color(0xcccccc));
                         panel3.add(labelDefaultPort);
                     }
-                    panel1.add(panel3);
+                    proxySettingPanel.add(panel3);
 
                     //======== panel4 ========
                     {
@@ -206,9 +273,9 @@ public class ProxySettingDialog extends JDialog {
                         panel4.add(buttonConnectivityCheck, BorderLayout.WEST);
                         panel4.add(labelConnectivityCheckRet, BorderLayout.CENTER);
                     }
-                    panel1.add(panel4);
+                    proxySettingPanel.add(panel4);
                 }
-                contentPanel.add(panel1, BorderLayout.CENTER);
+                contentPanel.add(proxySettingPanel, BorderLayout.CENTER);
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
 
@@ -246,7 +313,10 @@ public class ProxySettingDialog extends JDialog {
     private JPanel headerPanel;
     private JLabel examplePic;
     private JPanel contentPanel;
-    private JPanel panel1;
+    private JPanel proxySwitchPanel;
+    private JLabel label1;
+    private JToggleButton toggleButtonProxySwitch;
+    private JPanel proxySettingPanel;
     private JLabel labelHost;
     private JPanel panel2;
     private JTextField textFieldHost;

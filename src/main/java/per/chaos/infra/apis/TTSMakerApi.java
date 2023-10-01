@@ -13,6 +13,8 @@ import per.chaos.app.context.BeanManager;
 import per.chaos.app.ioc.BeanReference;
 import per.chaos.app.preference.system.ProxyPreference;
 import per.chaos.app.configs.models.CustomProxy;
+import per.chaos.app.preference.system.ProxySwitchPreference;
+import per.chaos.infra.runtime.models.enums.SwitchEnum;
 import per.chaos.infra.runtime.models.tts.entity.CreateTTSOrderApiDTO;
 import per.chaos.infra.runtime.models.tts.entity.TTSVoiceGetApiDTO;
 import per.chaos.infra.runtime.models.tts.entity.TokenStatusDTO;
@@ -61,15 +63,17 @@ public class TTSMakerApi {
             return JSON.parseObject(ttsCache, TTSVoiceGetApiDTO.class);
         }
 
-        final ProxyPreference proxyPreference = BeanManager.inst().getReference(ProxyPreference.class);
-        CustomProxy proxy = proxyPreference.get();
-
         final String uri = "https://api.ttsmaker.com/v1/get-voice-list?token=" + FREE_TOKEN;
-        String ret = HttpRequest.get(uri)
-                .header(Header.USER_AGENT, DEFAULT_USER_AGENT)
-                .setHttpProxy(proxy.getHost(), proxy.getPort())
-                .execute()
-                .body();
+        HttpRequest httpRequest = HttpRequest.get(uri)
+                .header(Header.USER_AGENT, DEFAULT_USER_AGENT);
+
+        if (needProxy()) {
+            final ProxyPreference proxyPreference = BeanManager.inst().getReference(ProxyPreference.class);
+            CustomProxy proxy = proxyPreference.get();
+            httpRequest = httpRequest.setHttpProxy(proxy.getHost(), proxy.getPort());
+        }
+
+        String ret = httpRequest.execute().body();
         EHCacheManager.putTTSCache(TTSCache.Keys.TTSMAKER_API_VOICE_LIST, ret);
         return JSON.parseObject(ret, TTSVoiceGetApiDTO.class);
     }
@@ -85,21 +89,24 @@ public class TTSMakerApi {
      * text_paragraph_pause_time: int = 0  // optional, auto insert audio paragraph pause time, range 500-5000, unit: millisecond, maximum 50 pauses can be inserted. If more than 50 pauses, all pauses will be canceled automatically. default 0
      */
     public CreateTTSOrderApiDTO createTTS(String text, Long voiceId) throws TTSApiException {
-        final ProxyPreference proxyPreference = BeanManager.inst().getReference(ProxyPreference.class);
-        CustomProxy proxy = proxyPreference.get();
-
         final String uri = "https://api.ttsmaker.com/v1/create-tts-order";
         JSONObject oRequest = new JSONObject()
                 .fluentPut("token", FREE_TOKEN)
                 .fluentPut("text", text)
                 .fluentPut("voice_id", voiceId)
                 .fluentPut("audio_format", "mp3");
-        HttpResponse response = HttpRequest.post(uri)
+
+        HttpRequest httpRequest = HttpRequest.post(uri)
                 .header(Header.CONTENT_TYPE, "application/json; charset=utf-8")
-                .header(Header.USER_AGENT, DEFAULT_USER_AGENT)
-                .setHttpProxy(proxy.getHost(), proxy.getPort())
-                .body(oRequest.toJSONString())
-                .execute();
+                .header(Header.USER_AGENT, DEFAULT_USER_AGENT);
+
+        if (needProxy()) {
+            final ProxyPreference proxyPreference = BeanManager.inst().getReference(ProxyPreference.class);
+            CustomProxy proxy = proxyPreference.get();
+            httpRequest = httpRequest.setHttpProxy(proxy.getHost(), proxy.getPort());
+        }
+
+        HttpResponse response = httpRequest.body(oRequest.toJSONString()).execute();
 
         if (Objects.isNull(response)) {
             throw new TTSApiException(TTSMakerApiErrorEnum.UNKNOWN_ERROR);
@@ -118,21 +125,28 @@ public class TTSMakerApi {
      * 获取token的状态数据
      */
     public TokenStatusDTO getTokenStatus(String token) {
-        final ProxyPreference proxyPreference = BeanManager.inst().getReference(ProxyPreference.class);
-        CustomProxy proxy = proxyPreference.get();
-
         final String uri = "https://api.ttsmaker.com/v1/get-token-status?token=" + token;
         try {
-            String body = HttpRequest.get(uri)
+            HttpRequest httpRequest = HttpRequest.get(uri)
                     .header(Header.USER_AGENT, DEFAULT_USER_AGENT)
-                    .setHttpProxy(proxy.getHost(), proxy.getPort())
                     .setConnectionTimeout(3_000)
-                    .setReadTimeout(5_000)
-                    .execute()
-                    .body();
+                    .setReadTimeout(5_000);
+
+            if (needProxy()) {
+                final ProxyPreference proxyPreference = BeanManager.inst().getReference(ProxyPreference.class);
+                CustomProxy proxy = proxyPreference.get();
+                httpRequest = httpRequest.setHttpProxy(proxy.getHost(), proxy.getPort());
+            }
+
+            String body = httpRequest.execute().body();
             return JSON.parseObject(body, TokenStatusDTO.class);
         } catch (Exception e) {
             throw new RuntimeException();
         }
+    }
+
+    private boolean needProxy() {
+        final ProxySwitchPreference proxySwitchPreference = BeanManager.inst().getReference(ProxySwitchPreference.class);
+        return SwitchEnum.ON == proxySwitchPreference.getRuntime();
     }
 }
