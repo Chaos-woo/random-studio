@@ -311,7 +311,7 @@ public class RootFrame extends JFrame implements DropTargetListener {
                 menuAbout.add(menuItemPref);
 
                 //---- menuItemProxy ----
-                menuItemProxy.setText("\u4ee3\u7406\u8bbe\u7f6e");
+                menuItemProxy.setText("HTTP\u4ee3\u7406\u8bbe\u7f6e");
                 menuItemProxy.addActionListener(e -> menuItemProxy(e));
                 menuAbout.add(menuItemProxy);
                 menuAbout.addSeparator();

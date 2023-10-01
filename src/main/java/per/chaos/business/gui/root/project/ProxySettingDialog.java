@@ -163,7 +163,7 @@ public class ProxySettingDialog extends JDialog {
         cancelButton = new JButton();
 
         //======== this ========
-        setTitle("\u4ee3\u7406\u8bbe\u7f6e");
+        setTitle("HTTP\u4ee3\u7406\u8bbe\u7f6e");
         setResizable(false);
         var contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
