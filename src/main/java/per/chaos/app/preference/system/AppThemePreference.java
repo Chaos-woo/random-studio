@@ -1,12 +1,13 @@
 package per.chaos.app.preference.system;
 
 import per.chaos.app.context.AppPreference;
+import per.chaos.app.context.ctxs.GuiManager;
 import per.chaos.app.ioc.BeanReference;
 import per.chaos.app.models.enums.ThemeEnum;
-import per.chaos.app.preference.IPreference;
+import per.chaos.app.preference.AbstractPreference;
 
 @BeanReference
-public class AppThemePreference implements IPreference<ThemeEnum> {
+public class AppThemePreference extends AbstractPreference<ThemeEnum> {
     private final String key = "kAppTheme";
 
     @Override
@@ -17,5 +18,8 @@ public class AppThemePreference implements IPreference<ThemeEnum> {
     @Override
     public void update(ThemeEnum value) {
         AppPreference.root().put(this.key, value.getTheme());
+        updateRuntimeData(value);
+
+        GuiManager.inst().updateTheme(value);
     }
 }

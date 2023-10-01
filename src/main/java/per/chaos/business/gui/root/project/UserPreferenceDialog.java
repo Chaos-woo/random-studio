@@ -8,14 +8,11 @@ import lombok.extern.slf4j.Slf4j;
 import net.miginfocom.swing.MigLayout;
 import per.chaos.app.context.BeanManager;
 import per.chaos.app.context.ctxs.GuiManager;
-import per.chaos.app.context.system.PreferenceManager;
 import per.chaos.app.models.enums.ThemeEnum;
 import per.chaos.app.preference.business.scroll_random.ScrollModeFontFamilyPreference;
 import per.chaos.app.preference.business.scroll_random.ScrollModeFontSizePreference;
 import per.chaos.app.preference.business.scroll_random.ScrollModeTransIntervalPreference;
 import per.chaos.app.preference.system.AppThemePreference;
-import per.chaos.infra.runtime.models.events.RefreshPreferenceCacheEvent;
-import per.chaos.infra.utils.EventBusHolder;
 import per.chaos.infra.utils.gui.GuiUtils;
 
 import javax.swing.*;
@@ -58,8 +55,8 @@ public class UserPreferenceDialog extends JDialog {
         // 初始化按钮选项组的默认选择状态
         initButtonGroup();
 
-        final ScrollModeFontFamilyPreference scrollModeFontFamilyPreference = BeanManager.inst().getReference(ScrollModeFontFamilyPreference.class);
-        tempScrollModeFontFamily.set(scrollModeFontFamilyPreference.get());
+        final ScrollModeFontFamilyPreference fontFamily = BeanManager.inst().getReference(ScrollModeFontFamilyPreference.class);
+        tempScrollModeFontFamily.set(fontFamily.getRuntimeData());
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     }
@@ -106,30 +103,31 @@ public class UserPreferenceDialog extends JDialog {
      */
     @SuppressWarnings("all")
     private void initTextFiledContext() {
-        final PreferenceManager preferenceManager = PreferenceManager.inst();
+        final ScrollModeFontSizePreference fontSize = BeanManager.inst().getReference(ScrollModeFontSizePreference.class);
+        final ScrollModeTransIntervalPreference scrollInterval = BeanManager.inst().getReference(ScrollModeTransIntervalPreference.class);
 
-        textFieldScrollModeTransIntervalMs.setValue(preferenceManager.getPreferenceCache().getScrollModeTransIntervalMs());
-        textFieldScrollModeFontSize.setValue(preferenceManager.getPreferenceCache().getScrollModeFontSize());
+        textFieldScrollModeTransIntervalMs.setValue(scrollInterval.getRuntimeData());
+        textFieldScrollModeFontSize.setValue(fontSize.getRuntimeData());
+
+        final AppThemePreference appTheme = BeanManager.inst().getReference(AppThemePreference.class);
 
         comboBoxTheme.addItem(ThemeEnum.LIGHT.getTheme());
         comboBoxTheme.addItem(ThemeEnum.DARCULA.getTheme());
-        comboBoxTheme.setSelectedItem(preferenceManager.getPreferenceCache().getTheme().getTheme());
+        comboBoxTheme.setSelectedItem(appTheme.getRuntimeData().getTheme());
     }
 
     private void ok(ActionEvent e) {
-        final ScrollModeTransIntervalPreference scrollModeTransIntervalPreference = BeanManager.inst().getReference(ScrollModeTransIntervalPreference.class);
-        final ScrollModeFontSizePreference scrollModeFontSizePreference = BeanManager.inst().getReference(ScrollModeFontSizePreference.class);
-        final ScrollModeFontFamilyPreference scrollModeFontFamilyPreference = BeanManager.inst().getReference(ScrollModeFontFamilyPreference.class);
-        final AppThemePreference appThemePreference = BeanManager.inst().getReference(AppThemePreference.class);
+        final ScrollModeTransIntervalPreference scrollInterval = BeanManager.inst().getReference(ScrollModeTransIntervalPreference.class);
+        final ScrollModeFontSizePreference fontSize = BeanManager.inst().getReference(ScrollModeFontSizePreference.class);
+        final ScrollModeFontFamilyPreference fontFamily = BeanManager.inst().getReference(ScrollModeFontFamilyPreference.class);
+        final AppThemePreference appTheme = BeanManager.inst().getReference(AppThemePreference.class);
 
-        scrollModeTransIntervalPreference.update(Objects.isNull(textFieldScrollModeTransIntervalMs.getValue())
+        scrollInterval.update(Objects.isNull(textFieldScrollModeTransIntervalMs.getValue())
                 ? null : (Long) textFieldScrollModeTransIntervalMs.getValue());
-        scrollModeFontSizePreference.update(Objects.isNull(textFieldScrollModeFontSize.getValue())
+        fontSize.update(Objects.isNull(textFieldScrollModeFontSize.getValue())
                 ? null : Integer.parseInt(String.valueOf(textFieldScrollModeFontSize.getValue())));
-        scrollModeFontFamilyPreference.update(this.tempScrollModeFontFamily.get());
-        appThemePreference.update(ThemeEnum.getBy((String) comboBoxTheme.getSelectedItem()));
-
-        EventBusHolder.publish(new RefreshPreferenceCacheEvent());
+        fontFamily.update(this.tempScrollModeFontFamily.get());
+        appTheme.update(ThemeEnum.getBy((String) comboBoxTheme.getSelectedItem()));
 
         this.dispose();
     }

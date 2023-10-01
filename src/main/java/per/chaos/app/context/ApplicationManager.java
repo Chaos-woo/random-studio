@@ -4,7 +4,6 @@ import lombok.Getter;
 import per.chaos.app.configs.EHCacheManager;
 import per.chaos.app.context.ctxs.GuiManager;
 import per.chaos.app.context.system.DbManager;
-import per.chaos.app.context.system.PreferenceManager;
 import per.chaos.app.context.system.ProjectManager;
 import per.chaos.infra.utils.PathUtils;
 
@@ -33,7 +32,6 @@ public class ApplicationManager {
     public void init() {
         ProjectManager.inst().init();
         DbManager.inst().init();
-        PreferenceManager.inst().init();
         GuiManager.inst().init();
 
         EHCacheManager.init();

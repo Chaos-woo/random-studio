@@ -11,18 +11,16 @@ import per.chaos.app.context.ApplicationManager;
 import per.chaos.app.context.BeanManager;
 import per.chaos.app.ioc.BeanReference;
 import per.chaos.infra.apis.TTSMakerApi;
-import per.chaos.infra.runtime.models.tts.callback.TimbreAllDownloadComplete;
-import per.chaos.infra.runtime.models.tts.callback.TimbreDownloadComplete;
-import per.chaos.infra.runtime.models.events.RefreshPreferenceCacheEvent;
 import per.chaos.infra.runtime.models.files.ctxs.FileCardCtx;
 import per.chaos.infra.runtime.models.files.entity.FileCard;
+import per.chaos.infra.runtime.models.tts.callback.TimbreAllDownloadComplete;
+import per.chaos.infra.runtime.models.tts.callback.TimbreDownloadComplete;
 import per.chaos.infra.runtime.models.tts.ctxs.MemoryTTSVoiceCache;
 import per.chaos.infra.runtime.models.tts.entity.CreateTTSOrderApiDTO;
 import per.chaos.infra.runtime.models.tts.entity.TTSVoiceGetApiDTO;
 import per.chaos.infra.runtime.models.tts.enums.TTSMakerApiErrorEnum;
 import per.chaos.infra.runtime.models.tts.exception.TTSApiException;
 import per.chaos.infra.storage.models.sqlite.FileReferEntity;
-import per.chaos.infra.utils.EventBusHolder;
 import per.chaos.infra.utils.PathUtils;
 
 import java.io.File;
@@ -63,9 +61,6 @@ public class TTSManageService {
         final TTSMakerApi apiClient = BeanManager.inst().getReference(TTSMakerApi.class);
         final TTSVoiceGetApiDTO ret = apiClient.getTTSVoice();
         this.ttsVoiceCache.ttsVoiceMapping(ret.getTtsVoicesDetail());
-        log.info("刷新结束：{}", this.ttsVoiceCache.getIdTTSVoiceMapping());
-
-        EventBusHolder.publish(new RefreshPreferenceCacheEvent());
     }
 
     /**

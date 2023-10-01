@@ -3,28 +3,28 @@ package per.chaos.app.preference;
 import java.util.Objects;
 
 public abstract class AbstractPreference<T> implements IPreference<T>{
-    protected T runtime;
+    protected T runtimeData;
 
     /**
      * 默认实现
      */
-    public T getRuntime() {
-        if (validRuntime()) {
-            return this.runtime;
+    public T getRuntimeData() {
+        if (validRuntimeData()) {
+            return runtimeData;
         }
 
-        this.runtime = get();
-        return this.runtime;
+        runtimeData = get();
+        return runtimeData;
     }
 
     /**
      * 是否是有效的运行时状态，默认实现
      */
-    protected boolean validRuntime() {
-        return Objects.nonNull(this.runtime);
+    protected boolean validRuntimeData() {
+        return Objects.nonNull(this.runtimeData);
     }
 
-    protected void updateRuntime(T runtime) {
-        this.runtime = runtime;
+    protected void updateRuntimeData(T runtime) {
+        this.runtimeData = runtime;
     }
 }

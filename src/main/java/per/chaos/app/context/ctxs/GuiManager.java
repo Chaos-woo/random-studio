@@ -47,12 +47,12 @@ public class GuiManager {
                 System.err.println("Failed to initialize LaF");
             }
         }
-        SwingUtilities.updateComponentTreeUI(this.rootFrame);
-        SwingUtilities.updateComponentTreeUI(this.rootFrame.getIndexPanel().getPopupMenuLatestFile());
-        SwingUtilities.updateComponentTreeUI(this.rootFrame.getIndexPanel().getPopupMenuFastQueryFile());
+        SwingUtilities.updateComponentTreeUI(rootFrame);
+        SwingUtilities.updateComponentTreeUI(rootFrame.getIndexPanel().getPopupMenuLatestFile());
+        SwingUtilities.updateComponentTreeUI(rootFrame.getIndexPanel().getPopupMenuFastQueryFile());
         // 最合适的方式显示
-        this.rootFrame.pack();
+        rootFrame.pack();
         // 显示窗体
-        this.rootFrame.setVisible(true);
+        rootFrame.setVisible(true);
     }
 }

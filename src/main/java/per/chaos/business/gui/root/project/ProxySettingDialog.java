@@ -9,7 +9,7 @@ import java.awt.event.*;
 import java.util.regex.Pattern;
 import javax.swing.*;
 import javax.swing.border.*;
-import javax.swing.event.*;
+
 import net.miginfocom.swing.*;
 
 import org.apache.commons.lang3.StringUtils;
@@ -32,7 +32,7 @@ public class ProxySettingDialog extends JDialog {
         initComponents();
 
         final ProxyPreference proxyPreference = BeanManager.inst().getReference(ProxyPreference.class);
-        CustomProxy proxy = proxyPreference.get();
+        CustomProxy proxy = proxyPreference.getRuntimeData();
         textFieldHost.setText(proxy.getHost());
         textFieldPort.setText(proxy.getPort().toString());
 
@@ -40,7 +40,7 @@ public class ProxySettingDialog extends JDialog {
         labelDefaultPort.setText(ProxyPreference.DEFAULT_PROXY_PORT.toString());
 
         final ProxySwitchPreference proxySwitchPreference = BeanManager.inst().getReference(ProxySwitchPreference.class);
-        if (SwitchEnum.ON == proxySwitchPreference.getRuntime()) {
+        if (SwitchEnum.ON == proxySwitchPreference.getRuntimeData()) {
             toggleButtonProxySwitch.setText("已开启");
             toggleButtonProxySwitch.setSelected(true);
             setHostPortEditable(true);

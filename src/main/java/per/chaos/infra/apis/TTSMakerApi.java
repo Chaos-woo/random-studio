@@ -69,7 +69,7 @@ public class TTSMakerApi {
 
         if (needProxy()) {
             final ProxyPreference proxyPreference = BeanManager.inst().getReference(ProxyPreference.class);
-            CustomProxy proxy = proxyPreference.get();
+            CustomProxy proxy = proxyPreference.getRuntimeData();
             httpRequest = httpRequest.setHttpProxy(proxy.getHost(), proxy.getPort());
         }
 
@@ -102,7 +102,7 @@ public class TTSMakerApi {
 
         if (needProxy()) {
             final ProxyPreference proxyPreference = BeanManager.inst().getReference(ProxyPreference.class);
-            CustomProxy proxy = proxyPreference.get();
+            CustomProxy proxy = proxyPreference.getRuntimeData();
             httpRequest = httpRequest.setHttpProxy(proxy.getHost(), proxy.getPort());
         }
 
@@ -134,7 +134,7 @@ public class TTSMakerApi {
 
             if (needProxy()) {
                 final ProxyPreference proxyPreference = BeanManager.inst().getReference(ProxyPreference.class);
-                CustomProxy proxy = proxyPreference.get();
+                CustomProxy proxy = proxyPreference.getRuntimeData();
                 httpRequest = httpRequest.setHttpProxy(proxy.getHost(), proxy.getPort());
             }
 
@@ -147,6 +147,6 @@ public class TTSMakerApi {
 
     private boolean needProxy() {
         final ProxySwitchPreference proxySwitchPreference = BeanManager.inst().getReference(ProxySwitchPreference.class);
-        return SwitchEnum.ON == proxySwitchPreference.getRuntime();
+        return SwitchEnum.ON == proxySwitchPreference.getRuntimeData();
     }
 }

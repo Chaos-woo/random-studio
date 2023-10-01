@@ -12,8 +12,8 @@ import per.chaos.app.context.ApplicationManager;
 import per.chaos.app.context.BeanManager;
 import per.chaos.app.context.ctxs.GuiManager;
 import per.chaos.app.context.system.BusinessInitializer;
-import per.chaos.app.context.system.PreferenceManager;
 import per.chaos.app.models.enums.ThemeEnum;
+import per.chaos.app.preference.system.AppThemePreference;
 import per.chaos.app.upgrade.executor.AppUpgrade;
 import per.chaos.business.gui.root.RootFrame;
 import per.chaos.infra.runtime.models.events.RootWindowResizeEvent;
@@ -51,9 +51,10 @@ public class ApplicationBoot {
         BusinessInitializer.init();
 
         // 应用主题初始化
-        ThemeEnum themePref = PreferenceManager.inst().getPreferenceCache().getTheme();
+        final AppThemePreference appThemePreference = BeanManager.inst().getReference(AppThemePreference.class);
+        ThemeEnum themePreference = appThemePreference.getRuntimeData();
         FlatLaf flatLafTheme;
-        switch (themePref) {
+        switch (themePreference) {
             case LIGHT:
                 flatLafTheme = new FlatLightLaf();
                 break;

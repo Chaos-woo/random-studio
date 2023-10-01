@@ -21,7 +21,7 @@ public class ProxySwitchPreference extends AbstractPreference<SwitchEnum> {
     @Override
     public void update(SwitchEnum value) {
         AppPreference.root().put(this.key, transformEnum2String(value));
-        updateRuntime(value);
+        updateRuntimeData(value);
     }
 
     private String transformEnum2String(SwitchEnum switchEnum) {

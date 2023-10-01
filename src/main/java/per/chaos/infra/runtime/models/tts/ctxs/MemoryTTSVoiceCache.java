@@ -48,16 +48,16 @@ public class MemoryTTSVoiceCache {
             ttsVoice.setVoicesDetail(voicesDetails);
 
             for (TTSVoicesDetail voicesDetail : voicesDetails) {
-                this.idTTSVoiceMapping.put(voicesDetail.getId(), ttsVoice);
+                idTTSVoiceMapping.put(voicesDetail.getId(), ttsVoice);
             }
 
-            this.ttsVoiceList.add(ttsVoice);
+            ttsVoiceList.add(ttsVoice);
         }
     }
 
     private void clearAll() {
-        this.ttsVoiceList.clear();
-        this.idTTSVoiceMapping.clear();
+        ttsVoiceList.clear();
+        idTTSVoiceMapping.clear();
     }
 
     public TTSVoice findTTSVoice(String language) {

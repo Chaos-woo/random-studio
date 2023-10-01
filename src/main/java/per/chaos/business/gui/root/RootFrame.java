@@ -20,7 +20,7 @@ import per.chaos.business.gui.root.project.ProxySettingDialog;
 import per.chaos.business.gui.root.project.UserPreferenceDialog;
 import per.chaos.business.gui.root.tts.TTSMakerTokenStatusDialog;
 import per.chaos.business.gui.root.upgrade.AppUpgradeLogDialog;
-import per.chaos.business.gui.scroll_random.panels.RandomScrollModePanel;
+import per.chaos.business.gui.scroll_random.RandomScrollModePanel;
 import per.chaos.business.services.FileReferService;
 import per.chaos.infra.runtime.models.events.DnDSystemFilesEvent;
 import per.chaos.infra.runtime.models.files.ctxs.FileCardCtx;
@@ -80,7 +80,9 @@ public class RootFrame extends JFrame implements DropTargetListener {
      */
     public void jumpToIndexPanel() {
         getContentPane().removeAll();
-        getContentPane().add(this.indexPanel);
+        SwingUtilities.updateComponentTreeUI(indexPanel);
+
+        getContentPane().add(indexPanel);
         getContentPane().revalidate();
         getContentPane().repaint();
     }
@@ -231,7 +233,7 @@ public class RootFrame extends JFrame implements DropTargetListener {
                 siteBrief,
                 "了解",
                 true
-                );
+        );
         dialog.setVisible(true);
     }
 
