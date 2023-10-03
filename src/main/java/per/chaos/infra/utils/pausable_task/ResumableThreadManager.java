@@ -14,19 +14,25 @@ public class ResumableThreadManager {
     // 线程，默认为null，即未初始化状态为已销毁状态
     private ResumableThread rThread;
     // 任务
-    private final Runnable runnable;
+    private final Runnable task;
+    // 暂停前回调
+    private final Runnable pauseCallback;
+    // 暂停恢复回调
+    private final Runnable resumeCallback;
+    // 线程被打断后回调
+    private final Runnable interruptedCallback;
 
     private void initNewPausableThread() {
         rThread = new ResumableThread(
-                "pausable",
+                "pausable" + Math.random(),
                 () -> {
                     try {
-                        runnable.run();
+                        task.run();
                     } catch (Exception e) {
                         throw new RuntimeException("rethrow");
                     }
-                }
-        );
+                },
+                pauseCallback, resumeCallback, interruptedCallback);
     }
 
     private void initAllState() {
@@ -66,8 +72,19 @@ public class ResumableThreadManager {
         }
     }
 
-    public ResumableThreadManager(Runnable runnable) {
-        this.runnable = runnable;
+    public ResumableThreadManager(Runnable task, Runnable pauseCallback, Runnable resumeCallback, Runnable interruptedCallback) {
+        this.task = task;
+        this.pauseCallback = pauseCallback;
+        this.resumeCallback = resumeCallback;
+        this.interruptedCallback = interruptedCallback;
         initAllState();
+    }
+
+    public ResumableThreadManager(Runnable task, Runnable pauseCallback, Runnable resumeCallback) {
+        this(task, pauseCallback, resumeCallback, null);
+    }
+
+    public ResumableThreadManager(Runnable task) {
+        this(task, null, null, null);
     }
 }

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * 文件内容卡片上下文
@@ -33,10 +34,10 @@ public class FileCardCtx {
     private final List<FileCard> originalCards;
 
     @Getter
-    private final List<FileCard> remainCards;
+    private List<FileCard> remainCards;
 
     @Getter
-    private final List<FileCard> usedCards;
+    private List<FileCard> usedCards;
 
     @Setter
     @Getter
@@ -59,18 +60,20 @@ public class FileCardCtx {
     }
 
     public List<FileCard> getOriginalCards() {
-        return ObjUtil.cloneByStream(originalCards);
+        return Collections.unmodifiableList(ObjUtil.cloneByStream(originalCards));
     }
 
     public void dropCard(int index) {
         FileCard cardModel = remainCards.get(index);
         usedCards.add(cardModel);
-        remainCards.remove(index);
+        remainCards = remainCards.stream()
+                .filter(c -> !c.equals(cardModel))
+                .collect(Collectors.toList());
     }
 
     public void resetAllCards() {
-        remainCards.clear();
-        usedCards.clear();
+        remainCards = new ArrayList<>();
+        usedCards = new ArrayList<>();
         
         remainCards.addAll(ObjUtil.cloneByStream(originalCards));
     }

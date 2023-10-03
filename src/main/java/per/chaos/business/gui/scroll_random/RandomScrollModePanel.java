@@ -39,7 +39,7 @@ import java.util.Objects;
  */
 public class RandomScrollModePanel extends JPanel {
     private final FileCardCtx fileCardCtx;
-    private final ResumableThreadManager resumableThread;
+    private final ResumableThreadManager randomTaskThread;
 
     private int randomIndex = -1;
 
@@ -52,7 +52,7 @@ public class RandomScrollModePanel extends JPanel {
         initComponentTitle();
         initFileCardTTSAudio();
 
-        this.resumableThread = new ResumableThreadManager(() -> {
+        this.randomTaskThread = new ResumableThreadManager(() -> {
             try {
                 final ScrollModeTransIntervalPreference scrollInterval = BeanManager.inst().getReference(ScrollModeTransIntervalPreference.class);
                 Thread.sleep(scrollInterval.getRuntimeData());
@@ -60,14 +60,15 @@ public class RandomScrollModePanel extends JPanel {
                 final ScrollModeFontFamilyPreference fontFamily = BeanManager.inst().getReference(ScrollModeFontFamilyPreference.class);
                 final ScrollModeFontSizePreference fontSize = BeanManager.inst().getReference(ScrollModeFontSizePreference.class);
 
-                randomIndex = (int) (Math.random() * fileCardCtx.getRemainCards().size());
-                FileCard fileCard = fileCardCtx.getRemainCards().get(randomIndex);
+                randomIndex = (int) (Math.random() * this.fileCardCtx.getRemainCards().size());
+                FileCard fileCard = this.fileCardCtx.getRemainCards().get(randomIndex);
                 labelMainContentVal.setText(fileCard.getText());
                 labelMainContentVal.setFont(new Font(fontFamily.getRuntimeData(), Font.BOLD, fontSize.getRuntimeData()));
             } catch (Exception e) {
                 throw new RuntimeException("Running random cards exception");
             }
-        });
+        }
+        );
 
         EventBusHolder.register(this);
     }
@@ -125,7 +126,7 @@ public class RandomScrollModePanel extends JPanel {
      * 随机滚动模式开始
      */
     private void start(ActionEvent e) {
-        resumableThread.start();
+        randomTaskThread.start();
         changeLabelMainContentStyle(true, null);
         changeLabelCardPoolState();
 
@@ -138,13 +139,14 @@ public class RandomScrollModePanel extends JPanel {
      * 随机滚动模式暂停
      */
     private void pause(ActionEvent e) {
-        resumableThread.pause();
-
         buttonPause.setEnabled(false);
         buttonDropContinue.setEnabled(true);
         buttonPutBackContinue.setEnabled(true);
+        buttonPlayAudio.setEnabled(false);
 
-        if (this.randomIndex > -1) {
+        randomTaskThread.pause();
+
+        if (randomIndex >= 0) {
             FileCard fileCard = fileCardCtx.getRemainCards().get(randomIndex);
             if (Objects.nonNull(fileCard.getAudioFile())) {
                 buttonPlayAudio.setEnabled(true);
@@ -156,18 +158,21 @@ public class RandomScrollModePanel extends JPanel {
      * 随机滚动模式丢弃当前文字卡片,并继续滚动
      */
     private void dropResume(ActionEvent e) {
-        this.fileCardCtx.dropCard(randomIndex);
+        fileCardCtx.dropCard(randomIndex);
 
-        buttonPause.setEnabled(true);
         buttonDropContinue.setEnabled(false);
         buttonPutBackContinue.setEnabled(false);
         buttonPlayAudio.setEnabled(false);
 
-        resumableThread.resume();
-        changeLabelCardPoolState();
-        if (CollectionUtil.isEmpty(fileCardCtx.getRemainCards())) {
+        if (fileCardCtx.getRemainCards().isEmpty()) {
             changeLabelMainContentStyle(false, "已经全部完成啦！");
+            buttonPause.setEnabled(false);
+        } else {
+            buttonPause.setEnabled(true);
+            randomTaskThread.resume();
         }
+
+        changeLabelCardPoolState();
     }
 
     /**
@@ -179,7 +184,7 @@ public class RandomScrollModePanel extends JPanel {
         buttonPutBackContinue.setEnabled(false);
         buttonPlayAudio.setEnabled(false);
 
-        resumableThread.resume();
+        randomTaskThread.resume();
         changeLabelCardPoolState();
     }
 
@@ -187,7 +192,7 @@ public class RandomScrollModePanel extends JPanel {
      * 重置当前已丢弃的文字卡片,重新开始
      */
     private void restart(ActionEvent e) {
-        resumableThread.stop();
+        randomTaskThread.stop();
 
         // 文字卡片重置
         fileCardCtx.resetAllCards();
@@ -195,7 +200,7 @@ public class RandomScrollModePanel extends JPanel {
         fileCardCtx.shuffleRemainCards();
         initFileCardTTSAudio();
 
-        resumableThread.start();
+        randomTaskThread.start();
         changeLabelCardPoolState();
 
         buttonPause.setEnabled(true);
@@ -208,7 +213,7 @@ public class RandomScrollModePanel extends JPanel {
      * 结束滚动模式,并回到主页
      */
     private void stop(ActionEvent e) {
-        resumableThread.stop();
+        randomTaskThread.stop();
         GuiManager.inst().getRootFrame().jumpToIndexPanel();
     }
 
@@ -236,9 +241,9 @@ public class RandomScrollModePanel extends JPanel {
      */
     private void changeLabelCardPoolState() {
         labelCardPoolVal.setText(
-                this.fileCardCtx.getRemainCards().size()
+                fileCardCtx.getRemainCards().size()
                         + "（剩余） / " +
-                        this.fileCardCtx.getCardSize()
+                        fileCardCtx.getCardSize()
                         + "（总数）"
         );
     }
@@ -258,7 +263,7 @@ public class RandomScrollModePanel extends JPanel {
      * @param e
      */
     private void playAudio(ActionEvent e) {
-        FileCard fileCard = this.fileCardCtx.getRemainCards().get(this.randomIndex);
+        FileCard fileCard = fileCardCtx.getRemainCards().get(randomIndex);
         try {
             AudioPlayer player = new AudioPlayer(fileCard.getAudioFile().getAbsolutePath());
             player.play(null);
@@ -268,8 +273,8 @@ public class RandomScrollModePanel extends JPanel {
     }
 
     private void componentRemoved(ContainerEvent e) {
-        if (Objects.nonNull(resumableThread)) {
-            this.resumableThread.stop();
+        if (Objects.nonNull(randomTaskThread)) {
+            randomTaskThread.stop();
         }
 
         EventBusHolder.unregister(this);
