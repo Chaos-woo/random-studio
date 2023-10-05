@@ -1,5 +1,4 @@
 target/
-tts/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
@@ -9,9 +8,13 @@ tts/
 .idea/jarRepositories.xml
 .idea/compiler.xml
 .idea/libraries/
+.idea/inspectionProfiles/
+.idea/.gitignore
 *.iws
 *.iml
 *.ipr
+.idea/*.xml
+lib/
 
 ### Eclipse ###
 .apt_generated
@@ -39,11 +42,12 @@ build/
 .DS_Store
 
 ### Database file ###
-.db
+*.db
 
 ### log ###
-.log
-.log.gz!/random-studio.db
-!/app.log
-!/rclibCacheData/
-!/logs/
+*.log
+logs/
+
+### cache ###
+rclibCacheData/
+rclib-TTSAudio/
