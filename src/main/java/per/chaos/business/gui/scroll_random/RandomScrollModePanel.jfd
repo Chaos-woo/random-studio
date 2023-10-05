@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "8.1.0.0.283" Java: "17.0.8" encoding: "UTF-8"
+JFDML JFormDesigner: "8.1.1.0.298" Java: "17.0.8" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -70,8 +70,8 @@ new FormModel {
 				"$rowConstraints": "[grow,fill]"
 			} ) {
 				name: "mainPanel"
-				"minimumSize": new java.awt.Dimension( 108, 340 )
 				"preferredSize": new java.awt.Dimension( 108, 340 )
+				"minimumSize": new java.awt.Dimension( 108, 340 )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "labelMainContentVal"
 					"text": "main content"

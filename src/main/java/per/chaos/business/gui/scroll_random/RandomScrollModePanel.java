@@ -62,8 +62,25 @@ public class RandomScrollModePanel extends JPanel {
 
                 randomIndex = (int) (Math.random() * this.fileCardCtx.getRemainCards().size());
                 FileCard fileCard = this.fileCardCtx.getRemainCards().get(randomIndex);
-                labelMainContentVal.setText(fileCard.getText());
-                labelMainContentVal.setFont(new Font(fontFamily.getRuntimeData(), Font.BOLD, fontSize.getRuntimeData()));
+                String text = fileCard.getText();
+
+                int runtimeFontSize = fontSize.getRuntimeData();
+                Font newFont = new Font(fontFamily.getRuntimeData(), Font.BOLD, runtimeFontSize);
+                final int roomFrameWidth = GuiManager.inst().getRootFrame().getWidth() - 30;
+                int stringWidthByFont = GuiUtils.getStringWidthByFont(newFont, text);
+                while (stringWidthByFont > roomFrameWidth) {
+                    if (runtimeFontSize <= 10) {
+                        break;
+                    }
+
+                    runtimeFontSize -= 2;
+                    newFont = new Font(fontFamily.getRuntimeData(), Font.BOLD, runtimeFontSize);
+                    stringWidthByFont = GuiUtils.getStringWidthByFont(newFont, text);
+                }
+
+                labelMainContentVal.setText(text);
+                labelMainContentVal.setFont(newFont);
+
             } catch (Exception e) {
                 throw new RuntimeException("Running random cards exception");
             }
@@ -373,8 +390,8 @@ public class RandomScrollModePanel extends JPanel {
 
         //======== mainPanel ========
         {
-            mainPanel.setMinimumSize(new Dimension(108, 340));
             mainPanel.setPreferredSize(new Dimension(108, 340));
+            mainPanel.setMinimumSize(new Dimension(108, 340));
             mainPanel.setLayout(new MigLayout(
                 "insets 0,hidemode 3",
                 // columns
