@@ -6,6 +6,7 @@ package per.chaos.business.gui.root;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
+import com.formdev.flatlaf.extras.*;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.miginfocom.swing.MigLayout;
@@ -231,7 +232,31 @@ public class RootFrame extends JFrame implements DropTargetListener {
                 this,
                 "TTSMaker介绍",
                 siteBrief,
-                "了解",
+                "好的",
+                true
+        );
+        dialog.setVisible(true);
+    }
+
+    private void importantTip(ActionEvent e) {
+        final StringBuilder text = new StringBuilder()
+                .append("请不要删除应用同目录下的以下文件：\n")
+                .append("1. env：软件运行时环境；\n")
+                .append("2. rclibCacheData：软件缓存数据；\n")
+                .append("3. rclib-TTSAudio：TTS音频存放目录；\n")
+                .append("4. random-studio.db：软件数据库。");
+
+        text.append("\n\n");
+
+        text.append("应用同目录下的以下文件可以删除，可用于问题排查：\n")
+                .append("1. app.log：软件运行时日志；\n")
+                .append("2. error.log：软件运行时异常日志。");
+
+        PromptDialog dialog = new PromptDialog(
+                this,
+                "重要提示",
+                text.toString(),
+                "好的",
                 true
         );
         dialog.setVisible(true);
@@ -252,6 +277,7 @@ public class RootFrame extends JFrame implements DropTargetListener {
         menuItemInfo = new JMenuItem();
         menuItemHelp = new JMenuItem();
         menuItemUpdateLog = new JMenuItem();
+        menuItemImportantTip = new JMenuItem();
 
         //======== this ========
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -332,6 +358,13 @@ public class RootFrame extends JFrame implements DropTargetListener {
                 menuItemUpdateLog.setText("\u66f4\u65b0\u65e5\u5fd7");
                 menuItemUpdateLog.addActionListener(e -> showUpdateLogDialog(e));
                 menuAbout.add(menuItemUpdateLog);
+                menuAbout.addSeparator();
+
+                //---- menuItemImportantTip ----
+                menuItemImportantTip.setText("\u91cd\u8981\u63d0\u793a");
+                menuItemImportantTip.setIcon(new FlatSVGIcon("icons/tip.svg"));
+                menuItemImportantTip.addActionListener(e -> importantTip(e));
+                menuAbout.add(menuItemImportantTip);
             }
             menuBar0.add(menuAbout);
         }
@@ -355,5 +388,6 @@ public class RootFrame extends JFrame implements DropTargetListener {
     private JMenuItem menuItemInfo;
     private JMenuItem menuItemHelp;
     private JMenuItem menuItemUpdateLog;
+    private JMenuItem menuItemImportantTip;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }
